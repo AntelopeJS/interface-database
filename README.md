@@ -3,7 +3,7 @@
 # Interface Database
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
-[![Version](https://img.shields.io/badge/version-dev-orange.svg)](https://github.com/antelopejs/antelope)
+[![Version](https://img.shields.io/badge/version-beta-orange.svg)](https://github.com/antelopejs/antelope)
 
 A database-agnostic query interface that provides consistent operations across different database implementations. Interface Database brings AQL (Antelope Query Language) to your projects, enabling you to write database code that works with multiple database backends.
 

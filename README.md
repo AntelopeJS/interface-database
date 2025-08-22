@@ -35,10 +35,10 @@ This is the development version (`beta`) of the Interface Database. It is curren
 
 ## Versions
 
-| Version | Link                                                                                              | Status                                        |
-| ------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| beta    | [database@beta](https://github.com/AntelopeJS/rethinkdb/tree/main/.antelope/output/database/beta) | Waiting validation from community to go in v1 |
-| 1       | _Not yet released_                                                                                | Planned stable release                        |
+| Version | Link                                                                                            | Status                                        |
+| ------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| beta    | [database@beta](https://github.com/AntelopeJS/rethinkdb/tree/main/output/database/beta) | Waiting validation from community to go in v1 |
+| 1       | _Not yet released_                                                                              | Planned stable release                        |
 
 ## License
 

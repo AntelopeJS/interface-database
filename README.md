@@ -21,9 +21,9 @@ ajs module imports add database@beta
 Detailed documentation is available in the `docs` directory:
 
 - [Index](./docs/index.md) - Overview and documentation structure
-- [Query Types](./docs/1.query_types/) - Information about table, selection, and other query types
-- [Operations](./docs/2.operations/) - Database, table, and CRUD operations
-- [Results](./docs/3.results/) - Result types and handling
+- [Query Types](./docs/1.query_types/1.index.md) - Information about table, selection, and other query types
+- [Operations](./docs/2.operations/1.index.md) - Database, table, and CRUD operations
+- [Results](./docs/3.results/1.index.md) - Result types and handling
 
 ## Inspiration
 
@@ -35,10 +35,10 @@ This is the development version (`beta`) of the Interface Database. It is curren
 
 ## Versions
 
-| Version | Link                                                                                              | Status                                        |
-| ------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| beta    | [database@beta](https://github.com/AntelopeJS/rethinkdb/tree/main/.antelope/output/database/beta) | Waiting validation from community to go in v1 |
-| 1       | _Not yet released_                                                                                | Planned stable release                        |
+| Version | Link                                                                                            | Status                                        |
+| ------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| beta    | [database@beta](https://github.com/AntelopeJS/rethinkdb/tree/main/output/database/beta) | Waiting validation from community to go in v1 |
+| 1       | _Not yet released_                                                                              | Planned stable release                        |
 
 ## License
 

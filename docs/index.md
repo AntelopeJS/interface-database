@@ -15,7 +15,8 @@ This documentation is organized into the following sections:
   - [4. SingleSelection](./1.query_types/4.single_selection.md) - Working with a single document
   - [5. Stream](./1.query_types/5.stream.md) - Stream operations
   - [6. Feed](./1.query_types/6.feed.md) - Change feeds and live updates
-  - [7. Datum](./1.query_types/7.datum.md) - Working with single values
+  - [7. Query](./1.query_types/7.query.md) - Change feeds and live updates
+  - [8. Datum](./1.query_types/8.datum.md) - Working with single values
 
 - [**2. Operations**](./2.operations/1.index.md) - Common operations:
 

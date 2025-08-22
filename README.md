@@ -21,9 +21,9 @@ ajs module imports add database@beta
 Detailed documentation is available in the `docs` directory:
 
 - [Index](./docs/index.md) - Overview and documentation structure
-- [Query Types](./docs/1.query_types/) - Information about table, selection, and other query types
-- [Operations](./docs/2.operations/) - Database, table, and CRUD operations
-- [Results](./docs/3.results/) - Result types and handling
+- [Query Types](./docs/1.query_types/1.index.md) - Information about table, selection, and other query types
+- [Operations](./docs/2.operations/1.index.md) - Database, table, and CRUD operations
+- [Results](./docs/3.results/1.index.md) - Result types and handling
 
 ## Inspiration
 

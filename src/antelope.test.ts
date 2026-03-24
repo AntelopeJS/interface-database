@@ -9,9 +9,9 @@ export default defineConfig({
   modules: {
     mongodb: {
       source: {
-        type: "local",
-        path: "../mongodb",
-        installCommand: ["pnpm install", "npx tsc"],
+        type: "package",
+        package: "@antelopejs/mongodb",
+        version: "1.0.0",
       },
     },
   },

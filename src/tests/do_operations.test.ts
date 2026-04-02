@@ -1,4 +1,4 @@
-import { Schema } from "@antelopejs/interface-database";
+import { Schema, ValueProxy } from "@antelopejs/interface-database";
 import { expect } from "chai";
 import { getUniqueUsers, User } from "./datasets/users";
 
@@ -32,7 +32,10 @@ describe("Do Operations", () => {
   it("Do with Array Operations", DoWithArrayOperations);
   it("Do with Nested Object Operations", DoWithNestedObjectOperations);
   it("Do with Subquery Field Reference", DoWithSubqueryFieldReference);
-  it("Do with Unresolved Subquery Returns Null", DoWithUnresolvedSubqueryReturnsNull);
+  it(
+    "Do with Unresolved Subquery Returns Null",
+    DoWithUnresolvedSubqueryReturnsNull,
+  );
   it("Do with No Temporary Lookup Fields", DoWithNoTemporaryLookupFields);
   it("Do with sub()", DoWithSub);
   it("Do with div()", DoWithDiv);
@@ -41,6 +44,7 @@ describe("Do Operations", () => {
   it("Do with Bitwise Operations", DoWithBitwiseOperations);
   it("Do with Array ValueProxy Operations", DoWithArrayValueProxyOps);
   it("Do with Object keys() and values()", DoWithObjectKeysValues);
+  it("Do with Dynamic Key Access", DoWithDynamicKeyAccess);
   it("Cleanup", CleanupTest);
 });
 
@@ -410,6 +414,27 @@ async function DoWithObjectKeysValues() {
   expect(result.metaKeys).to.include("preferences");
   expect(result.metaValues).to.be.an("array");
   expect(result.metaValues).to.have.lengthOf(result.metaKeys.length);
+}
+
+async function DoWithDynamicKeyAccess() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => {
+      const prefs = doc.key("metadata").key("preferences");
+      return {
+        name: doc.key("name"),
+        staticTheme: prefs.key("theme"),
+        dynamicTheme: prefs.key(
+          ValueProxy.constant({ dummy: "theme" as const }).key("dummy"),
+        ),
+      };
+    })
+    .run();
+
+  expect(result.name).to.equal("Antoine");
+  const expectedTheme = testData[0].metadata!.preferences!.theme;
+  expect(result.staticTheme).to.equal(expectedTheme);
+  expect(result.dynamicTheme).to.equal(expectedTheme);
 }
 
 async function CleanupTest() {

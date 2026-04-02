@@ -160,7 +160,7 @@ async function CursorTest() {
   const sortedVehicles = [...vehicles].sort((a, b) => a.price - b.price);
   const cursor = table.orderBy("price", "asc").cursor();
 
-  const results: any[] = [];
+  const results: Vehicle[] = [];
   let next = await cursor.next();
   while (!next.done) {
     results.push(next.value);

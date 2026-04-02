@@ -31,6 +31,9 @@ describe("Do Operations", () => {
   it("Do with Conditional Logic", DoWithConditionalLogic);
   it("Do with Array Operations", DoWithArrayOperations);
   it("Do with Nested Object Operations", DoWithNestedObjectOperations);
+  it("Do with Subquery Field Reference", DoWithSubqueryFieldReference);
+  it("Do with Unresolved Subquery Returns Null", DoWithUnresolvedSubqueryReturnsNull);
+  it("Do with No Temporary Lookup Fields", DoWithNoTemporaryLookupFields);
   it("Cleanup", CleanupTest);
 });
 
@@ -236,6 +239,62 @@ async function DoWithNestedObjectOperations() {
     expect(result.profile.metadata.preferences.theme).to.equal("dark");
   }
   expect(result.profile.metadata.tags).to.include("experienced");
+}
+
+async function DoWithSubqueryFieldReference() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) =>
+      doc.merge({
+        lookedUpUser: table.getAll(doc.key("email") as any, "email").nth(0),
+      }),
+    )
+    .run();
+
+  expect(result).to.be.an("object");
+  expect(result).to.have.property("name", "Antoine");
+  expect(result).to.have.property("lookedUpUser");
+  expect(result.lookedUpUser).to.be.an("object");
+  expect(result.lookedUpUser).to.have.property("name", "Antoine");
+  expect(result.lookedUpUser).to.have.property("email", "antoine@example.com");
+  expect(result.lookedUpUser).to.have.property("age", 25);
+}
+
+async function DoWithUnresolvedSubqueryReturnsNull() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => ({
+      name: doc.key("name"),
+      missing: table.get("nonexistent-id-12345"),
+    }))
+    .run();
+
+  expect(result).to.be.an("object");
+  expect(result).to.have.property("name", "Antoine");
+  expect(result).to.have.property("missing");
+  expect(result.missing).to.equal(null);
+}
+
+async function DoWithNoTemporaryLookupFields() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => ({
+      name: doc.key("name"),
+      email: doc.key("email"),
+      resolvedUser: table.getAll(doc.key("email") as any, "email").nth(0),
+    }))
+    .run();
+
+  expect(result).to.be.an("object");
+  const keys = Object.keys(result);
+  const temporaryKeys = keys.filter(
+    (k) => k.startsWith("temporary_") || k.includes("_lookup_"),
+  );
+  expect(temporaryKeys).to.have.lengthOf(0);
+  expect(result).to.have.property("name", "Antoine");
+  expect(result).to.have.property("email", "antoine@example.com");
+  expect(result).to.have.property("resolvedUser");
+  expect(result.resolvedUser).to.be.an("object");
 }
 
 async function CleanupTest() {

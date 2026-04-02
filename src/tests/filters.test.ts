@@ -332,6 +332,13 @@ async function FilterWithObjectHasfields() {
     (u) => u.metadata?.level !== undefined && u.metadata?.tags !== undefined,
   );
   expect(result).to.have.lengthOf(expected.length);
+
+  const noMatch = await table
+    .filter((doc) =>
+      doc.key("metadata").hasfields("level", "nonexistentField"),
+    )
+    .run();
+  expect(noMatch).to.have.lengthOf(0);
 }
 
 async function FilterWithObjectKeys() {

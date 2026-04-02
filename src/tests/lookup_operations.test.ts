@@ -142,10 +142,7 @@ async function LookupWithFilter() {
 
 async function LookupWithSubqueryInsideMap() {
   const productIds = insertedKeys.products.slice(0, 2);
-  await ordersTable
-    .get(insertedKeys.orders[0])
-    .update({ productIds })
-    .run();
+  await ordersTable.get(insertedKeys.orders[0]).update({ productIds }).run();
 
   const result = await ordersTable
     .get(insertedKeys.orders[0])
@@ -182,10 +179,10 @@ async function ChainedLookup() {
 
   const antoineOrder = result.find((doc) => doc.orderId === "ORD-001");
   expect(antoineOrder).to.not.equal(undefined);
-  expect(antoineOrder!.customerName).to.be.an("object");
-  expect(antoineOrder!.customerName).to.have.property("name", "Antoine");
-  expect(antoineOrder!.productSku).to.be.an("object");
-  expect(antoineOrder!.productSku).to.have.property("sku", "LAPTOP-001");
+  expect(antoineOrder?.customerName).to.be.an("object");
+  expect(antoineOrder?.customerName).to.have.property("name", "Antoine");
+  expect(antoineOrder?.productSku).to.be.an("object");
+  expect(antoineOrder?.productSku).to.have.property("sku", "LAPTOP-001");
 }
 
 async function CleanupTest() {

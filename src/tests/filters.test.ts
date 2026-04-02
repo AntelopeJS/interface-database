@@ -217,21 +217,23 @@ async function FilterWithGe() {
   const result = await table.filter((doc) => doc.key("age").ge(25)).run();
   const expected = testData.filter((u) => u.age >= 25);
   expect(result).to.have.lengthOf(expected.length);
-  result.forEach((doc) => expect(doc.age).to.be.gte(25));
+  result.forEach((doc) => {
+    expect(doc.age).to.be.gte(25);
+  });
 }
 
 async function FilterWithLe() {
   const result = await table.filter((doc) => doc.key("age").le(25)).run();
   const expected = testData.filter((u) => u.age <= 25);
   expect(result).to.have.lengthOf(expected.length);
-  result.forEach((doc) => expect(doc.age).to.be.lte(25));
+  result.forEach((doc) => {
+    expect(doc.age).to.be.lte(25);
+  });
 }
 
 async function FilterWithAnd() {
   const result = await table
-    .filter((doc) =>
-      doc.key("isActive").eq(true).and(doc.key("age").gt(25)),
-    )
+    .filter((doc) => doc.key("isActive").eq(true).and(doc.key("age").gt(25)))
     .run();
   const expected = testData.filter((u) => u.isActive && u.age > 25);
   expect(result).to.have.lengthOf(expected.length);
@@ -257,12 +259,12 @@ async function FilterWithOr() {
 }
 
 async function FilterWithNot() {
-  const result = await table
-    .filter((doc) => doc.key("isActive").not())
-    .run();
+  const result = await table.filter((doc) => doc.key("isActive").not()).run();
   const expected = testData.filter((u) => !u.isActive);
   expect(result).to.have.lengthOf(expected.length);
-  result.forEach((doc) => expect(doc.isActive).to.equal(false));
+  result.forEach((doc) => {
+    expect(doc.isActive).to.equal(false);
+  });
 }
 
 async function FilterWithDowncase() {
@@ -307,9 +309,7 @@ async function FilterWithArrayIsempty() {
   const result = await table
     .filter((doc) => doc.key("skills").isempty().eq(false))
     .run();
-  const expected = testData.filter(
-    (u) => (u.skills ?? []).length > 0,
-  );
+  const expected = testData.filter((u) => (u.skills ?? []).length > 0);
   expect(result).to.have.lengthOf(expected.length);
 }
 
@@ -317,9 +317,7 @@ async function FilterWithArrayIndex() {
   const result = await table
     .filter((doc) => doc.key("skills").index(0).eq("JavaScript"))
     .run();
-  const expected = testData.filter(
-    (u) => (u.skills ?? [])[0] === "JavaScript",
-  );
+  const expected = testData.filter((u) => (u.skills ?? [])[0] === "JavaScript");
   expect(result).to.have.lengthOf(expected.length);
   expect(result[0].name).to.equal("Antoine");
 }
@@ -334,9 +332,7 @@ async function FilterWithObjectHasfields() {
   expect(result).to.have.lengthOf(expected.length);
 
   const noMatch = await table
-    .filter((doc) =>
-      doc.key("metadata").hasfields("level", "nonexistentField"),
-    )
+    .filter((doc) => doc.key("metadata").hasfields("level", "nonexistentField"))
     .run();
   expect(noMatch).to.have.lengthOf(0);
 }
@@ -350,7 +346,9 @@ async function FilterWithObjectKeys() {
     .filter((doc) => doc.key("metaKeyCount").gt(0))
     .run();
   expect(result).to.have.lengthOf(testData.length);
-  result.forEach((doc) => expect(doc.metaKeyCount).to.be.greaterThan(0));
+  result.forEach((doc) => {
+    expect(doc.metaKeyCount).to.be.greaterThan(0);
+  });
 }
 
 async function CleanupTest() {

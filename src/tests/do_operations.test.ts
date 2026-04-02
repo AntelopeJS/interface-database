@@ -329,7 +329,7 @@ async function DoWithDiv() {
     }))
     .run();
   expect(result.name).to.equal("Dominique");
-  expect(result.monthlySalary).to.equal(testData[3].salary! / 12);
+  expect(result.monthlySalary).to.equal((testData[3].salary ?? 0) / 12);
 }
 
 async function DoWithMod() {
@@ -354,12 +354,12 @@ async function DoWithCeilFloor() {
     }))
     .run();
   expect(result.name).to.equal("Dominique");
-  expect(result.salaryDivCeil).to.equal(Math.ceil(testData[3].salary! / 7));
-  expect(result.salaryDivFloor).to.equal(Math.floor(testData[3].salary! / 7));
+  expect(result.salaryDivCeil).to.equal(Math.ceil((testData[3].salary ?? 0) / 7));
+  expect(result.salaryDivFloor).to.equal(Math.floor((testData[3].salary ?? 0) / 7));
 }
 
 async function DoWithBitwiseOperations() {
-  const level = testData[0].metadata!.level!;
+  const level = testData[0].metadata?.level ?? 0;
   const result = await table
     .get(insertedKeys[0])
     .do((doc) => ({
@@ -382,7 +382,7 @@ async function DoWithBitwiseOperations() {
 }
 
 async function DoWithArrayValueProxyOps() {
-  const skills = testData[0].skills!;
+  const skills = testData[0].skills ?? [];
   const result = await table
     .get(insertedKeys[0])
     .do((doc) => ({
@@ -432,7 +432,7 @@ async function DoWithDynamicKeyAccess() {
     .run();
 
   expect(result.name).to.equal("Antoine");
-  const expectedTheme = testData[0].metadata!.preferences!.theme;
+  const expectedTheme = testData[0].metadata?.preferences?.theme;
   expect(result.staticTheme).to.equal(expectedTheme);
   expect(result.dynamicTheme).to.equal(expectedTheme);
 }

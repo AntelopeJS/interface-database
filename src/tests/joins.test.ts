@@ -241,7 +241,7 @@ async function JoinWithMultiConditionPredicate() {
   expect(result).to.be.an("array");
   const expected = ordersData.filter((order) => {
     const user = usersData.find((u) => u.email === order.customerEmail);
-    return user && user.isActive;
+    return user?.isActive;
   });
   expect(result).to.have.lengthOf(expected.length);
 

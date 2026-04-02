@@ -354,8 +354,12 @@ async function DoWithCeilFloor() {
     }))
     .run();
   expect(result.name).to.equal("Dominique");
-  expect(result.salaryDivCeil).to.equal(Math.ceil((testData[3].salary ?? 0) / 7));
-  expect(result.salaryDivFloor).to.equal(Math.floor((testData[3].salary ?? 0) / 7));
+  expect(result.salaryDivCeil).to.equal(
+    Math.ceil((testData[3].salary ?? 0) / 7),
+  );
+  expect(result.salaryDivFloor).to.equal(
+    Math.floor((testData[3].salary ?? 0) / 7),
+  );
 }
 
 async function DoWithBitwiseOperations() {

@@ -166,6 +166,11 @@ async function LookupWithSubqueryInsideMap() {
     expect(product).to.have.property("price");
     expect(product).to.have.property("sku");
   });
+
+  await ordersTable
+    .get(insertedKeys.orders[0])
+    .update({ productIds: undefined } as any)
+    .run();
 }
 
 async function ChainedLookup() {

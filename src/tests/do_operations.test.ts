@@ -34,6 +34,13 @@ describe("Do Operations", () => {
   it("Do with Subquery Field Reference", DoWithSubqueryFieldReference);
   it("Do with Unresolved Subquery Returns Null", DoWithUnresolvedSubqueryReturnsNull);
   it("Do with No Temporary Lookup Fields", DoWithNoTemporaryLookupFields);
+  it("Do with sub()", DoWithSub);
+  it("Do with div()", DoWithDiv);
+  it("Do with mod()", DoWithMod);
+  it("Do with ceil() and floor()", DoWithCeilFloor);
+  it("Do with Bitwise Operations", DoWithBitwiseOperations);
+  it("Do with Array ValueProxy Operations", DoWithArrayValueProxyOps);
+  it("Do with Object keys() and values()", DoWithObjectKeysValues);
   it("Cleanup", CleanupTest);
 });
 
@@ -295,6 +302,114 @@ async function DoWithNoTemporaryLookupFields() {
   expect(result).to.have.property("email", "antoine@example.com");
   expect(result).to.have.property("resolvedUser");
   expect(result.resolvedUser).to.be.an("object");
+}
+
+async function DoWithSub() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => ({
+      name: doc.key("name"),
+      ageMinus5: doc.key("age").sub(5),
+    }))
+    .run();
+  expect(result.name).to.equal("Antoine");
+  expect(result.ageMinus5).to.equal(testData[0].age - 5);
+}
+
+async function DoWithDiv() {
+  const result = await table
+    .get(insertedKeys[3])
+    .do((doc) => ({
+      name: doc.key("name"),
+      monthlySalary: doc.key("salary").div(12),
+    }))
+    .run();
+  expect(result.name).to.equal("Dominique");
+  expect(result.monthlySalary).to.equal(testData[3].salary! / 12);
+}
+
+async function DoWithMod() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => ({
+      name: doc.key("name"),
+      ageMod10: doc.key("age").mod(10),
+    }))
+    .run();
+  expect(result.name).to.equal("Antoine");
+  expect(result.ageMod10).to.equal(testData[0].age % 10);
+}
+
+async function DoWithCeilFloor() {
+  const result = await table
+    .get(insertedKeys[3])
+    .do((doc) => ({
+      name: doc.key("name"),
+      salaryDivCeil: doc.key("salary").div(7).ceil(),
+      salaryDivFloor: doc.key("salary").div(7).floor(),
+    }))
+    .run();
+  expect(result.name).to.equal("Dominique");
+  expect(result.salaryDivCeil).to.equal(Math.ceil(testData[3].salary! / 7));
+  expect(result.salaryDivFloor).to.equal(Math.floor(testData[3].salary! / 7));
+}
+
+async function DoWithBitwiseOperations() {
+  const level = testData[0].metadata!.level!;
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => ({
+      name: doc.key("name"),
+      band: doc.key("metadata").key("level").band(3),
+      bor: doc.key("metadata").key("level").bor(8),
+      bxor: doc.key("metadata").key("level").bxor(1),
+      bnot: doc.key("metadata").key("level").bnot(),
+      blshift: doc.key("metadata").key("level").blshift(2),
+      brshift: doc.key("metadata").key("level").brshift(1),
+    }))
+    .run();
+  expect(result.name).to.equal("Antoine");
+  expect(result.band).to.equal(level & 3);
+  expect(result.bor).to.equal(level | 8);
+  expect(result.bxor).to.equal(level ^ 1);
+  expect(result.bnot).to.equal(~level);
+  expect(result.blshift).to.equal(level << 2);
+  expect(result.brshift).to.equal(level >> 1);
+}
+
+async function DoWithArrayValueProxyOps() {
+  const skills = testData[0].skills!;
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => ({
+      name: doc.key("name"),
+      firstSkill: doc.key("skills").index(0),
+      sliced: doc.key("skills").slice(0, 2),
+      skillCount: doc.key("skills").count(),
+    }))
+    .run();
+  expect(result.name).to.equal("Antoine");
+  expect(result.firstSkill).to.equal(skills[0]);
+  expect(result.sliced).to.deep.equal(skills.slice(0, 2));
+  expect(result.skillCount).to.equal(skills.length);
+}
+
+async function DoWithObjectKeysValues() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => ({
+      name: doc.key("name"),
+      metaKeys: doc.key("metadata").keys(),
+      metaValues: doc.key("metadata").values(),
+    }))
+    .run();
+  expect(result.name).to.equal("Antoine");
+  expect(result.metaKeys).to.be.an("array");
+  expect(result.metaKeys).to.include("level");
+  expect(result.metaKeys).to.include("tags");
+  expect(result.metaKeys).to.include("preferences");
+  expect(result.metaValues).to.be.an("array");
+  expect(result.metaValues).to.have.lengthOf(result.metaKeys.length);
 }
 
 async function CleanupTest() {

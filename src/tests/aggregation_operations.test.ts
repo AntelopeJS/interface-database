@@ -36,6 +36,7 @@ describe("Aggregation & Projection Operations", () => {
   it("Distinct", Distinct);
   it("Distinct Without Field", DistinctWithoutField);
   it("Cursor", CursorTest);
+  it("Pluck on Single Selection", PluckOnSingleSelection);
   it("Cleanup", CleanupTest);
 });
 
@@ -171,6 +172,16 @@ async function CursorTest() {
   results.forEach((doc, i) => {
     expect(doc).to.have.property("price", sortedVehicles[i].price);
   });
+}
+
+async function PluckOnSingleSelection() {
+  const result = await table.get(insertedKeys[0]).pluck("car", "price").run();
+  expect(result).to.be.an("object");
+  expect(result).to.have.property("car");
+  expect(result).to.have.property("price");
+  expect(result).to.not.have.property("manufactured");
+  expect(result).to.not.have.property("isElectric");
+  expect(result).to.not.have.property("kilometers");
 }
 
 async function CleanupTest() {

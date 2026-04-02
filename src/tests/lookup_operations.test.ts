@@ -63,6 +63,7 @@ describe("Lookup Operations", () => {
   it("Lookup On Get", LookupOnGet);
   it("Lookup With Filter", LookupWithFilter);
   it("Lookup with Subquery Inside Map", LookupWithSubqueryInsideMap);
+  it("Chained Lookup", ChainedLookup);
   it("Cleanup", CleanupTest);
 });
 
@@ -168,6 +169,23 @@ async function LookupWithSubqueryInsideMap() {
     expect(product).to.have.property("price");
     expect(product).to.have.property("sku");
   });
+}
+
+async function ChainedLookup() {
+  const result = await ordersTable
+    .lookup(usersTable, "customerName", "name")
+    .lookup(productsTable, "productSku", "sku")
+    .run();
+
+  expect(result).to.be.an("array");
+  expect(result).to.have.lengthOf(ordersData.length);
+
+  const antoineOrder = result.find((doc) => doc.orderId === "ORD-001");
+  expect(antoineOrder).to.not.equal(undefined);
+  expect(antoineOrder!.customerName).to.be.an("object");
+  expect(antoineOrder!.customerName).to.have.property("name", "Antoine");
+  expect(antoineOrder!.productSku).to.be.an("object");
+  expect(antoineOrder!.productSku).to.have.property("sku", "LAPTOP-001");
 }
 
 async function CleanupTest() {

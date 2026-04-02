@@ -324,18 +324,18 @@ async function GroupWithMinAndMax() {
   expect(result).to.have.lengthOf(expectedGroupCount);
 
   const expressGroup = result.find((item) => item.deliveryType === "express");
-  const expressOrders = testData.filter(
-    (o) => o.deliveryType === "express",
+  const expressOrders = testData.filter((o) => o.deliveryType === "express");
+  const expectedExpressMin = Math.min(
+    ...expressOrders.map((o) => o.totalAmount),
   );
-  const expectedExpressMin = Math.min(...expressOrders.map((o) => o.totalAmount));
-  const expectedExpressMax = Math.max(...expressOrders.map((o) => o.totalAmount));
+  const expectedExpressMax = Math.max(
+    ...expressOrders.map((o) => o.totalAmount),
+  );
   expect(expressGroup?.minAmount).to.equal(expectedExpressMin);
   expect(expressGroup?.maxAmount).to.equal(expectedExpressMax);
 
   const standardGroup = result.find((item) => item.deliveryType === "standard");
-  const standardOrders = testData.filter(
-    (o) => o.deliveryType === "standard",
-  );
+  const standardOrders = testData.filter((o) => o.deliveryType === "standard");
   const expectedStdMin = Math.min(...standardOrders.map((o) => o.totalAmount));
   const expectedStdMax = Math.max(...standardOrders.map((o) => o.totalAmount));
   expect(standardGroup?.minAmount).to.equal(expectedStdMin);

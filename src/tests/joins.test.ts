@@ -230,9 +230,10 @@ async function JoinWithMultiConditionPredicate() {
     .joinInner(
       usersTable,
       (left, right) =>
-        left.key("customerEmail").eq(right.key("email")).and(
-          right.key("isActive").eq(true),
-        ),
+        left
+          .key("customerEmail")
+          .eq(right.key("email"))
+          .and(right.key("isActive").eq(true)),
       (left, right) => left.merge({ customer: right }),
     )
     .run();

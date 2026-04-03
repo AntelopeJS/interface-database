@@ -13,6 +13,7 @@ describe("Change Streams", () => {
   it("Insert Event", InsertEventTest);
   it("Update Event", UpdateEventTest);
   it("Delete Event", DeleteEventTest);
+  it("Bulk Insert Events", BulkInsertEventTest);
   before(async () => {
     await schema.createInstance("default").run();
   });
@@ -106,4 +107,36 @@ async function DeleteEventTest() {
   expect(results[0])
     .to.have.property("oldValue")
     .that.has.property("_id", inserted[0]);
+}
+
+async function BulkInsertEventTest() {
+  const newDocs: Vehicle[] = [
+    {
+      car: "Tesla",
+      manufactured: new Date("2023-06-15"),
+      price: 45000,
+      isElectric: true,
+      kilometers: 5000,
+    },
+    {
+      car: "BMW",
+      manufactured: new Date("2021-03-20"),
+      price: 55000,
+      isElectric: false,
+      kilometers: 30000,
+    },
+  ];
+
+  const results = await ReadChanges(table.changes(), async () => {
+    await table.insert(newDocs);
+  });
+
+  expect(results).to.be.an("array").of.length(newDocs.length);
+  results.forEach((entry) => {
+    expect(entry).to.have.property("changeType", "added");
+    expect(entry).to.have.property("newValue");
+  });
+
+  const insertedCars = results.map((r: any) => r.newValue.car).sort();
+  expect(insertedCars).to.deep.equal(["BMW", "Tesla"]);
 }

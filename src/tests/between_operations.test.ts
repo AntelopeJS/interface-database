@@ -3,8 +3,14 @@ import { expect } from "chai";
 import { Vehicle, vehicles } from "./datasets/vehicles";
 
 const tableName = "test-table";
+
+const VehicleWithDateIndex = {
+  ...Vehicle,
+  indexes: { ...Vehicle.indexes, manufactured: {} },
+};
+
 const schema = new Schema<{ [tableName]: Vehicle }>("test-between-operations", {
-  [tableName]: Vehicle,
+  [tableName]: VehicleWithDateIndex,
 });
 const table = schema.instance("default").table(tableName);
 
@@ -26,6 +32,7 @@ describe("Between Operations", () => {
   it("Between All", BetweenAll);
   it("Between Empty", BetweenEmpty);
   it("Between Chained With Filter", BetweenChainedWithFilter);
+  it("Between with Date Field", BetweenWithDateField);
   it("Cleanup", CleanupTest);
 });
 
@@ -76,6 +83,21 @@ async function BetweenChainedWithFilter() {
   expect(result).to.have.lengthOf(expected.length);
   result.forEach((doc) => {
     expect(doc.isElectric).to.equal(true);
+  });
+}
+
+async function BetweenWithDateField() {
+  const low = new Date("2000-01-01");
+  const high = new Date("2010-01-01");
+  const result = await table.between("manufactured", low, high).run();
+  const expected = vehicles.filter(
+    (v) => v.manufactured >= low && v.manufactured < high,
+  );
+  expect(result).to.be.an("array");
+  expect(result).to.have.lengthOf(expected.length);
+  result.forEach((doc) => {
+    expect(doc.manufactured).to.be.gte(low);
+    expect(doc.manufactured).to.be.lt(high);
   });
 }
 

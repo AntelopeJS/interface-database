@@ -20,6 +20,8 @@ describe("Basic Operations", () => {
   it("Get All", GetAllTest);
   it("Get By Index", GetAllMultiKeyByIndex);
   it("Get All by primary keys", GetAllMultiKeyByPrimaryKey);
+  it("Get All by 3+ primary keys", GetAllManyPrimaryKeys);
+  it("Get All by 3+ index values", GetAllManyIndexValues);
   it("Get All With OrderBy", GetAllWithOrderBy);
   it("Update", UpdateTest);
   it("Replace", ReplaceTest);
@@ -202,6 +204,37 @@ async function GetAllMultiKeyByPrimaryKey() {
 
   for (const doc of result) {
     expect(targetKeys).to.include(doc._id);
+  }
+}
+
+async function GetAllManyPrimaryKeys() {
+  const targetKeys = [insertedKeys[0], insertedKeys[1], insertedKeys[2]];
+  const result = await table.getAll(targetKeys).run();
+
+  expect(result).to.be.an("array");
+  expect(result).to.have.lengthOf(targetKeys.length);
+
+  for (const doc of result) {
+    expect(targetKeys).to.include(doc._id);
+  }
+}
+
+async function GetAllManyIndexValues() {
+  const targetPrices = [
+    expectedVehicles[0].price,
+    expectedVehicles[1].price,
+    expectedVehicles[2].price,
+  ];
+  const result = await table.getAll(targetPrices, "price").run();
+
+  expect(result).to.be.an("array");
+  const expectedCount = expectedVehicles.filter((v) =>
+    targetPrices.includes(v.price),
+  ).length;
+  expect(result).to.have.lengthOf(expectedCount);
+
+  for (const doc of result) {
+    expect(targetPrices).to.include(doc.price);
   }
 }
 

@@ -31,6 +31,10 @@ describe("Date Operations", () => {
   it("Filter by Epoch Comparison", FilterByEpochComparison);
   it("Filter by Date Greater Than", FilterByDateGreaterThan);
   it("Filter by Date Less Than", FilterByDateLessThan);
+  it("Extract Day of Week", ExtractDayOfWeek);
+  it("Extract Day of Year", ExtractDayOfYear);
+  it("Extract Hours Minutes Seconds", ExtractHoursMinutesSeconds);
+  it("Extract Time of Day", ExtractTimeOfDay);
   it("Cleanup", CleanupTest);
 });
 
@@ -141,6 +145,73 @@ async function FilterByDateLessThan() {
 
   const names = result.map((doc) => doc.name).sort();
   expect(names).to.deep.equal(["Alice", "Dominique"]);
+}
+
+async function ExtractDayOfWeek() {
+  const result = await table
+    .map((doc) => ({
+      name: doc.key("name"),
+      dow: doc.key("createdAt").dayofweek(),
+    }))
+    .run();
+
+  expect(result).to.be.an("array");
+  expect(result).to.have.lengthOf(testData.length);
+  result.forEach((doc) => {
+    expect(doc.dow).to.be.a("number");
+    expect(doc.dow).to.be.gte(1).and.lte(7);
+  });
+}
+
+async function ExtractDayOfYear() {
+  const result = await table
+    .map((doc) => ({
+      name: doc.key("name"),
+      doy: doc.key("createdAt").dayofyear(),
+    }))
+    .run();
+
+  expect(result).to.be.an("array");
+  result.forEach((doc) => {
+    expect(doc.doy).to.be.a("number");
+    expect(doc.doy).to.be.gte(1).and.lte(366);
+  });
+}
+
+async function ExtractHoursMinutesSeconds() {
+  const result = await table
+    .map((doc) => ({
+      name: doc.key("name"),
+      hours: doc.key("createdAt").hours(),
+      minutes: doc.key("createdAt").minutes(),
+      seconds: doc.key("createdAt").seconds(),
+    }))
+    .run();
+
+  expect(result).to.be.an("array");
+  result.forEach((doc) => {
+    expect(doc.hours).to.be.a("number");
+    expect(doc.minutes).to.be.a("number");
+    expect(doc.seconds).to.be.a("number");
+    expect(doc.hours).to.be.gte(0).and.lt(24);
+    expect(doc.minutes).to.be.gte(0).and.lt(60);
+    expect(doc.seconds).to.be.gte(0).and.lt(60);
+  });
+}
+
+async function ExtractTimeOfDay() {
+  const result = await table
+    .map((doc) => ({
+      name: doc.key("name"),
+      tod: doc.key("createdAt").timeofday(),
+    }))
+    .run();
+
+  expect(result).to.be.an("array");
+  result.forEach((doc) => {
+    expect(doc.tod).to.be.a("number");
+    expect(doc.tod).to.be.gte(0).and.lt(86400);
+  });
 }
 
 async function CleanupTest() {

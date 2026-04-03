@@ -46,6 +46,8 @@ describe("Group Operations", () => {
     "Group by Payment Status with Multiple Aggregations",
     GroupByPaymentStatusWithMultipleAggregations,
   );
+  it("Group with Distinct in Callback", GroupWithDistinctInCallback);
+  it("Group with Min and Max", GroupWithMinAndMax);
   it("Cleanup", CleanupTest);
 });
 
@@ -262,6 +264,82 @@ async function GroupByPaymentStatusWithMultipleAggregations() {
 
   expect(paidGroup?.totalRevenue).to.equal(expectedPaidRevenue);
   expect(unpaidGroup?.totalRevenue).to.equal(expectedUnpaidRevenue);
+}
+
+async function GroupWithDistinctInCallback() {
+  const result = await table
+    .group("deliveryType", (stream, group) => ({
+      deliveryType: group,
+      uniqueCustomers: stream.distinct("customerName"),
+    }))
+    .run();
+
+  expect(result).to.be.an("array");
+  const expectedGroupCount = new Set(
+    testData.map((order) => order.deliveryType),
+  ).size;
+  expect(result).to.have.lengthOf(expectedGroupCount);
+
+  const expressGroup = result.find((item) => item.deliveryType === "express");
+  const standardGroup = result.find((item) => item.deliveryType === "standard");
+
+  const expectedExpressCustomers = [
+    ...new Set(
+      testData
+        .filter((o) => o.deliveryType === "express")
+        .map((o) => o.customerName),
+    ),
+  ];
+  const expectedStandardCustomers = [
+    ...new Set(
+      testData
+        .filter((o) => o.deliveryType === "standard")
+        .map((o) => o.customerName),
+    ),
+  ];
+
+  expect(expressGroup?.uniqueCustomers).to.be.an("array");
+  expect(expressGroup?.uniqueCustomers).to.have.lengthOf(
+    expectedExpressCustomers.length,
+  );
+  expect(standardGroup?.uniqueCustomers).to.be.an("array");
+  expect(standardGroup?.uniqueCustomers).to.have.lengthOf(
+    expectedStandardCustomers.length,
+  );
+}
+
+async function GroupWithMinAndMax() {
+  const result = await table
+    .group("deliveryType", (stream, group) => ({
+      deliveryType: group,
+      minAmount: stream.min("totalAmount"),
+      maxAmount: stream.max("totalAmount"),
+    }))
+    .run();
+
+  expect(result).to.be.an("array");
+  const expectedGroupCount = new Set(
+    testData.map((order) => order.deliveryType),
+  ).size;
+  expect(result).to.have.lengthOf(expectedGroupCount);
+
+  const expressGroup = result.find((item) => item.deliveryType === "express");
+  const expressOrders = testData.filter((o) => o.deliveryType === "express");
+  const expectedExpressMin = Math.min(
+    ...expressOrders.map((o) => o.totalAmount),
+  );
+  const expectedExpressMax = Math.max(
+    ...expressOrders.map((o) => o.totalAmount),
+  );
+  expect(expressGroup?.minAmount).to.equal(expectedExpressMin);
+  expect(expressGroup?.maxAmount).to.equal(expectedExpressMax);
+
+  const standardGroup = result.find((item) => item.deliveryType === "standard");
+  const standardOrders = testData.filter((o) => o.deliveryType === "standard");
+  const expectedStdMin = Math.min(...standardOrders.map((o) => o.totalAmount));
+  const expectedStdMax = Math.max(...standardOrders.map((o) => o.totalAmount));
+  expect(standardGroup?.minAmount).to.equal(expectedStdMin);
+  expect(standardGroup?.maxAmount).to.equal(expectedStdMax);
 }
 
 async function CleanupTest() {

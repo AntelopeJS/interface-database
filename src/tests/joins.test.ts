@@ -54,6 +54,7 @@ describe("Join Operations", () => {
   it("Left Join Orders with Users", LeftJoinOrdersWithUsers);
   it("Multiple Joins", MultipleJoins);
   it("Join with Filter", JoinWithFilter);
+  it("Join with Multi-Condition Predicate", JoinWithMultiConditionPredicate);
   it("Cleanup", CleanupTest);
 });
 
@@ -222,6 +223,32 @@ async function JoinWithFilter() {
       usersData.find((user) => user.email === order.customerEmail)?.isActive,
   ).length;
   expect(activeUsers).to.have.lengthOf(expectedActiveUsersCount);
+}
+
+async function JoinWithMultiConditionPredicate() {
+  const result = await ordersTable
+    .joinInner(
+      usersTable,
+      (left, right) =>
+        left
+          .key("customerEmail")
+          .eq(right.key("email"))
+          .and(right.key("isActive").eq(true)),
+      (left, right) => left.merge({ customer: right }),
+    )
+    .run();
+
+  expect(result).to.be.an("array");
+  const expected = ordersData.filter((order) => {
+    const user = usersData.find((u) => u.email === order.customerEmail);
+    return user?.isActive;
+  });
+  expect(result).to.have.lengthOf(expected.length);
+
+  result.forEach((doc) => {
+    expect(doc.customer?.isActive).to.equal(true);
+    expect(doc.customerEmail).to.equal(doc.customer?.email);
+  });
 }
 
 async function CleanupTest() {

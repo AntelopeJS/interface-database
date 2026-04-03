@@ -362,7 +362,7 @@ async function UpdateWithExpressionNumeric() {
   // Increment price by 100 using expression-based update
   const modified = await t1Vehicles
     .filter((doc) => doc.key("car").eq("Peugeot"))
-    .update((doc: any) => ({ price: doc.key("price").add(100) }))
+    .update((doc) => ({ price: doc.key("price").add(100) }) as any)
     .run();
 
   const peugeotCount = vehicles.filter((v) => v.car === "Peugeot").length;
@@ -380,7 +380,7 @@ async function UpdateWithExpressionOnSingleSelection() {
   // Test expression-based update on SingleSelection (via .get())
   const modified = await t1Vehicles
     .get(vehicleKeys[0])
-    .update((doc: any) => ({ kilometers: doc.key("kilometers").mul(2) }))
+    .update((doc) => ({ kilometers: doc.key("kilometers").mul(2) }) as any)
     .run();
 
   expect(modified).to.equal(1);
@@ -398,10 +398,13 @@ async function UpdateWithExpressionMixed() {
   // Mix plain values and expressions
   const modified = await t1Vehicles
     .filter((doc) => doc.key("car").eq("Peugeot"))
-    .update((doc: any) => ({
-      price: doc.key("price").add(500),
-      isElectric: true,
-    }))
+    .update(
+      (doc) =>
+        ({
+          price: doc.key("price").add(500),
+          isElectric: true,
+        }) as any,
+    )
     .run();
 
   const peugeotCount = vehicles.filter((v) => v.car === "Peugeot").length;

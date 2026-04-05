@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.0.2...v0.0.3)
+
+### 💅 Refactors
+
+- Switch test modules from local to npm packages ([dde5ce9](https://github.com/AntelopeJS/interface-database/commit/dde5ce9))
+
+### 📖 Documentation
+
+- Rewrite documentation for production readiness ([c4cb118](https://github.com/AntelopeJS/interface-database/commit/c4cb118))
+
+### 🏡 Chore
+
+- Update dependencies ([e6b77a7](https://github.com/AntelopeJS/interface-database/commit/e6b77a7))
+- Upgrade test MongoDB binary to 8.0.8 ([8a442cf](https://github.com/AntelopeJS/interface-database/commit/8a442cf))
+
+### ✅ Tests
+
+- Add comprehensive test coverage ([#4](https://github.com/AntelopeJS/interface-database/pull/4))
+
+### 🎨 Styles
+
+- Format test config ([979b144](https://github.com/AntelopeJS/interface-database/commit/979b144))
+
+### 🤖 CI
+
+- Add test step to CI workflow ([58db837](https://github.com/AntelopeJS/interface-database/commit/58db837))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <upd4ting@gmail.com>
+- Thomas ([@Thomasims](http://github.com/Thomasims))
+
 ## v0.0.2
 
 

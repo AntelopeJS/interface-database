@@ -9,8 +9,7 @@ const vehiclesTableName = "vehicles";
 
 const singleTableSchema = new Schema<{ [vehiclesTableName]: Vehicle }>(
   "test-rl-ops",
-  { [vehiclesTableName]: Vehicle },
-  { rowLevel: true },
+  { [vehiclesTableName]: { ...Vehicle, tenantScoped: true } },
 );
 
 const t1Vehicles = singleTableSchema.instance("t1").table(vehiclesTableName);
@@ -24,15 +23,11 @@ const multiTableSchema = new Schema<{
   [ordersTableName]: Order;
   [usersTableName]: User;
   [productsTableName]: Product;
-}>(
-  "test-rl-multi",
-  {
-    [ordersTableName]: Order,
-    [usersTableName]: User,
-    [productsTableName]: Product,
-  },
-  { rowLevel: true },
-);
+}>("test-rl-multi", {
+  [ordersTableName]: { ...Order, tenantScoped: true },
+  [usersTableName]: { ...User, tenantScoped: true },
+  [productsTableName]: { ...Product, tenantScoped: true },
+});
 
 const t1Orders = multiTableSchema.instance("t1").table(ordersTableName);
 const t1Users = multiTableSchema.instance("t1").table(usersTableName);

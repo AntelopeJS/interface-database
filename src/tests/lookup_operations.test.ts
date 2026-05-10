@@ -45,7 +45,6 @@ const insertedKeys: {
 
 describe("Lookup Operations", () => {
   before(async () => {
-    await schema.createInstance("default").run();
     await ordersTable.delete().run();
     await usersTable.delete().run();
     await productsTable.delete().run();
@@ -55,7 +54,6 @@ describe("Lookup Operations", () => {
     await ordersTable.delete().run();
     await usersTable.delete().run();
     await productsTable.delete().run();
-    await schema.destroyInstance("default").run();
   });
 
   it("Insert Test Data", InsertTestData);

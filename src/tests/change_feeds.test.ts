@@ -14,13 +14,8 @@ describe("Change Streams", () => {
   it("Update Event", UpdateEventTest);
   it("Delete Event", DeleteEventTest);
   it("Bulk Insert Events", BulkInsertEventTest);
-  before(async () => {
-    await schema.createInstance("default").run();
-  });
-
   after(async () => {
     await table.delete().run();
-    await schema.destroyInstance("default").run();
   });
 });
 

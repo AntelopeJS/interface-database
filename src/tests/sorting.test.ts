@@ -14,13 +14,8 @@ const testData = getUniqueUsers();
 let insertedKeys: string[] = [];
 
 describe("Sorting Operations", () => {
-  before(async () => {
-    await schema.createInstance("default").run();
-  });
-
   after(async () => {
     await table.delete().run();
-    await schema.destroyInstance("default").run();
   });
 
   it("Insert Test Data", InsertTestData);

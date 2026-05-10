@@ -29,14 +29,11 @@ const insertedKeys: {
 };
 
 describe("Union Operations", () => {
-  before(async () => {
-    await schema.createInstance("default").run();
-  });
+  before(async () => {});
 
   after(async () => {
     await usersTable.delete().run();
     await productsTable.delete().run();
-    await schema.destroyInstance("default").run();
   });
 
   it("Insert Test Data", InsertTestData);

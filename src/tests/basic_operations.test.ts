@@ -27,13 +27,10 @@ describe("Basic Operations", () => {
   it("Replace", ReplaceTest);
   it("Delete", DeleteTest);
 
-  before(async () => {
-    await schema.createInstance("default").run();
-  });
+  before(async () => {});
 
   after(async () => {
     await table.delete().run();
-    await schema.destroyInstance("default").run();
   });
 });
 

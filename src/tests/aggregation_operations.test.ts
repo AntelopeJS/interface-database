@@ -13,13 +13,11 @@ let insertedKeys: string[] = [];
 
 describe("Aggregation & Projection Operations", () => {
   before(async () => {
-    await schema.createInstance("default").run();
     await table.delete().run();
   });
 
   after(async () => {
     await table.delete().run();
-    await schema.destroyInstance("default").run();
   });
 
   it("Insert Test Data", InsertTestData);

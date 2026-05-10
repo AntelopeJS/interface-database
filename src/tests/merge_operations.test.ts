@@ -39,15 +39,12 @@ const insertedKeys: {
 };
 
 describe("Merge Operations", () => {
-  before(async () => {
-    await schema.createInstance("default").run();
-  });
+  before(async () => {});
 
   after(async () => {
     await ordersTable.delete().run();
     await usersTable.delete().run();
     await productsTable.delete().run();
-    await schema.destroyInstance("default").run();
   });
 
   it("Insert Test Data", InsertTestData);

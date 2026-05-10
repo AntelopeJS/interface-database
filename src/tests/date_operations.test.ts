@@ -13,13 +13,10 @@ const testData = getUniqueUsers();
 let insertedKeys: string[] = [];
 
 describe("Date Operations", () => {
-  before(async () => {
-    await schema.createInstance("default").run();
-  });
+  before(async () => {});
 
   after(async () => {
     await table.delete().run();
-    await schema.destroyInstance("default").run();
   });
 
   it("Insert Test Data", InsertTestData);

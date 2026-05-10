@@ -64,11 +64,11 @@ describe("Tenant-Scoped Tables", () => {
   it("Tenant isolation", TenantIsolation);
   it("Cross-tenant query via CROSS_TENANT sees all", TenantCrossSeesAll);
   it("Cross-tenant insert throws", TenantCrossInsertThrows);
+  it("Cross-tenant update touches every tenant", TenantCrossUpdate);
+  it("Cross-tenant delete wipes every tenant", TenantCrossDelete);
 
   after(async () => {
-    await tenantSchema.instance("t1").table(tableName).delete().run();
-    await tenantSchema.instance("t2").table(tableName).delete().run();
-    await tenantSchema.instance("cleanup").table(tableName).delete().run();
+    await tenantSchema.instance(CROSS_TENANT).table(tableName).delete().run();
   });
 });
 
@@ -127,4 +127,34 @@ async function TenantCrossInsertThrows() {
     threw = true;
   }
   expect(threw).to.equal(true);
+}
+
+async function TenantCrossUpdate() {
+  const crossTable = tenantSchema.instance(CROSS_TENANT).table(tableName);
+  const before = await crossTable.run();
+  expect(before.length).to.be.greaterThanOrEqual(2);
+
+  const sentinel = 424242;
+  await crossTable.update({ price: sentinel }).run();
+
+  const t1Docs = await tenantSchema.instance("t1").table(tableName).run();
+  const t2Docs = await tenantSchema.instance("t2").table(tableName).run();
+  expect(t1Docs.length).to.be.greaterThan(0);
+  expect(t2Docs.length).to.be.greaterThan(0);
+  for (const doc of [...t1Docs, ...t2Docs]) {
+    expect(doc.price).to.equal(sentinel);
+  }
+}
+
+async function TenantCrossDelete() {
+  const crossTable = tenantSchema.instance(CROSS_TENANT).table(tableName);
+  await crossTable.delete().run();
+
+  const remaining = await crossTable.run();
+  expect(remaining).to.have.lengthOf(0);
+
+  const t1Docs = await tenantSchema.instance("t1").table(tableName).run();
+  const t2Docs = await tenantSchema.instance("t2").table(tableName).run();
+  expect(t1Docs).to.have.lengthOf(0);
+  expect(t2Docs).to.have.lengthOf(0);
 }

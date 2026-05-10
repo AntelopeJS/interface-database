@@ -39,8 +39,6 @@ const insertedKeys: {
 };
 
 describe("Merge Operations", () => {
-  before(async () => {});
-
   after(async () => {
     await ordersTable.delete().run();
     await usersTable.delete().run();

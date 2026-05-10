@@ -14,8 +14,6 @@ const testData = getUniqueUsers();
 let insertedKeys: string[] = [];
 
 describe("Do Operations", () => {
-  before(async () => {});
-
   after(async () => {
     await table.delete().run();
   });

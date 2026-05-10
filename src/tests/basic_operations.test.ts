@@ -27,8 +27,6 @@ describe("Basic Operations", () => {
   it("Replace", ReplaceTest);
   it("Delete", DeleteTest);
 
-  before(async () => {});
-
   after(async () => {
     await table.delete().run();
   });

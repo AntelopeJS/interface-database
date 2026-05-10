@@ -37,8 +37,6 @@ const insertedKeys: {
 };
 
 describe("Join Operations", () => {
-  before(async () => {});
-
   after(async () => {
     await ordersTable.delete().run();
     await usersTable.delete().run();

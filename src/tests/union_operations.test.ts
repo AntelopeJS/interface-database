@@ -29,8 +29,6 @@ const insertedKeys: {
 };
 
 describe("Union Operations", () => {
-  before(async () => {});
-
   after(async () => {
     await usersTable.delete().run();
     await productsTable.delete().run();

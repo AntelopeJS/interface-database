@@ -14,8 +14,6 @@ describe("Change Streams", () => {
   it("Update Event", UpdateEventTest);
   it("Delete Event", DeleteEventTest);
   it("Bulk Insert Events", BulkInsertEventTest);
-  before(async () => {});
-
   after(async () => {
     await table.delete().run();
   });

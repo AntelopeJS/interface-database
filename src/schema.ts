@@ -77,9 +77,25 @@ export interface SchemaOptions {
  *
  * Symbols are not JSON-serializable and cannot be forged from network input,
  * which makes this a safe escape hatch for admin/system-level operations.
+ *
+ * **Implementation contract**:
+ * - Compare the tenant id by identity (`id === CROSS_TENANT`), never by any
+ *   string check — symbols carry no string representation.
+ * - The query stage pipeline carrying `CROSS_TENANT` MUST stay in-process.
+ *   Any transport, queue, IPC, or logging layer that round-trips
+ *   `QueryStage.options` through `JSON.stringify` will silently drop the
+ *   symbol and `id` will become `undefined`, which on a tenant-scoped table
+ *   then throws ("tenant required") instead of bypassing the filter. Run the
+ *   pipeline against the adapter directly — do not serialize.
  */
 export const CROSS_TENANT: unique symbol = Symbol("antelopejs:cross-tenant");
 
+/**
+ * Tenant identifier accepted by `Schema.instance()`.
+ *
+ * See {@link CROSS_TENANT} for the implementation contract around the
+ * cross-tenant sentinel — notably that it cannot survive JSON serialization.
+ */
 export type TenantId = string | typeof CROSS_TENANT;
 
 //@internal

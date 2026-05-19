@@ -1,12 +1,11 @@
 export { Datum } from "./datum";
 export { Query } from "./query";
 export {
-  CROSS_TENANT,
+  CROSS_INSTANCE,
+  InstanceId,
   Schema,
   SchemaDefinition,
   SchemaInstance,
-  SchemaOptions,
-  TenantId,
 } from "./schema";
 export { Selection, SingleSelection, Table } from "./selection";
 export { Stream } from "./stream";

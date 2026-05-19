@@ -1,5 +1,6 @@
 import { RegisteringProxy } from "@antelopejs/interface-core";
 import { QueryStage, StagedObject } from "./common";
+import { Query } from "./query";
 import { Table } from "./selection";
 
 /**
@@ -35,18 +36,6 @@ export interface TableDefinition {
    * List of secondary indexes
    */
   indexes: Record<string, IndexDefinition>;
-
-  /**
-   * When true, every row in this table carries a `tenant_id` field and
-   * queries on the table must be performed via a tenant-bound instance
-   * (see `Schema.instance(id)`). Implementations should:
-   *
-   * - inject the tenant filter on read/update/delete
-   * - stamp `tenant_id` on insert
-   * - reject queries with no tenant context
-   * - skip the filter when the tenant is `CROSS_TENANT` (read/update/delete only)
-   */
-  tenantScoped?: boolean;
 }
 
 /**
@@ -56,58 +45,28 @@ export interface SchemaDefinition {
   [tableName: string]: TableDefinition;
 }
 
-export interface SchemaOptions {
-  /**
-   * Name of the physical database that backs this schema.
-   *
-   * Multiple schemas can share the same `physicalStore` to live in the same
-   * physical database, enabling native cross-schema joins. Defaults to the
-   * schema id when omitted.
-   */
-  physicalStore?: string;
-}
+/**
+ * Sentinel instance id meaning "operate across all instances of the schema".
+ */
+export const CROSS_INSTANCE: unique symbol = Symbol(
+  "antelopejs:cross-instance",
+);
 
 /**
- * Sentinel value used as a tenant identifier to opt into a cross-tenant query
- * on a tenant-scoped table.
- *
- * Implementations should skip the tenant filter when this value is provided
- * on read/update/delete, and reject it on insert (cross-tenant insert is
- * meaningless).
- *
- * Symbols are not JSON-serializable and cannot be forged from network input,
- * which makes this a safe escape hatch for admin/system-level operations.
- *
- * **Implementation contract**:
- * - Compare the tenant id by identity (`id === CROSS_TENANT`), never by any
- *   string check — symbols carry no string representation.
- * - The query stage pipeline carrying `CROSS_TENANT` MUST stay in-process.
- *   Any transport, queue, IPC, or logging layer that round-trips
- *   `QueryStage.options` through `JSON.stringify` will silently drop the
- *   symbol and `id` will become `undefined`, which on a tenant-scoped table
- *   then throws ("tenant required") instead of bypassing the filter. Run the
- *   pipeline against the adapter directly — do not serialize.
+ * Instance identifier accepted by {@link Schema.instance}.
  */
-export const CROSS_TENANT: unique symbol = Symbol("antelopejs:cross-tenant");
-
-/**
- * Tenant identifier accepted by `Schema.instance()`.
- *
- * See {@link CROSS_TENANT} for the implementation contract around the
- * cross-tenant sentinel — notably that it cannot survive JSON serialization.
- */
-export type TenantId = string | typeof CROSS_TENANT;
+export type InstanceId = string | typeof CROSS_INSTANCE;
 
 //@internal
 export const Schemas = new RegisteringProxy<
-  (name: string, def: SchemaDefinition, options: SchemaOptions) => void
+  (name: string, def: SchemaDefinition) => void
 >();
 
 /**
  * A schema determines the structure of a database
  *
- * Each schema can be queried with an optional tenant context via `instance()`.
- * The physical realization is controlled by `SchemaOptions.physicalStore`.
+ * Each schema can have multiple instances. The internal organization of these
+ * instances is left up to the module implementation.
  */
 export class Schema<T = any> extends StagedObject {
   private static readonly registry = new Map<string, Schema>();
@@ -131,25 +90,50 @@ export class Schema<T = any> extends StagedObject {
   public constructor(
     public readonly id: string,
     public readonly definition: SchemaDefinition,
-    public readonly options: SchemaOptions = {},
   ) {
     super(QueryStage("schema", { id }));
-    Schemas.register(id, definition, options);
+    Schemas.register(id, definition);
     Schema.registry.set(id, this);
   }
 
   /**
-   * Gets a query context bound to an optional tenant.
+   * Gets a specific instance of the schema
    *
-   * - `undefined` → no tenant context. Tenant-scoped tables will reject the query.
-   * - `string` → tenant id. Tenant-scoped tables filter on it; non-tenant tables ignore it.
-   * - `CROSS_TENANT` → admin escape hatch. Tenant-scoped tables skip the filter on
-   *   read/update/delete, reject on insert.
-   *
-   * @param id Tenant identifier or sentinel
+   * @param id Instance ID, or {@link CROSS_INSTANCE} for a cross-instance query
+   * @returns Schema instance
    */
-  public instance(id?: TenantId) {
+  public instance(id?: InstanceId) {
     return this.stage(SchemaInstance<T>, "instance", { id });
+  }
+
+  /**
+   * Creates a new instance of the schema
+   *
+   * @param id Instance ID
+   * @returns Created instance ID
+   */
+  public createInstance(id?: string) {
+    return this.stage(Query<string>, "createInstance", { id });
+  }
+
+  /**
+   * Destroys an existing instance of the schema
+   *
+   * @param id Instance ID
+   */
+  public destroyInstance(id?: string) {
+    return this.stage(Query<void>, "destroyInstance", { id });
+  }
+
+  /**
+   * Lists the IDs of named instances of this schema.
+   *
+   * The default (unnamed) instance is not included.
+   *
+   * @returns IDs of named instances of this schema
+   */
+  public listInstances() {
+    return this.stage(Query<string[]>, "listInstances");
   }
 }
 

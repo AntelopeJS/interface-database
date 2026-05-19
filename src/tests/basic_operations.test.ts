@@ -12,6 +12,10 @@ let insertedKeys: string[] = [];
 const expectedVehicles: Vehicle[] = vehicles.map((v) => ({ ...v }));
 
 describe("Basic Operations", () => {
+  before(async () => {
+    await schema.createInstance("default").run();
+  });
+
   it("Insert", InsertTest);
   it("Insert conflict update (existing doc)", InsertConflictUpdateTest);
   it("Insert conflict replace (existing doc)", InsertConflictReplaceTest);
@@ -29,6 +33,7 @@ describe("Basic Operations", () => {
 
   after(async () => {
     await table.delete().run();
+    await schema.destroyInstance("default").run();
   });
 });
 

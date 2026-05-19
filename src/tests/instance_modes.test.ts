@@ -58,11 +58,20 @@ async function DestroyRemoves() {
 }
 
 describe("Instance Isolation", () => {
+  before(async () => {
+    await schema.createInstance("t1").run();
+    await schema.createInstance("t2").run();
+    await schema.createInstance("named").run();
+  });
+
   it("named instances are isolated", NamedIsolated);
   it("default and named instances are isolated", DefaultIsolatedFromNamed);
 
   after(async () => {
     await schema.instance(CROSS_INSTANCE).table(tableName).delete().run();
+    await schema.destroyInstance("t1").run();
+    await schema.destroyInstance("t2").run();
+    await schema.destroyInstance("named").run();
   });
 });
 
@@ -97,6 +106,11 @@ async function DefaultIsolatedFromNamed() {
 }
 
 describe("CROSS_INSTANCE", () => {
+  before(async () => {
+    await schema.createInstance("t1").run();
+    await schema.createInstance("t2").run();
+  });
+
   it("Read sees every instance", CrossReadSeesAll);
   it("Insert is rejected", CrossInsertThrows);
   it("Update touches every instance", CrossUpdateAll);
@@ -104,6 +118,8 @@ describe("CROSS_INSTANCE", () => {
 
   after(async () => {
     await schema.instance(CROSS_INSTANCE).table(tableName).delete().run();
+    await schema.destroyInstance("t1").run();
+    await schema.destroyInstance("t2").run();
   });
 });
 

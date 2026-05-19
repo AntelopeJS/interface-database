@@ -48,7 +48,9 @@ export interface SchemaDefinition {
 /**
  * Sentinel instance id meaning "operate across all instances of the schema".
  */
-export const CROSS_INSTANCE: unique symbol = Symbol("antelopejs:cross-instance");
+export const CROSS_INSTANCE: unique symbol = Symbol(
+  "antelopejs:cross-instance",
+);
 
 /**
  * Instance identifier accepted by {@link Schema.instance}.

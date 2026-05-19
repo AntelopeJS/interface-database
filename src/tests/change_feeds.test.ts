@@ -9,6 +9,10 @@ const schema = new Schema<{ [tableName]: Vehicle }>("test-change-feeds", {
 const table = schema.instance("default").table(tableName);
 
 describe("Change Streams", () => {
+  before(async () => {
+    await schema.createInstance("default").run();
+  });
+
   it("Insert Test Data", InsertTest);
   it("Insert Event", InsertEventTest);
   it("Update Event", UpdateEventTest);
@@ -16,6 +20,7 @@ describe("Change Streams", () => {
   it("Bulk Insert Events", BulkInsertEventTest);
   after(async () => {
     await table.delete().run();
+    await schema.destroyInstance("default").run();
   });
 });
 

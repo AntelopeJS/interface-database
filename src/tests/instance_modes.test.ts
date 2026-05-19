@@ -19,6 +19,10 @@ const schema = new Schema<{ [tableName]: Vehicle }>("test-im-instances", {
 });
 
 describe("Instance Lifecycle", () => {
+  before(async () => {
+    await schema.createInstance().run();
+  });
+
   it("createInstance returns the created ID", CreateReturnsId);
   it("listInstances enumerates named instances", ListEnumerates);
   it("listInstances excludes the default instance", ListExcludesDefault);
@@ -29,6 +33,7 @@ describe("Instance Lifecycle", () => {
     for (const id of await schema.listInstances().run()) {
       await schema.destroyInstance(id).run();
     }
+    await schema.destroyInstance().run();
   });
 });
 
@@ -45,7 +50,11 @@ async function ListEnumerates() {
 }
 
 async function ListExcludesDefault() {
-  await schema.instance().table(tableName).insert([vehicle("Default", 1)]).run();
+  await schema
+    .instance()
+    .table(tableName)
+    .insert([vehicle("Default", 1)])
+    .run();
   const ids = await schema.listInstances().run();
   expect(ids).to.not.include(undefined);
   expect(ids).to.not.include("");
@@ -59,6 +68,7 @@ async function DestroyRemoves() {
 
 describe("Instance Isolation", () => {
   before(async () => {
+    await schema.createInstance().run();
     await schema.createInstance("t1").run();
     await schema.createInstance("t2").run();
     await schema.createInstance("named").run();
@@ -72,6 +82,7 @@ describe("Instance Isolation", () => {
     await schema.destroyInstance("t1").run();
     await schema.destroyInstance("t2").run();
     await schema.destroyInstance("named").run();
+    await schema.destroyInstance().run();
   });
 });
 
@@ -124,8 +135,16 @@ describe("CROSS_INSTANCE", () => {
 });
 
 async function CrossReadSeesAll() {
-  await schema.instance("t1").table(tableName).insert([vehicle("Peugeot", 3000)]).run();
-  await schema.instance("t2").table(tableName).insert([vehicle("Renault", 5000)]).run();
+  await schema
+    .instance("t1")
+    .table(tableName)
+    .insert([vehicle("Peugeot", 3000)])
+    .run();
+  await schema
+    .instance("t2")
+    .table(tableName)
+    .insert([vehicle("Renault", 5000)])
+    .run();
 
   const all = await schema.instance(CROSS_INSTANCE).table(tableName).run();
   const cars = all.map((doc) => doc.car);

@@ -1,4 +1,4 @@
-import { CROSS_TENANT, Schema } from "@antelopejs/interface-database";
+import { CROSS_INSTANCE, Schema } from "@antelopejs/interface-database";
 import { expect } from "chai";
 import { Vehicle } from "./datasets/vehicles";
 
@@ -14,86 +14,61 @@ function vehicle(car: string, price: number): Vehicle {
   };
 }
 
-const globalSchema = new Schema<{ [tableName]: Vehicle }>("test-im-global", {
+const schema = new Schema<{ [tableName]: Vehicle }>("test-im-instances", {
   [tableName]: Vehicle,
 });
-const tenantSchema = new Schema<{ [tableName]: Vehicle }>("test-im-tenant", {
-  [tableName]: { ...Vehicle, tenantScoped: true },
-});
 
-describe("Global Tables", () => {
-  it("CRUD without tenant context", GlobalCrud);
-  it("Tenant id is ignored on global tables", GlobalIgnoresTenant);
+describe("Instance Lifecycle", () => {
+  it("createInstance returns the created ID", CreateReturnsId);
+  it("listInstances enumerates named instances", ListEnumerates);
+  it("listInstances excludes the default instance", ListExcludesDefault);
+  it("destroyInstance removes the instance", DestroyRemoves);
 
   after(async () => {
-    await globalSchema.instance().table(tableName).delete().run();
+    await schema.instance(CROSS_INSTANCE).table(tableName).delete().run();
+    for (const id of await schema.listInstances().run()) {
+      await schema.destroyInstance(id).run();
+    }
   });
 });
 
-async function GlobalCrud() {
-  const table = globalSchema.instance().table(tableName);
-
-  const keys = await table.insert([vehicle("Renault", 5000)]).run();
-  expect(keys).to.have.lengthOf(1);
-
-  const doc = await table.get(keys[0]).run();
-  expect(doc).to.have.property("car", "Renault");
-
-  const updated = await table.get(keys[0]).update({ price: 7777 }).run();
-  expect(updated).to.equal(1);
-
-  const deleted = await table.get(keys[0]).delete().run();
-  expect(deleted).to.equal(1);
-
-  const gone = await table.get(keys[0]).run();
-  expect(gone).to.equal(undefined);
+async function CreateReturnsId() {
+  const id = await schema.createInstance("alpha").run();
+  expect(id).to.equal("alpha");
 }
 
-async function GlobalIgnoresTenant() {
-  const tableNoTenant = globalSchema.instance().table(tableName);
-  const tableWithTenant = globalSchema.instance("anything").table(tableName);
-
-  await tableNoTenant.insert([vehicle("Citroen", 4000)]).run();
-  const seen = await tableWithTenant.run();
-  expect(seen).to.have.length.greaterThan(0);
+async function ListEnumerates() {
+  await schema.createInstance("beta").run();
+  const ids = await schema.listInstances().run();
+  expect(ids).to.include("alpha");
+  expect(ids).to.include("beta");
 }
 
-describe("Tenant-Scoped Tables", () => {
-  it("instance(undefined) throws", TenantUndefinedThrows);
-  it("Insert stamps tenant_id", TenantInsertStamps);
-  it("Tenant isolation", TenantIsolation);
-  it("Cross-tenant query via CROSS_TENANT sees all", TenantCrossSeesAll);
-  it("Cross-tenant insert throws", TenantCrossInsertThrows);
-  it("Cross-tenant update touches every tenant", TenantCrossUpdate);
-  it("Cross-tenant delete wipes every tenant", TenantCrossDelete);
+async function ListExcludesDefault() {
+  await schema.instance().table(tableName).insert([vehicle("Default", 1)]).run();
+  const ids = await schema.listInstances().run();
+  expect(ids).to.not.include(undefined);
+  expect(ids).to.not.include("");
+}
+
+async function DestroyRemoves() {
+  await schema.destroyInstance("beta").run();
+  const ids = await schema.listInstances().run();
+  expect(ids).to.not.include("beta");
+}
+
+describe("Instance Isolation", () => {
+  it("named instances are isolated", NamedIsolated);
+  it("default and named instances are isolated", DefaultIsolatedFromNamed);
 
   after(async () => {
-    await tenantSchema.instance(CROSS_TENANT).table(tableName).delete().run();
+    await schema.instance(CROSS_INSTANCE).table(tableName).delete().run();
   });
 });
 
-async function TenantUndefinedThrows() {
-  let threw = false;
-  try {
-    await tenantSchema.instance().table(tableName).count().run();
-  } catch {
-    threw = true;
-  }
-  expect(threw).to.equal(true);
-}
-
-async function TenantInsertStamps() {
-  const table = tenantSchema.instance("cleanup").table(tableName);
-  const keys = await table.insert([vehicle("Peugeot", 3000)]).run();
-  expect(keys).to.have.lengthOf(1);
-
-  const doc = await table.get(keys[0]).run();
-  expect(doc).to.have.property("tenant_id", "cleanup");
-}
-
-async function TenantIsolation() {
-  const t1Table = tenantSchema.instance("t1").table(tableName);
-  const t2Table = tenantSchema.instance("t2").table(tableName);
+async function NamedIsolated() {
+  const t1Table = schema.instance("t1").table(tableName);
+  const t2Table = schema.instance("t2").table(tableName);
 
   await t1Table.insert([vehicle("Peugeot", 3000)]).run();
   await t2Table.insert([vehicle("Renault", 5000)]).run();
@@ -106,20 +81,47 @@ async function TenantIsolation() {
   expect(t2Docs[0].car).to.equal("Renault");
 }
 
-async function TenantCrossSeesAll() {
-  const crossTable = tenantSchema.instance(CROSS_TENANT).table(tableName);
-  const all = await crossTable.run();
-  expect(all.length).to.be.greaterThanOrEqual(2);
+async function DefaultIsolatedFromNamed() {
+  const defaultTable = schema.instance().table(tableName);
+  const namedTable = schema.instance("named").table(tableName);
+
+  await defaultTable.insert([vehicle("DefaultCar", 100)]).run();
+  await namedTable.insert([vehicle("NamedCar", 200)]).run();
+
+  const defaultDocs = await defaultTable.run();
+  const namedDocs = await namedTable.run();
+  expect(defaultDocs.map((d) => d.car)).to.include("DefaultCar");
+  expect(defaultDocs.map((d) => d.car)).to.not.include("NamedCar");
+  expect(namedDocs.map((d) => d.car)).to.include("NamedCar");
+  expect(namedDocs.map((d) => d.car)).to.not.include("DefaultCar");
+}
+
+describe("CROSS_INSTANCE", () => {
+  it("Read sees every instance", CrossReadSeesAll);
+  it("Insert is rejected", CrossInsertThrows);
+  it("Update touches every instance", CrossUpdateAll);
+  it("Delete wipes every instance", CrossDeleteAll);
+
+  after(async () => {
+    await schema.instance(CROSS_INSTANCE).table(tableName).delete().run();
+  });
+});
+
+async function CrossReadSeesAll() {
+  await schema.instance("t1").table(tableName).insert([vehicle("Peugeot", 3000)]).run();
+  await schema.instance("t2").table(tableName).insert([vehicle("Renault", 5000)]).run();
+
+  const all = await schema.instance(CROSS_INSTANCE).table(tableName).run();
   const cars = all.map((doc) => doc.car);
   expect(cars).to.include("Peugeot");
   expect(cars).to.include("Renault");
 }
 
-async function TenantCrossInsertThrows() {
+async function CrossInsertThrows() {
   let threw = false;
   try {
-    await tenantSchema
-      .instance(CROSS_TENANT)
+    await schema
+      .instance(CROSS_INSTANCE)
       .table(tableName)
       .insert([vehicle("Forbidden", 0)])
       .run();
@@ -129,16 +131,13 @@ async function TenantCrossInsertThrows() {
   expect(threw).to.equal(true);
 }
 
-async function TenantCrossUpdate() {
-  const crossTable = tenantSchema.instance(CROSS_TENANT).table(tableName);
-  const before = await crossTable.run();
-  expect(before.length).to.be.greaterThanOrEqual(2);
-
+async function CrossUpdateAll() {
+  const crossTable = schema.instance(CROSS_INSTANCE).table(tableName);
   const sentinel = 424242;
   await crossTable.update({ price: sentinel }).run();
 
-  const t1Docs = await tenantSchema.instance("t1").table(tableName).run();
-  const t2Docs = await tenantSchema.instance("t2").table(tableName).run();
+  const t1Docs = await schema.instance("t1").table(tableName).run();
+  const t2Docs = await schema.instance("t2").table(tableName).run();
   expect(t1Docs.length).to.be.greaterThan(0);
   expect(t2Docs.length).to.be.greaterThan(0);
   for (const doc of [...t1Docs, ...t2Docs]) {
@@ -146,15 +145,15 @@ async function TenantCrossUpdate() {
   }
 }
 
-async function TenantCrossDelete() {
-  const crossTable = tenantSchema.instance(CROSS_TENANT).table(tableName);
+async function CrossDeleteAll() {
+  const crossTable = schema.instance(CROSS_INSTANCE).table(tableName);
   await crossTable.delete().run();
 
   const remaining = await crossTable.run();
   expect(remaining).to.have.lengthOf(0);
 
-  const t1Docs = await tenantSchema.instance("t1").table(tableName).run();
-  const t2Docs = await tenantSchema.instance("t2").table(tableName).run();
+  const t1Docs = await schema.instance("t1").table(tableName).run();
+  const t2Docs = await schema.instance("t2").table(tableName).run();
   expect(t1Docs).to.have.lengthOf(0);
   expect(t2Docs).to.have.lengthOf(0);
 }

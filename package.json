@@ -65,14 +65,6 @@
   "dependencies": {
     "@antelopejs/interface-core": "^0.0.3"
   },
-  "peerDependencies": {
-    "io-ts": "^2.2.0"
-  },
-  "peerDependenciesMeta": {
-    "io-ts": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@biomejs/biome": "2.3.2",
     "@types/chai": "^4.3.20",

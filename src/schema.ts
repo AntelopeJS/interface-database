@@ -1,4 +1,5 @@
 import { RegisteringProxy } from "@antelopejs/interface-core";
+import type { Mixed } from "io-ts";
 import { QueryStage, StagedObject } from "./common";
 import { Query } from "./query";
 import { Table } from "./selection";
@@ -18,10 +19,12 @@ export interface IndexDefinition {
   multi?: boolean;
 }
 
-export type FieldType =
+type StringFieldType =
   | string
-  | Array<FieldType>
-  | { [subfield: string]: FieldType };
+  | Array<StringFieldType>
+  | { [subfield: string]: StringFieldType };
+
+export type FieldType = StringFieldType | Mixed;
 
 /**
  * Schema table definition

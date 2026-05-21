@@ -30,6 +30,12 @@ importers:
       chai:
         specifier: ^4.5.0
         version: 4.5.0
+      fp-ts:
+        specifier: ^2.16.0
+        version: 2.16.11
+      io-ts:
+        specifier: ^2.2.0
+        version: 2.2.22(fp-ts@2.16.11)
       mongodb-memory-server-core:
         specifier: ^11.0.1
         version: 11.0.1(socks@2.8.7)
@@ -669,6 +675,9 @@ packages:
       debug:
         optional: true
 
+  fp-ts@2.16.11:
+    resolution: {integrity: sha512-LaI+KaX2NFkfn1ZGHoKCmcfv7yrZsC3b8NtWsTVQeHkq4F27vI5igUuO53sxqDEa2gNQMHFPmpojDw/1zmUK7w==}
+
   fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
     engines: {node: '>= 8'}
@@ -739,6 +748,11 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
+
+  io-ts@2.2.22:
+    resolution: {integrity: sha512-FHCCztTkHoV9mdBsHpocLpdTAfh956ZQcIkWQxxS0U5HT53vtrcuYdQneEJKH6xILaLNzXVl2Cvwtoy8XNN0AA==}
+    peerDependencies:
+      fp-ts: ^2.5.0
 
   ip-address@10.1.0:
     resolution: {integrity: sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==}
@@ -1940,6 +1954,8 @@ snapshots:
     optionalDependencies:
       debug: 4.4.3
 
+  fp-ts@2.16.11: {}
+
   fs-minipass@2.1.0:
     dependencies:
       minipass: 3.3.6
@@ -2030,6 +2046,10 @@ snapshots:
       rxjs: 7.8.2
     optionalDependencies:
       '@types/node': 22.19.15
+
+  io-ts@2.2.22(fp-ts@2.16.11):
+    dependencies:
+      fp-ts: 2.16.11
 
   ip-address@10.1.0: {}
 

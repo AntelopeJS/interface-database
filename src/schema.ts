@@ -18,10 +18,22 @@ export interface IndexDefinition {
   multi?: boolean;
 }
 
-export type FieldType =
+export type StringFieldType =
   | string
-  | Array<FieldType>
-  | { [subfield: string]: FieldType };
+  | Array<StringFieldType>
+  | { [subfield: string]: StringFieldType };
+
+interface IoTsCodec {
+  readonly _A: unknown;
+  readonly _O: unknown;
+  readonly _I: unknown;
+  readonly name: string;
+  is(u: unknown): boolean;
+  encode(a: never): unknown;
+  decode(i: unknown): unknown;
+}
+
+export type FieldType = StringFieldType | IoTsCodec;
 
 /**
  * Schema table definition

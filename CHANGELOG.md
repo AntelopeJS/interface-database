@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.1
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.0...v0.1.1)
+
+### 🚀 Enhancements
+
+- Explicit instance lifecycle; CROSS_TENANT → CROSS_INSTANCE ([#7](https://github.com/AntelopeJS/interface-database/pull/7))
+- Accept io-ts codecs as table field types ([#8](https://github.com/AntelopeJS/interface-database/pull/8))
+
+### ❤️ Contributors
+
+- Thomas ([@Thomasims](http://github.com/Thomasims))
+
 ## v0.1.0
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.0.4...v0.1.0)

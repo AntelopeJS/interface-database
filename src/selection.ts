@@ -7,7 +7,9 @@ import type {
 import { Datum } from "./datum";
 import { Query } from "./query";
 import { Stream } from "./stream";
-import { ValueProxy } from "./valueproxy";
+import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
+
+type SelectionKey = string | number | boolean;
 
 /**
  * Selection containing a single element
@@ -133,7 +135,7 @@ export class Table<T> extends Selection<T> {
    * @param key Primary key value
    * @returns Single document selection
    */
-  public get(key: string) {
+  public get(key: ValueProxyOrValue<string>) {
     return this.stage(SingleSelection<T>, "get", undefined, key);
   }
 
@@ -145,7 +147,7 @@ export class Table<T> extends Selection<T> {
    * @returns Multiple document selection
    */
   public getAll(
-    keys: string | number | boolean | (string | number | boolean)[],
+    keys: ValueProxyOrValue<SelectionKey> | ValueProxyOrValue<SelectionKey>[],
     index?: string,
   ) {
     return this.stage(Selection<T>, "getAll", { index }, keys);

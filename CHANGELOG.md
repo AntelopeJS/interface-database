@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.1...v0.1.2)
+
+### 🚀 Enhancements
+
+- **selection:** Accept ValueProxy keys in Table.get and Table.getAll ([#9](https://github.com/AntelopeJS/interface-database/pull/9))
+
+### 📖 Documentation
+
+- Fix Stream.group() mapper parameter naming ([b4424bd](https://github.com/AntelopeJS/interface-database/commit/b4424bd))
+
+### ✅ Tests
+
+- Bump mongodb module to 1.2.1 and set test database name ([ac8a80b](https://github.com/AntelopeJS/interface-database/commit/ac8a80b))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <upd4ting@gmail.com>
+- Thomasims <thomas@antelopejs.com>
+
 ## v0.1.1
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.0...v0.1.1)

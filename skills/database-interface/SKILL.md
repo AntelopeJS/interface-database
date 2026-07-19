@@ -13,15 +13,11 @@ AQL is a lazy, chainable query builder. Every class here (`Schema`, `Table`, `Se
 
 ```ts
 // Root re-exports everything most consumers need:
-import { Schema, SchemaInstance, Table, Selection, SingleSelection, Stream, Datum, Query, ValueProxy, CROSS_INSTANCE } from "@antelopejs/interface-database";
-// Subpaths (same symbols, plus types not re-exported at root):
-import { SchemaDefinition, TableDefinition, IndexDefinition, FieldType, InstanceId } from "@antelopejs/interface-database/schema";
+import { Schema, SchemaInstance, SchemaDefinition, Table, Selection, SingleSelection, Stream, Datum, Query, ValueProxy, ValueProxyOrValue, InstanceId, CROSS_INSTANCE } from "@antelopejs/interface-database";
+// Types only available via subpath (not re-exported at root):
+import { TableDefinition, IndexDefinition, FieldType } from "@antelopejs/interface-database/schema";
 import { Changes, DeepPartial, InsertOptions, Value, ExtractType } from "@antelopejs/interface-database/common";
-import { Table, Selection, SingleSelection } from "@antelopejs/interface-database/selection";
-import { Stream } from "@antelopejs/interface-database/stream";
-import { Datum } from "@antelopejs/interface-database/datum";
-import { Query } from "@antelopejs/interface-database/query";
-import { ValueProxy, ValueProxyOrValue } from "@antelopejs/interface-database/valueproxy";
+// Each root symbol is also importable from its own subpath (/schema, /selection, /stream, /datum, /query, /valueproxy) — equivalent alternatives, do not combine with the root import for the same symbol.
 ```
 
 Add `@antelopejs/interface-database` to the module's `dependencies`; `@antelopejs/interface-core` is a peer dependency.

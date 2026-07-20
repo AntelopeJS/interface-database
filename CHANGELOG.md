@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.4
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.3...v0.1.4)
+
+### 🚀 Enhancements
+
+- **skills:** Ship a consumer skill with the package ([#11](https://github.com/AntelopeJS/interface-database/pull/11))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <upd4ting@gmail.com>
+
 ## v0.1.3
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.2...v0.1.3)

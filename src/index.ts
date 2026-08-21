@@ -6,6 +6,7 @@ export {
   Schema,
   SchemaDefinition,
   SchemaInstance,
+  Schemas,
 } from "./schema";
 export { Selection, SingleSelection, Table } from "./selection";
 export { Stream } from "./stream";

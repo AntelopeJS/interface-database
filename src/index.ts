@@ -1,3 +1,13 @@
+import { CloseCursor, ReadCursor, RunQuery } from "./query";
+import { Schemas } from "./schema";
+
+export const InterfaceDeclarations = {
+  CloseCursor,
+  ReadCursor,
+  RunQuery,
+  Schemas,
+};
+
 export { Datum } from "./datum";
 export { Query } from "./query";
 export {

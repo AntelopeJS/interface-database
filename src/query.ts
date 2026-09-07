@@ -1,4 +1,5 @@
 import { InterfaceFunction } from "@antelopejs/interface-core";
+
 import { StagedObject } from "./common";
 
 //@internal
@@ -71,7 +72,7 @@ export class Query<T> extends StagedObject implements PromiseLike<T> {
     return RunQuery(this.stages);
   }
 
-  // biome-ignore lint/suspicious/noThenProperty: PromiseLike requires a then method.
+  // oxlint-disable-next-line unicorn/no-thenable -- Query is deliberately PromiseLike so `await query` runs it; the contract requires this method.
   public then<TResult1 = T, TResult2 = never>(
     onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,

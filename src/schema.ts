@@ -1,7 +1,8 @@
 import { RegisteringProxy } from "@antelopejs/interface-core";
-import { QueryStage, StagedObject } from "./common";
+
 import { Query } from "./query";
 import { Table } from "./selection";
+import { QueryStage, StagedObject } from "./common";
 
 /**
  * Secondary table index definition

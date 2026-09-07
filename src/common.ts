@@ -1,4 +1,5 @@
 import type { Class } from "@antelopejs/interface-core/decorators";
+
 import type { Datum } from "./datum";
 import type { Query } from "./query";
 import type { ValueProxy, ValueProxyOrValue } from "./valueproxy";

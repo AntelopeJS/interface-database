@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Schema } from "@antelopejs/interface-database";
 import { expect } from "chai";
+import { Schema } from "@antelopejs/interface-database";
+
+import { getUniqueUsers, User } from "./datasets/users";
 import { getUniqueOrders, Order } from "./datasets/orders";
 import { getUniqueProducts, Product } from "./datasets/products";
-import { getUniqueUsers, User } from "./datasets/users";
 
 const ordersTableName = "orders";
 const usersTableName = "users";

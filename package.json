@@ -4,22 +4,46 @@
   "description": "AntelopeJS interface for database-agnostic query operations",
   "keywords": [
     "antelopejs",
-    "interface",
-    "database"
+    "database",
+    "interface"
   ],
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AntelopeJS/interface-database.git"
   },
-  "license": "Apache-2.0",
-  "packageManager": "pnpm@10.6.5",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "docs",
     "skills"
   ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "common": [
+        "dist/common.d.ts"
+      ],
+      "datum": [
+        "dist/datum.d.ts"
+      ],
+      "query": [
+        "dist/query.d.ts"
+      ],
+      "schema": [
+        "dist/schema.d.ts"
+      ],
+      "selection": [
+        "dist/selection.d.ts"
+      ],
+      "stream": [
+        "dist/stream.d.ts"
+      ],
+      "valueproxy": [
+        "dist/valueproxy.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -54,6 +78,10 @@
       "default": "./dist/valueproxy.js"
     },
     "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "build": "rimraf dist && tsc",
@@ -90,35 +118,7 @@
   "peerDependencies": {
     "@antelopejs/interface-core": ">=0.0.3 <1.0.0"
   },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "typesVersions": {
-    "*": {
-      "common": [
-        "dist/common.d.ts"
-      ],
-      "datum": [
-        "dist/datum.d.ts"
-      ],
-      "query": [
-        "dist/query.d.ts"
-      ],
-      "schema": [
-        "dist/schema.d.ts"
-      ],
-      "selection": [
-        "dist/selection.d.ts"
-      ],
-      "stream": [
-        "dist/stream.d.ts"
-      ],
-      "valueproxy": [
-        "dist/valueproxy.d.ts"
-      ]
-    }
-  },
+  "packageManager": "pnpm@10.6.5",
   "antelopeJs": {
     "test": "src/antelope.test.ts",
     "skills": [

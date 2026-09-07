@@ -123,12 +123,13 @@ type ExtractTypeObject<T extends UnknownObject> = T extends infer O
       [K in keyof O]: ExtractType<O[K]>;
     }
   : never;
-export type ExtractType<T> = T extends ValueProxy<infer A>
-  ? A
-  : T extends Query<infer A>
+export type ExtractType<T> =
+  T extends ValueProxy<infer A>
     ? A
-    : T extends UnknownObject
-      ? ExtractTypeObject<T>
-      : T extends Array<infer A>
-        ? Array<ExtractType<A>>
-        : T;
+    : T extends Query<infer A>
+      ? A
+      : T extends UnknownObject
+        ? ExtractTypeObject<T>
+        : T extends Array<infer A>
+          ? Array<ExtractType<A>>
+          : T;

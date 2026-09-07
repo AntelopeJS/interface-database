@@ -13,10 +13,34 @@ AQL is a lazy, chainable query builder. Every class here (`Schema`, `Table`, `Se
 
 ```ts
 // Root re-exports everything most consumers need:
-import { Schema, SchemaInstance, SchemaDefinition, Table, Selection, SingleSelection, Stream, Datum, Query, ValueProxy, ValueProxyOrValue, InstanceId, CROSS_INSTANCE } from "@antelopejs/interface-database";
+import {
+  Schema,
+  SchemaInstance,
+  SchemaDefinition,
+  Table,
+  Selection,
+  SingleSelection,
+  Stream,
+  Datum,
+  Query,
+  ValueProxy,
+  ValueProxyOrValue,
+  InstanceId,
+  CROSS_INSTANCE,
+} from "@antelopejs/interface-database";
 // Types only available via subpath (not re-exported at root):
-import { TableDefinition, IndexDefinition, FieldType } from "@antelopejs/interface-database/schema";
-import { Changes, DeepPartial, InsertOptions, Value, ExtractType } from "@antelopejs/interface-database/common";
+import {
+  TableDefinition,
+  IndexDefinition,
+  FieldType,
+} from "@antelopejs/interface-database/schema";
+import {
+  Changes,
+  DeepPartial,
+  InsertOptions,
+  Value,
+  ExtractType,
+} from "@antelopejs/interface-database/common";
 // Each root symbol is also importable from its own subpath (/schema, /selection, /stream, /datum, /query, /valueproxy) — equivalent alternatives, do not combine with the root import for the same symbol.
 ```
 
@@ -27,7 +51,12 @@ Add `@antelopejs/interface-database` to the module's `dependencies`; `@antelopej
 ```ts
 import { Schema } from "@antelopejs/interface-database";
 
-interface Novel { _id?: string; title: string; pageCount: number; available: boolean; }
+interface Novel {
+  _id?: string;
+  title: string;
+  pageCount: number;
+  available: boolean;
+}
 
 // Registers the schema with the provider. The generic maps table names to row types.
 const schema = new Schema<{ novels: Novel }>("library", {
@@ -39,12 +68,17 @@ const schema = new Schema<{ novels: Novel }>("library", {
 
 const novels = schema.instance().table("novels"); // default instance
 
-const ids = await novels.insert({ title: "The Glass Meridian", pageCount: 412, available: true }); // string[] of inserted ids
+const ids = await novels.insert({
+  title: "The Glass Meridian",
+  pageCount: 412,
+  available: true,
+}); // string[] of inserted ids
 const longNovels = await novels
   .filter((n) => n.key("pageCount").ge(300).and(n.key("available")))
-  .orderBy("pageCount", "desc");                    // await executes: Novel[]
+  .orderBy("pageCount", "desc"); // await executes: Novel[]
 await novels.get(ids[0]).update({ available: false }); // number of modified docs
-for await (const change of novels.changes()) {    // change feed via async iteration
+for await (const change of novels.changes()) {
+  // change feed via async iteration
   console.log(change.changeType, change.newValue); // "added" | "removed" | "modified"
 }
 ```

@@ -1,7 +1,8 @@
-import { Schema } from "@antelopejs/interface-database";
 import { expect } from "chai";
-import { getUniqueProducts, Product } from "./datasets/products";
+import { Schema } from "@antelopejs/interface-database";
+
 import { getUniqueUsers, User } from "./datasets/users";
+import { getUniqueProducts, Product } from "./datasets/products";
 
 const usersTableName = "users";
 const productsTableName = "products";

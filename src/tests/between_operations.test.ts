@@ -1,5 +1,6 @@
-import { Schema } from "@antelopejs/interface-database";
 import { expect } from "chai";
+import { Schema } from "@antelopejs/interface-database";
+
 import { Vehicle, vehicles } from "./datasets/vehicles";
 
 const tableName = "test-table";

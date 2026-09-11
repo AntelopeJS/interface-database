@@ -1,4 +1,5 @@
 import * as t from "io-ts";
+
 import type { SchemaDefinition } from "../../schema";
 
 export const definition: SchemaDefinition = {

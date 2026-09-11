@@ -1,7 +1,7 @@
-import type { Changes, ExtractType, Value } from "./common";
 import { Datum } from "./datum";
 import { Query } from "./query";
 import type { Selection } from "./selection";
+import type { Changes, ExtractType, Value } from "./common";
 import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
 
 export class Stream<T> extends Query<T[]> {

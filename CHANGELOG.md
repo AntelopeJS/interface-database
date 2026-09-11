@@ -1,6 +1,5 @@
 # Changelog
 
-
 ## v0.1.4
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.3...v0.1.4)
@@ -111,7 +110,6 @@
 
 ## v0.0.2
 
-
 ### 🚀 Enhancements
 
 - Initial interface-database package ([f73d27c](https://github.com/AntelopeJS/interface-database/commit/f73d27c))
@@ -136,4 +134,3 @@
 
 - Antony Rizzitelli <upd4ting@gmail.com>
 - Glastis ([@Glastis](http://github.com/Glastis))
-

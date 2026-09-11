@@ -1,13 +1,13 @@
+import { Datum } from "./datum";
+import { Query } from "./query";
+import { Stream } from "./stream";
+import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
 import type {
   Changes,
   DeepPartial,
   ExtractType,
   InsertOptions,
 } from "./common";
-import { Datum } from "./datum";
-import { Query } from "./query";
-import { Stream } from "./stream";
-import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
 
 type SelectionKey = string | number | boolean;
 

@@ -1,7 +1,7 @@
-import type { ExtractType, Value } from "./common";
 import { Query } from "./query";
-import type { Selection } from "./selection";
 import { ValueProxy } from "./valueproxy";
+import type { Selection } from "./selection";
+import type { ExtractType, Value } from "./common";
 
 export class Datum<T> extends Query<T> {
   /**

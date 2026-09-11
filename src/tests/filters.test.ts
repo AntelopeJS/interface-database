@@ -1,5 +1,6 @@
-import { Schema, ValueProxy } from "@antelopejs/interface-database";
 import { expect } from "chai";
+import { Schema, ValueProxy } from "@antelopejs/interface-database";
+
 import { getUniqueUsers, User } from "./datasets/users";
 
 const tableName = "test-table";

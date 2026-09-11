@@ -1,5 +1,6 @@
-import { CROSS_INSTANCE, Schema } from "@antelopejs/interface-database";
 import { expect } from "chai";
+import { CROSS_INSTANCE, Schema } from "@antelopejs/interface-database";
+
 import { Vehicle } from "./datasets/vehicles";
 
 const tableName = "vehicles";

@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.1.5
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.4...v0.1.5)
+
+### 🚀 Enhancements
+
+- **database:** Add explicit atomic single-record mutations ([#15](https://github.com/AntelopeJS/interface-database/pull/15))
+
+### 🏡 Chore
+
+- Replace Biome with oxlint, oxfmt and Knip ([#14](https://github.com/AntelopeJS/interface-database/pull/14))
+
+### 🤖 CI
+
+- Standardize npm releases ([#13](https://github.com/AntelopeJS/interface-database/pull/13))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <rizzitelli.antony@pm.me>
+- Thomas ([@Thomasims](http://github.com/Thomasims))
+
 ## v0.1.4
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.3...v0.1.4)

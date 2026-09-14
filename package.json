@@ -1,6 +1,6 @@
 {
   "name": "@antelopejs/interface-database",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "AntelopeJS interface for database-agnostic query operations",
   "keywords": [
     "antelopejs",

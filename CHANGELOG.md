@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.6
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.5...v0.1.6)
+
+### ✅ Tests
+
+- **database:** Add backend atomic mutation conformance ([#17](https://github.com/AntelopeJS/interface-database/pull/17))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <rizzitelli.antony@pm.me>
+
 ## v0.1.5
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.4...v0.1.5)

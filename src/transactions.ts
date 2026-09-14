@@ -1,5 +1,7 @@
 import { InterfaceFunction } from "@antelopejs/interface-core";
 
+type TransactionRunner = <T>(callback: () => Promise<T>) => Promise<T>;
+
 /**
  * Runs a callback once inside an atomic database transaction.
  *
@@ -23,4 +25,4 @@ import { InterfaceFunction } from "@antelopejs/interface-core";
  * @returns The callback result after the transaction is committed
  */
 export const RunInTransaction =
-  InterfaceFunction<<T>(callback: () => Promise<T>) => Promise<T>>();
+  InterfaceFunction<TransactionRunner>() as TransactionRunner;

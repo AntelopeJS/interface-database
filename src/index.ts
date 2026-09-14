@@ -1,3 +1,4 @@
+export * from "./atomic";
 export { Datum } from "./datum";
 export { Query } from "./query";
 export {

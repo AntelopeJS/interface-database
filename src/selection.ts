@@ -1,6 +1,7 @@
 import { Datum } from "./datum";
 import { Query } from "./query";
 import { Stream } from "./stream";
+import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
 import {
   AtomicMutationQuery,
   ValidateAtomicMutation,
@@ -8,7 +9,6 @@ import {
   type AtomicMutation,
   type AtomicMutationOutcome,
 } from "./atomic";
-import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
 import type {
   Changes,
   DeepPartial,

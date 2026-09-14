@@ -1,4 +1,7 @@
 import { expect } from "chai";
+import type { InstanceId, Table } from "@antelopejs/interface-database";
+
+import { QueryStage, StagedObject } from "../common";
 import {
   AtomicMutationUnsupportedError,
   CROSS_INSTANCE,
@@ -10,8 +13,6 @@ import {
   type AtomicMutationOutcome,
   type AtomicUpdate,
 } from "../index";
-import { QueryStage, StagedObject } from "../common";
-import type { InstanceId, Table } from "@antelopejs/interface-database";
 
 interface RecordData {
   revision?: string;
@@ -133,12 +134,14 @@ function ValidateProtectedFields() {
 }
 
 function ValidatePatch() {
+  const sparse: unknown[] = [];
+  sparse.length = 1;
   for (const value of [
     undefined,
     () => true,
     ValueProxy.constant(1),
     Infinity,
-    new Array(1),
+    sparse,
   ]) {
     expect(() =>
       table.atomicMutation("record-a", {
@@ -194,7 +197,7 @@ function ValidateEquality() {
 }
 
 async function WithResult(result: unknown, check: () => Promise<void>) {
-  const original = Query.prototype.run;
+  const original = Object.getOwnPropertyDescriptor(Query.prototype, "run")!;
   let calls = 0;
   Query.prototype.run = () => {
     calls++;
@@ -204,7 +207,7 @@ async function WithResult(result: unknown, check: () => Promise<void>) {
     await check();
     expect(calls).to.equal(1);
   } finally {
-    Query.prototype.run = original;
+    Object.defineProperty(Query.prototype, "run", original);
   }
 }
 

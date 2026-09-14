@@ -39,6 +39,9 @@
       "stream": [
         "dist/stream.d.ts"
       ],
+      "transactions": [
+        "dist/transactions.d.ts"
+      ],
       "valueproxy": [
         "dist/valueproxy.d.ts"
       ]
@@ -72,6 +75,10 @@
     "./stream": {
       "types": "./dist/stream.d.ts",
       "default": "./dist/stream.js"
+    },
+    "./transactions": {
+      "types": "./dist/transactions.d.ts",
+      "default": "./dist/transactions.js"
     },
     "./valueproxy": {
       "types": "./dist/valueproxy.d.ts",

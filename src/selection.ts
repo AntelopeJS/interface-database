@@ -8,6 +8,13 @@ import type {
   ExtractType,
   InsertOptions,
 } from "./common";
+import {
+  AtomicMutationQuery,
+  ValidateAtomicMutation,
+  ValidateAtomicMutationTable,
+  type AtomicMutation,
+  type AtomicMutationOutcome,
+} from "./atomic";
 
 type SelectionKey = string | number | boolean;
 
@@ -116,6 +123,22 @@ export class Selection<T> extends Stream<T> {
  * Database table
  */
 export class Table<T> extends Selection<T> {
+  /** Atomically checks one record's revision and patches or deletes it without upsert. */
+  public atomicMutation(
+    key: string,
+    request: AtomicMutation<T>,
+  ): Query<AtomicMutationOutcome> {
+    ValidateAtomicMutationTable(this.stages);
+    ValidateAtomicMutation(key, request);
+    return this.stage(
+      AtomicMutationQuery,
+      "atomicMutation",
+      undefined,
+      key,
+      request,
+    );
+  }
+
   /**
    * Inserts one or more documents into this table
    *

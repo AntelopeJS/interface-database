@@ -25,6 +25,7 @@ The Database interface provides AQL (Antelope Query Language), a database-agnost
   - [Index Management](./2.operations/5.indexes.md) - Define and use secondary indexes
   - [Filtering and Querying](./2.operations/6.filtering.md) - Filter, compare, and transform data
   - [Lookup](./2.operations/7.lookup.md) - Foreign key joins and data population
+  - [Atomic Mutations](./2.operations/8.atomic_mutations.md) - Conditional single-record mutations and outcomes
 
 - [**3. Results**](./3.results/1.index.md) - Result types and handling:
   - [Insert Results](./3.results/2.write_results.md) - Results from insert operations

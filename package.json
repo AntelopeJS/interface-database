@@ -21,6 +21,9 @@
   "types": "dist/index.d.ts",
   "typesVersions": {
     "*": {
+      "atomic": [
+        "dist/atomic.d.ts"
+      ],
       "common": [
         "dist/common.d.ts"
       ],
@@ -48,6 +51,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./atomic": {
+      "types": "./dist/atomic.d.ts",
+      "default": "./dist/atomic.js"
     },
     "./common": {
       "types": "./dist/common.d.ts",

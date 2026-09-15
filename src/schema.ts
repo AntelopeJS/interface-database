@@ -1,7 +1,9 @@
 import { RegisteringProxy } from "@antelopejs/interface-core";
 
-import { Schema as StagedSchema } from "./staged-query/schema";
-import type { SchemaDefinition } from "./staged-query/schema";
+import {
+  Schema as StagedSchema,
+  type SchemaDefinition,
+} from "./staged-query/schema";
 
 //@internal
 export const Schemas = new RegisteringProxy<

@@ -1,7 +1,7 @@
-const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const Module = require("node:module");
+const assert = require("node:assert/strict");
 const path = require("node:path");
+const Module = require("node:module");
 
 const forbiddenImports = ["@antelopejs/interface-core", "node:async_hooks"];
 const originalLoad = Module._load;

@@ -1,7 +1,7 @@
 import { InterfaceFunction } from "@antelopejs/interface-core";
 
-import { Query as StagedQuery } from "./staged-query/query";
 import { StagedObject } from "./staged-query/common";
+import { Query as StagedQuery } from "./staged-query/query";
 
 //@internal
 export const RunQuery =
@@ -81,7 +81,6 @@ function run<T>(this: StagedQuery<T>): Promise<T> {
   return RunQuery(this.build());
 }
 
-// oxlint-disable-next-line unicorn/no-thenable -- Query is deliberately PromiseLike so `await query` runs it; the contract requires this method.
 function then<T, TResult1 = T, TResult2 = never>(
   this: StagedQuery<T>,
   onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
@@ -104,6 +103,7 @@ function iterate<T>(
 
 Object.defineProperties(StagedQuery.prototype, {
   run: { configurable: true, value: run, writable: true },
+  // oxlint-disable-next-line unicorn/no-thenable -- Query is deliberately PromiseLike so `await query` executes it.
   then: { configurable: true, value: then, writable: true },
   cursor: { configurable: true, value: cursor, writable: true },
   [Symbol.asyncIterator]: {

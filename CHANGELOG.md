@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.7
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.6...v0.1.7)
+
+### 🚀 Enhancements
+
+- **query:** Add standalone staged-query entry ([#19](https://github.com/AntelopeJS/interface-database/pull/19))
+
+### ✅ Tests
+
+- Use published mongodb 1.3.0 for interface conformance ([#18](https://github.com/AntelopeJS/interface-database/pull/18))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <rizzitelli.antony@pm.me>
+
 ## v0.1.6
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.5...v0.1.6)

@@ -1,6 +1,6 @@
 {
   "name": "@antelopejs/interface-database",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AntelopeJS interface for database-agnostic query operations",
   "keywords": [
     "antelopejs",
@@ -42,6 +42,9 @@
       "stream": [
         "dist/stream.d.ts"
       ],
+      "staged-query": [
+        "dist/staged-query/index.d.ts"
+      ],
       "valueproxy": [
         "dist/valueproxy.d.ts"
       ]
@@ -80,6 +83,10 @@
       "types": "./dist/stream.d.ts",
       "default": "./dist/stream.js"
     },
+    "./staged-query": {
+      "types": "./dist/staged-query/index.d.ts",
+      "default": "./dist/staged-query/index.js"
+    },
     "./valueproxy": {
       "types": "./dist/valueproxy.d.ts",
       "default": "./dist/valueproxy.js"
@@ -98,6 +105,7 @@
     "prepack": "pnpm run build",
     "release": "pnpm run lint && pnpm run prepack && release-it",
     "test": "pnpm run build && ajs module test .",
+    "test:staged-query": "pnpm run build && node scripts/test-staged-query.cjs",
     "format:check": "oxfmt --check .",
     "knip": "knip"
   },

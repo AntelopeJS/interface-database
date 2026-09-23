@@ -1,5 +1,3 @@
-![Database](.github/social-card.png)
-
 # Interface Database
 
 <div align="center">

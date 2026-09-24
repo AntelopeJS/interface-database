@@ -15,7 +15,4 @@ export default antelopeKnipConfig({
     // type-checking, so neither is reachable by an import Knip can follow.
     "src/tests/datasets/**/*.ts",
   ],
-  // `ajs` comes from @antelopejs/core, which CI installs globally rather than
-  // pulling the whole CLI into every module's dependency tree.
-  ignoreBinaries: ["ajs"],
 });

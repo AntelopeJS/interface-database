@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.1.8
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.7...v0.1.8)
+
+### 🚀 Enhancements
+
+- **schema:** Add crossInstance flag to IndexDefinition ([#27](https://github.com/AntelopeJS/interface-database/pull/27))
+
+### 📖 Documentation
+
+- **readme:** Remove social card image ([#22](https://github.com/AntelopeJS/interface-database/pull/22))
+
+### 🏡 Chore
+
+- Align community files with the organization defaults ([#21](https://github.com/AntelopeJS/interface-database/pull/21))
+- Remove .git-blame-ignore-revs ([#23](https://github.com/AntelopeJS/interface-database/pull/23))
+
+### 🤖 CI
+
+- Use shared npm release workflow ([#20](https://github.com/AntelopeJS/interface-database/pull/20))
+- **release:** Release next from a dedicated branch and restore requireCommits ([#24](https://github.com/AntelopeJS/interface-database/pull/24))
+- **release:** Reference the shared release workflows through v1 ([#25](https://github.com/AntelopeJS/interface-database/pull/25))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <rizzitelli.antony@pm.me>
+
 ## v0.1.7
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.6...v0.1.7)

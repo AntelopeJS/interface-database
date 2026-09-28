@@ -15,6 +15,18 @@ export interface IndexDefinition {
    * Whether or not this is a multi index
    */
   multi?: boolean;
+
+  /**
+   * Whether this index must also serve queries that run across all instances
+   * ({@link CROSS_INSTANCE})
+   *
+   * When `true`, the driver also maintains an index usable by cross-instance
+   * queries. Defaults to `false`: the index is optimized for queries scoped to
+   * one instance, and cross-instance queries using it may be slow.
+   *
+   * This flag never changes query results, only performance.
+   */
+  crossInstance?: boolean;
 }
 
 export type StringFieldType =
@@ -58,6 +70,10 @@ export interface SchemaDefinition {
 
 /**
  * Sentinel instance id meaning "operate across all instances of the schema".
+ *
+ * Secondary indexes are optimized for queries scoped to one instance; set
+ * {@link IndexDefinition.crossInstance} on the indexes that cross-instance
+ * queries rely on.
  */
 export const CROSS_INSTANCE: unique symbol = Symbol(
   "antelopejs:cross-instance",

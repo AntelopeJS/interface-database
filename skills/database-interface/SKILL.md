@@ -27,6 +27,10 @@ import {
   ValueProxyOrValue,
   InstanceId,
   CROSS_INSTANCE,
+  IsQuery,
+  IsDatum,
+  IsStream,
+  IsValueProxy,
 } from "@antelopejs/interface-database";
 // Types only available via subpath (not re-exported at root):
 import {
@@ -91,6 +95,7 @@ for await (const change of novels.changes()) {
 - A provider module must be loaded in the project or startup fails with unresolved interface dependencies; queries themselves need no defensive "is the DB ready" checks (calls queue until the provider attaches).
 - `Schema` ids are persistent: changing an id leaves previous data inaccessible. `Schema.get(id)` retrieves a previously constructed schema. `instance()` with no argument is the default instance; pass `CROSS_INSTANCE` to query across all instances. Indexes are optimized for per-instance queries; set `crossInstance: true` on the indexes that `CROSS_INSTANCE` queries use (performance only, results are unchanged).
 - Field types are string tokens (`"string"`, `"number"`, `"boolean"`, `"date"`, `"string[]"`, nested object literals) or a single io-ts codec at the field root — codecs are not mixed inside string-tree records.
+- **Recognize query kinds with `IsStream`/`IsDatum`/`IsQuery`/`IsValueProxy`, not `instanceof`,** when the object may come from another module. Each provider binding has its own copy of the classes, so `instanceof` is false for a query built by a module bound to another database; the predicates are not. `CROSS_INSTANCE` is the same value in every copy.
 - Range semantics: `Table.between(index, low, high)` and `ValueProxy.during(left, right)` exclude the upper bound.
 - `insert` accepts one document or an array, with `{ conflict: "update" | "replace" }` as options; it resolves to the inserted ids.
 - `cast<U>()` on `Datum`/`Stream`/`ValueProxy` only changes the TypeScript type — no runtime conversion.

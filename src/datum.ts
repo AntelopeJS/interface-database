@@ -1,1 +1,1 @@
-export { Datum } from "./staged-query/datum";
+export { Datum, IsDatum } from "./staged-query/datum";

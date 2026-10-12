@@ -1,6 +1,6 @@
 export * from "./atomic";
-export { Datum } from "./datum";
-export { Query } from "./query";
+export { Datum, IsDatum } from "./datum";
+export { IsQuery, Query } from "./query";
 export {
   CROSS_INSTANCE,
   InstanceId,
@@ -9,5 +9,5 @@ export {
   SchemaInstance,
 } from "./schema";
 export { Selection, SingleSelection, Table } from "./selection";
-export { Stream } from "./stream";
-export { ValueProxy, ValueProxyOrValue } from "./valueproxy";
+export { IsStream, Stream } from "./stream";
+export { IsValueProxy, ValueProxy, ValueProxyOrValue } from "./valueproxy";

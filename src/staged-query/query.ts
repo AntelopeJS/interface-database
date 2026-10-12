@@ -1,4 +1,22 @@
 import { StagedObject } from "./common";
+import { HasKind, MarkKind } from "./kind";
+
+const QUERY_KIND = Symbol.for("@antelopejs/interface-database/Query@1");
 
 // oxlint-disable-next-line typescript/no-unused-vars -- The executable entry consumes T through declaration merging.
 export class Query<T> extends StagedObject {}
+
+MarkKind(Query.prototype, QUERY_KIND);
+
+/**
+ * Whether a value is a query, built by any instance of this interface.
+ *
+ * Unlike `instanceof`, it also recognises objects built by the instance of
+ * another provider binding.
+ *
+ * @param value Value to test
+ * @returns True if the value is a query
+ */
+export function IsQuery(value: unknown): value is Query<unknown> {
+  return HasKind(value, QUERY_KIND);
+}

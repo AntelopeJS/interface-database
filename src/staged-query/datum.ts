@@ -2,6 +2,9 @@ import { Query } from "./query";
 import { ValueProxy } from "./valueproxy";
 import type { Selection } from "./selection";
 import type { ExtractType, Value } from "./common";
+import { HasKind, MarkKind } from "./kind";
+
+const DATUM_KIND = Symbol.for("@antelopejs/interface-database/Datum@1");
 
 export class Datum<T> extends Query<T> {
   /**
@@ -99,4 +102,19 @@ export class Datum<T> extends Query<T> {
   public pluck(...fields: string[]) {
     return this.stage(Datum<Partial<T>>, "pluck", undefined, fields);
   }
+}
+
+MarkKind(Datum.prototype, DATUM_KIND);
+
+/**
+ * Whether a value is a datum, built by any instance of this interface.
+ *
+ * Unlike `instanceof`, it also recognises objects built by the instance of
+ * another provider binding.
+ *
+ * @param value Value to test
+ * @returns True if the value is a datum
+ */
+export function IsDatum(value: unknown): value is Datum<unknown> {
+  return HasKind(value, DATUM_KIND);
 }

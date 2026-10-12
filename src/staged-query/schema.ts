@@ -75,8 +75,8 @@ export interface SchemaDefinition {
  * {@link IndexDefinition.crossInstance} on the indexes that cross-instance
  * queries rely on.
  */
-export const CROSS_INSTANCE: unique symbol = Symbol(
-  "antelopejs:cross-instance",
+export const CROSS_INSTANCE: unique symbol = Symbol.for(
+  "@antelopejs/interface-database/CROSS_INSTANCE",
 );
 
 /**

@@ -3,6 +3,9 @@ import { Query } from "./query";
 import type { Selection } from "./selection";
 import type { Changes, ExtractType, Value } from "./common";
 import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
+import { HasKind, MarkKind } from "./kind";
+
+const STREAM_KIND = Symbol.for("@antelopejs/interface-database/Stream@1");
 
 export class Stream<T> extends Query<T[]> {
   /**
@@ -321,4 +324,19 @@ export class Stream<T> extends Query<T[]> {
   public changes() {
     return this.stage(Query<Changes<T>[]>, "changes");
   }
+}
+
+MarkKind(Stream.prototype, STREAM_KIND);
+
+/**
+ * Whether a value is a stream, built by any instance of this interface.
+ *
+ * Unlike `instanceof`, it also recognises objects built by the instance of
+ * another provider binding.
+ *
+ * @param value Value to test
+ * @returns True if the value is a stream
+ */
+export function IsStream(value: unknown): value is Stream<unknown> {
+  return HasKind(value, STREAM_KIND);
 }

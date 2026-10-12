@@ -1,4 +1,9 @@
 import { QueryStage, StagedObject, type ExtractType } from "./common";
+import { HasKind, MarkKind } from "./kind";
+
+const VALUEPROXY_KIND = Symbol.for(
+  "@antelopejs/interface-database/ValueProxy@1",
+);
 
 export type ValueProxyOrValue<T> = ValueProxy<T> | T;
 
@@ -801,4 +806,19 @@ export class ValueProxy<T> extends StagedObject {
   }
 
   //#endregion
+}
+
+MarkKind(ValueProxy.prototype, VALUEPROXY_KIND);
+
+/**
+ * Whether a value is a value proxy, built by any instance of this interface.
+ *
+ * Unlike `instanceof`, it also recognises objects built by the instance of
+ * another provider binding.
+ *
+ * @param value Value to test
+ * @returns True if the value is a value proxy
+ */
+export function IsValueProxy(value: unknown): value is ValueProxy<unknown> {
+  return HasKind(value, VALUEPROXY_KIND);
 }

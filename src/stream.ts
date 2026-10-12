@@ -1,1 +1,1 @@
-export { Stream } from "./staged-query/stream";
+export { IsStream, Stream } from "./staged-query/stream";

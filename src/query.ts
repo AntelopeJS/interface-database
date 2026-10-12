@@ -114,3 +114,4 @@ Object.defineProperties(StagedQuery.prototype, {
 });
 
 export { StagedQuery as Query };
+export { IsQuery } from "./staged-query/query";

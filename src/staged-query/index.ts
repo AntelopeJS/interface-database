@@ -1,7 +1,7 @@
 export * from "./common";
 export * from "./atomic";
-export { Datum } from "./datum";
-export { Query } from "./query";
+export { Datum, IsDatum } from "./datum";
+export { IsQuery, Query } from "./query";
 export {
   CROSS_INSTANCE,
   Schema,
@@ -14,5 +14,5 @@ export {
   type TableDefinition,
 } from "./schema";
 export { Selection, SingleSelection, Table } from "./selection";
-export { Stream } from "./stream";
-export { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
+export { IsStream, Stream } from "./stream";
+export { IsValueProxy, ValueProxy, type ValueProxyOrValue } from "./valueproxy";

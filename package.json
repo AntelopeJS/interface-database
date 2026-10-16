@@ -1,12 +1,18 @@
 {
   "name": "@antelopejs/interface-database",
   "version": "0.1.9",
-  "description": "AntelopeJS interface for database-agnostic query operations",
+  "description": "AQL, the AntelopeJS database-agnostic query builder: schemas, CRUD, joins, aggregations and change feeds",
   "keywords": [
     "antelopejs",
+    "aql",
     "database",
-    "interface"
+    "interface",
+    "query-builder"
   ],
+  "homepage": "https://interfaces.antelopejs.com/docs/database",
+  "bugs": {
+    "url": "https://github.com/AntelopeJS/interface-database/issues"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

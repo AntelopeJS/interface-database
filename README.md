@@ -87,7 +87,7 @@ Requires AntelopeJS core `1.x` and the following peer dependency:
 
 | Package                      | Range            |
 | ---------------------------- | ---------------- |
-| `@antelopejs/interface-core` | `>=0.1.1 <1.0.0` |
+| `@antelopejs/interface-core` | `>=0.2.4 <1.0.0` |
 
 ## Contributing
 

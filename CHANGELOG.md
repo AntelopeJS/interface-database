@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.1.10
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.9...v0.1.10)
+
+### 📖 Documentation
+
+- Rewrite the README ([#31](https://github.com/AntelopeJS/interface-database/pull/31))
+- **agents:** Simplify repository guidance ([#32](https://github.com/AntelopeJS/interface-database/pull/32))
+- Align typed queries and change feeds with current API ([#33](https://github.com/AntelopeJS/interface-database/pull/33))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <rizzitelli.antony@pm.me>
+
 ## v0.1.9
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.8...v0.1.9)

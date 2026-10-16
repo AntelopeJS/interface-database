@@ -73,17 +73,21 @@ Callbacks such as the `filter` above receive a `ValueProxy`, not a document: onl
 
 ## Documentation
 
-- [Overview](https://interfaces.antelopejs.com/docs/database)
-- [Query types](https://interfaces.antelopejs.com/docs/database/query_types)
-- [Operations](https://interfaces.antelopejs.com/docs/database/operations)
-- [Results](https://interfaces.antelopejs.com/docs/database/results)
+- [Overview and import paths](./docs/index.md)
+- [Query types](./docs/1.query_types/1.index.md)
+- [Operations](./docs/2.operations/1.index.md)
+- [Atomic mutations](./docs/2.operations/8.atomic_mutations.md)
+- [Results](./docs/3.results/1.index.md)
 
 ## Compatibility
 
-| Package                             | Range            |
-| ----------------------------------- | ---------------- |
-| `@antelopejs/interface-core` (peer) | `>=0.1.1 <1.0.0` |
-| `@antelopejs/core`                  | `1.x`            |
+Requires AntelopeJS core `1.x` and the following peer dependency:
+
+<!-- docs-compat: ./package.json#peerDependencies -->
+
+| Package                      | Range            |
+| ---------------------------- | ---------------- |
+| `@antelopejs/interface-core` | `>=0.1.1 <1.0.0` |
 
 ## Contributing
 

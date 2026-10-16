@@ -4,6 +4,14 @@
 
 The Database interface provides AQL (Antelope Query Language), a database-agnostic query API. Each module implements this generic interface with the database engine of its choice. AQL offers a chainable, type-safe query builder that works identically across all supported backends, so your application code remains portable regardless of the underlying database.
 
+## Import Paths
+
+Import `Schema`, `Query`, `Table`, `Datum`, `Stream`, and `ValueProxy` from `@antelopejs/interface-database` in an AntelopeJS module. This entry point registers schemas with the bound provider and installs query execution (`run()`, `then()`, `cursor()`, and async iteration).
+
+Supporting types have dedicated paths: import `Changes`, `DeepPartial`, `ExtractType`, and `Value` from `@antelopejs/interface-database/common`, and `FieldType`, `TableDefinition`, and `IndexDefinition` from `@antelopejs/interface-database/schema`. Atomic mutation types are available from the package root and `/atomic`.
+
+`@antelopejs/interface-database/staged-query` is the build-only entry point for tools that construct and inspect query stages without the AntelopeJS runtime. Its schema does not register with a provider, and its queries expose `build()` but no execution methods when loaded on their own. Do not `await` a build-only query expecting database results. The runtime entry point augments the same staged classes; keep build-only consumers separate from runtime imports when that isolation matters.
+
 ## Documentation Structure
 
 - [**1. Query Types**](./1.query_types/1.index.md) - Detailed reference for each query type:

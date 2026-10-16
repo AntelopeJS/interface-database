@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true,
+    "composite": false,
+    "incremental": false,
+    "paths": {
+      "@antelopejs/interface-database": ["../src/index.ts"],
+      "@antelopejs/interface-database/*": ["../src/*"]
+    }
+  },
+  "include": ["../src/**/*.ts", "./**/*.ts"]
+}

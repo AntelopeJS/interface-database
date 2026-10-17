@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" role="img" aria-labelledby="title desc">
+  <title id="title">Build a query, then execute it</title>
+  <desc id="desc">Table access, filters, and transforms build stages. The runtime entry point executes these stages through a provider using await, run, or a cursor. The isolated staged-query entry point only builds.</desc>
+  <rect width="480" height="420" rx="16" fill="#f5f7fb"/>
+  <g font-family="system-ui, sans-serif" fill="#172b45">
+    <text x="24" y="36" font-size="20" font-weight="700">A query is a plan before it is data</text>
+    <rect x="24" y="58" width="432" height="100" rx="10" fill="#e1ecfa"/>
+    <text x="42" y="88" font-size="18" font-weight="700">Build · no query execution</text>
+    <text x="42" y="119" font-size="16">Table → filter → transform → stages</text>
+    <text x="42" y="144" font-size="16">build() returns the query plan.</text>
+    <path d="M240 168v34m-6-6 6 6 6-6" fill="none" stroke="#526780" stroke-width="2"/>
+    <rect x="24" y="214" width="432" height="100" rx="10" fill="#d9eee8"/>
+    <text x="42" y="244" font-size="18" font-weight="700">Execute · runtime entry point</text>
+    <text x="42" y="275" font-size="16">await / run() → bound provider → results</text>
+    <text x="42" y="300" font-size="16">cursor() / async iteration → incremental reads</text>
+    <text x="24" y="352" font-size="16" font-weight="700">Building only?</text>
+    <text x="24" y="379" font-size="16">The isolated staged-query entry point has no</text>
+    <text x="24" y="402" font-size="16">execution methods. Awaiting it does not fetch data.</text>
+  </g>
+</svg>

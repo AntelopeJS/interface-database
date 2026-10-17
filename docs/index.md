@@ -1,8 +1,27 @@
-# Database Interface
+# Query data with AQL
 
 ## Overview
 
-The Database interface provides AQL (Antelope Query Language), a database-agnostic query API. Each module implements this generic interface with the database engine of its choice. AQL offers a chainable, type-safe query builder that works identically across all supported backends, so your application code remains portable regardless of the underlying database.
+The Database interface provides AQL (Antelope Query Language), a typed query API for AntelopeJS database providers. Build a query from table access, filters, and transformations, then execute it through the provider bound to your module.
+
+## Run your first query
+
+Start in an AntelopeJS module with a configured database provider. Installing the interface supplies query builders and contracts, not a database server or credentials.
+
+1. [Define a schema and create an instance](./2.operations/2.database_management.md). The schema describes tables; the instance selects where their data lives.
+2. [Open a table](./2.operations/3.table_operations.md) and compose a read with [filtering](./2.operations/6.filtering.md). Building the query does not execute it.
+3. [Execute with `await` or `run()`](./1.query_types/7.query.md), or consume a cursor for incremental results.
+4. [Inspect write results](./3.results/2.write_results.md) when adding mutations. Inserts return IDs; updates and deletes return counts.
+
+## Find the right reference
+
+| Question                                  | Start with                                               |
+| ----------------------------------------- | -------------------------------------------------------- |
+| Which operations fit this query shape?    | [Query types](./1.query_types/1.index.md)                |
+| How do I read and change records?         | [CRUD operations](./2.operations/4.crud.md)              |
+| How do I join related data?               | [Lookup](./2.operations/7.lookup.md)                     |
+| How do I conditionally change one record? | [Atomic mutations](./2.operations/8.atomic_mutations.md) |
+| What did the provider return?             | [Results](./3.results/1.index.md)                        |
 
 ## Import Paths
 
@@ -56,4 +75,4 @@ Supporting types have dedicated paths: import `Changes`, `DeepPartial`, `Extract
 
 ## Database Interoperability
 
-AQL decouples your application logic from the database engine. The same query code works with any backend that implements the interface, such as MongoDB, RethinkDB, or other community-provided implementations. This reduces migration cost and keeps your code portable.
+AQL separates query construction from the database engine. A provider translates the shared operations into its backend's behavior. Before moving an application between providers, check that provider's supported operations and exercise the queries, indexes, and change feeds your application uses; a shared TypeScript contract is not a guarantee of identical backend capabilities or performance.

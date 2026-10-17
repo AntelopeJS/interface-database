@@ -13,6 +13,38 @@ Start in an AntelopeJS module with a configured database provider. Installing th
 3. [Execute with `await` or `run()`](./1.query_types/7.query.md), or consume a cursor for incremental results.
 4. [Inspect write results](./3.results/2.write_results.md) when adding mutations. Inserts return IDs; updates and deletes return counts.
 
+### Insert and read one record
+
+Run this function from your module after its database provider is configured. It creates a disposable schema instance and writes one record; do not point this exercise at production data.
+
+```ts docs-check
+import { Schema } from "@antelopejs/interface-database";
+
+interface Note {
+  _id: string;
+  title: string;
+  done: boolean;
+}
+
+const notesSchema = new Schema<{ notes: Note }>("notes-demo", {
+  notes: {
+    fields: { title: "string", done: "boolean" },
+    indexes: {},
+  },
+});
+
+export async function tryNotes() {
+  await notesSchema.createInstance("tutorial");
+  const notes = notesSchema.instance("tutorial").table("notes");
+  const [id] = await notes.insert({ title: "Learn AQL", done: false });
+  const saved = await notes.get(id);
+  if (!saved) throw new Error("The inserted note was not found");
+  return saved.title; // "Learn AQL"
+}
+```
+
+`notes` is a query builder; `saved` is a fetched record. Calling the function again inserts another record. When you no longer need this disposable data, explicitly run `await notesSchema.destroyInstance("tutorial")`; it deletes the instance's data.
+
 ## Find the right reference
 
 | Question                                  | Start with                                               |
@@ -28,6 +60,8 @@ Start in an AntelopeJS module with a configured database provider. Installing th
 Import `Schema`, `Query`, `Table`, `Datum`, `Stream`, and `ValueProxy` from `@antelopejs/interface-database` in an AntelopeJS module. This entry point registers schemas with the bound provider and installs query execution (`run()`, `then()`, `cursor()`, and async iteration).
 
 Supporting types have dedicated paths: import `Changes`, `DeepPartial`, `ExtractType`, and `Value` from `@antelopejs/interface-database/common`, and `FieldType`, `TableDefinition`, and `IndexDefinition` from `@antelopejs/interface-database/schema`. Atomic mutation types are available from the package root and `/atomic`.
+
+### Advanced: build queries without executing them
 
 `@antelopejs/interface-database/staged-query` is the build-only entry point for tools that construct and inspect query stages without the AntelopeJS runtime. Its schema does not register with a provider, and its queries expose `build()` but no execution methods when loaded on their own. Do not `await` a build-only query expecting database results. The runtime entry point augments the same staged classes; keep build-only consumers separate from runtime imports when that isolation matters.
 

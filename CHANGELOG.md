@@ -4,6 +4,12 @@
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.10...v0.1.11)
 
+### Upgrade notes
+
+- `IndexDefinition.unique?: boolean`: two rows of one instance may not share the key of the index (unique within each instance, `crossInstance` or not) ([#37](https://github.com/AntelopeJS/interface-database/pull/37)).
+- `DuplicateKeyError(index, fields)` is thrown by the database module when a write would duplicate the key of a unique index, the primary key `_id` included (`index: "_id"`, `fields: ["_id"]`). Recognise it with `IsDuplicateKeyError(value)`, which works across interface copies (`instanceof` does not).
+- Implementers must honour `unique` and throw `DuplicateKeyError`: drivers implementing this contract declare `>=0.1.11 <0.2.0` (`@antelopejs/mongodb` 1.5, `@antelopejs/postgres` 0.2.2, `@antelopejs/rethinkdb` 1.5). This contract ships as a patch release; an older driver does not throw the typed error.
+
 ### 🚀 Enhancements
 
 - **schema:** Unique indexes and a typed DuplicateKeyError ([#37](https://github.com/AntelopeJS/interface-database/pull/37))

@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.1.11
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.10...v0.1.11)
+
+### 🚀 Enhancements
+
+- **schema:** Unique indexes and a typed DuplicateKeyError ([#37](https://github.com/AntelopeJS/interface-database/pull/37))
+
+### 📖 Documentation
+
+- Improve task-based onboarding and contract guidance ([#34](https://github.com/AntelopeJS/interface-database/pull/34))
+- Clarify learning paths and illustrate real outcomes ([#36](https://github.com/AntelopeJS/interface-database/pull/36))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli <rizzitelli.antony@pm.me>
+
 ## v0.1.10
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.9...v0.1.10)

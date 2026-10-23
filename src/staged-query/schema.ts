@@ -27,6 +27,17 @@ export interface IndexDefinition {
    * This flag never changes query results, only performance.
    */
   crossInstance?: boolean;
+
+  /**
+   * Whether two rows of one instance may not share this index's key
+   *
+   * A write that would store a second row with the key is refused with a
+   * `DuplicateKeyError`. The constraint holds within each instance: rows of
+   * different instances may share a key, `crossInstance` or not. Give every
+   * row a value for the index's fields, since databases differ on whether
+   * rows missing them conflict.
+   */
+  unique?: boolean;
 }
 
 export type StringFieldType =

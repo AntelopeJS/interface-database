@@ -1,5 +1,6 @@
 export * from "./atomic";
 export { Datum, IsDatum } from "./datum";
+export * from "./errors";
 export { IsQuery, Query } from "./query";
 export {
   CROSS_INSTANCE,

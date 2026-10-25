@@ -4,7 +4,7 @@ AQL, the AntelopeJS database query builder, published as `@antelopejs/interface-
 
 ## Layout
 
-- `src/` holds the runtime entry points. Each top-level file is a subpath listed in both `exports` and `typesVersions` in `package.json`; a new subpath needs an entry in both.
+- `src/` holds the runtime entry points. `index.ts` is the root export and re-exports `errors.ts`; every other top-level module, and `staged-query/`, is a subpath listed in both `exports` and `typesVersions` in `package.json`. A new subpath needs an entry in both. `antelope.test.ts` is the test project, not a subpath.
 - `src/staged-query/` is the build-only entry point. It must not import `@antelopejs/interface-core` or `node:async_hooks`; `scripts/test-staged-query.cjs` enforces that against `dist`.
 - `src/tests/` is the conformance suite. It compiles to `dist/tests` and ships in the package, and the database modules run it against their driver, so a change there changes what every implementer must pass. `datasets/` and `helpers/` are its fixtures.
 - `skills/` and `docs/` ship in the package. `docs/` is the source of interfaces.antelopejs.com/docs/database, and its code samples typecheck through `docs/tsconfig.json`, which maps the package onto `src`.
@@ -17,6 +17,7 @@ AQL, the AntelopeJS database query builder, published as `@antelopejs/interface-
 ## Tests
 
 - `pnpm test` builds, then runs `ajs module test .` with `src/antelope.test.ts`: it starts an in-memory MongoDB 8.0.8 replica set and runs `dist/tests` through `@antelopejs/mongodb` 1.3.1. The first run downloads the MongoDB binary.
+- `pnpm run checks` does not run the docs check (links and type-checked samples in `README.md` and `docs/`); only CI runs it, through the `docs-files` input of `ci.yml`.
 - `pnpm run checks` and CI do not run `pnpm test:staged-query`, the isolation and parity test of the build-only entry point. Run it when you change `src/staged-query/`.
 
 <!-- antelopejs-guardrails:start -->

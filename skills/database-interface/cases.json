@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-records",
+      "area": "framework",
+      "style": "clean",
+      "prompt": "How do I read records from the database?",
+      "origin": "docs-assistant",
+      "expect": {
+        "skills": ["database-interface"],
+        "acceptable": [
+          "database-decorators-interface",
+          "data-api-interface",
+          "ajs-consume-interface"
+        ],
+        "mustNotMention": ["DatabaseService"]
+      }
+    },
+    {
+      "id": "read-records-casual",
+      "area": "framework",
+      "style": "casual",
+      "prompt": "what does a db request to get customers look like?",
+      "origin": "docs-assistant",
+      "expect": {
+        "skills": ["database-interface"],
+        "acceptable": [
+          "database-decorators-interface",
+          "data-api-interface",
+          "ajs-consume-interface"
+        ],
+        "mustNotMention": ["DatabaseService"]
+      }
+    },
+    {
+      "id": "database-interface-decorators-neighbour",
+      "area": "framework",
+      "style": "clean",
+      "prompt": "Define a Recipe table class with field and index decorators, an encrypted supplier code, and seed default rows when the table is empty.",
+      "expect": {
+        "skills": ["database-decorators-interface"],
+        "acceptable": ["antelopejs", "ajs-consume-interface"],
+        "avoid": ["database-interface"]
+      }
+    },
+    {
+      "id": "database-interface-duplicate-key",
+      "area": "framework",
+      "style": "clean",
+      "prompt": "An insert into a table with a unique index sometimes fails. How do I catch the duplicate key error safely, even if the query comes from another module?",
+      "expect": {
+        "skills": ["database-interface"],
+        "acceptable": [
+          "database-decorators-interface",
+          "ajs-consume-interface",
+          "antelopejs"
+        ],
+        "mustMention": ["IsDuplicateKeyError"]
+      }
+    },
+    {
+      "id": "database-interface-cross-instance",
+      "area": "framework",
+      "style": "clean",
+      "prompt": "Each tenant has its own database instance, but I need one query across all tenants. How do I do that and keep it fast?",
+      "expect": {
+        "skills": ["database-interface"],
+        "acceptable": [
+          "database-decorators-interface",
+          "ajs-consume-interface",
+          "antelopejs"
+        ],
+        "mustMention": ["CROSS_INSTANCE", "crossInstance"]
+      }
+    }
+  ]
+}

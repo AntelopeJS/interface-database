@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "@typescript-eslint/no-unused-expressions": 1,
+    "typescript/no-unused-vars": 1,
+    "unicorn/no-thenable": 1
+  },
+  "tsExpectError": 0,
+  "tsIgnore": 0,
+  "safety": 0
+}

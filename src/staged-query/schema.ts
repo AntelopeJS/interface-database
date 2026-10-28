@@ -45,14 +45,18 @@ export type StringFieldType =
   | Array<StringFieldType>
   | { [subfield: string]: StringFieldType };
 
-interface IoTsCodec {
-  readonly _A: unknown;
-  readonly _O: unknown;
-  readonly _I: unknown;
+interface IoTsValidation {
+  readonly _tag: "Left" | "Right";
+}
+
+interface IoTsCodec<A = unknown, O = unknown, I = unknown> {
+  readonly _A: A;
+  readonly _O: O;
+  readonly _I: I;
   readonly name: string;
-  is(u: unknown): boolean;
-  encode(a: never): unknown;
-  decode(i: unknown): unknown;
+  is(u: A | I): boolean;
+  encode(a: A): O;
+  decode(i: I): IoTsValidation;
 }
 
 export type FieldType = StringFieldType | IoTsCodec;

@@ -1,4 +1,9 @@
-import { QueryStage, StagedObject, type ExtractType } from "./common";
+import {
+  QueryStage,
+  StagedObject,
+  type ExtractType,
+  type StagedConstructor,
+} from "./common";
 import { HasKind, MarkKind } from "./kind";
 
 const VALUEPROXY_KIND = Symbol.for(
@@ -15,7 +20,7 @@ export type IsArray<Left, Right, R> = Right extends (infer A)[]
   ? Is<A, Left, R>
   : never;
 
-export type OnlyObject<T> = T extends Record<any, any> ? T : never;
+export type OnlyObject<T> = T extends object ? T : never;
 
 /**
  * Proxy to an actual value in the database
@@ -36,6 +41,16 @@ export class ValueProxy<T> extends StagedObject {
    */
   public static constant<T = unknown>(value: T) {
     return new ValueProxy<T>(QueryStage("constant", undefined, value));
+  }
+
+  static #stageOf<Source, Result extends StagedObject>(
+    proxy: ValueProxy<Source>,
+    type: StagedConstructor<Result>,
+    stage: string,
+    options?: any,
+    ...args: any[]
+  ): Result {
+    return proxy.stage(type, stage, options, ...args);
   }
 
   /**
@@ -69,7 +84,9 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A && B
    */
-  public and(value: unknown) {
+  public and<U extends boolean | null | undefined>(
+    value: ValueProxyOrValue<U>,
+  ) {
     return this.stage(ValueProxy<boolean>, "and", undefined, value);
   }
 
@@ -79,7 +96,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A || B
    */
-  public or(value: unknown) {
+  public or<U extends boolean | null | undefined>(value: ValueProxyOrValue<U>) {
     return this.stage(ValueProxy<boolean>, "or", undefined, value);
   }
 
@@ -98,7 +115,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A == B
    */
-  public eq(value: unknown) {
+  public eq<U>(value: ValueProxyOrValue<U>) {
     return this.stage(ValueProxy<boolean>, "eq", undefined, value);
   }
 
@@ -108,7 +125,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A != B
    */
-  public ne(value: unknown) {
+  public ne<U>(value: ValueProxyOrValue<U>) {
     return this.stage(ValueProxy<boolean>, "ne", undefined, value);
   }
 
@@ -122,12 +139,7 @@ export class ValueProxy<T> extends StagedObject {
     this: Is<Date | number, T, this>,
     value: ValueProxyOrValue<number>,
   ) {
-    return (this as ValueProxy<T>).stage(
-      ValueProxy<T>,
-      "add",
-      undefined,
-      value,
-    );
+    return ValueProxy.#stageOf(this, ValueProxy<T>, "add", undefined, value);
   }
 
   /**
@@ -137,7 +149,8 @@ export class ValueProxy<T> extends StagedObject {
    * @returns New value
    */
   public sub<U>(this: Is<Date | number, T, this>, value: ValueProxyOrValue<U>) {
-    return (this as ValueProxy<T>).stage(
+    return ValueProxy.#stageOf(
+      this,
       ValueProxy<
         Date extends U
           ?
@@ -440,7 +453,8 @@ export class ValueProxy<T> extends StagedObject {
     this: Is<Date | number | string, T, this>,
     other: ValueProxyOrValue<T>,
   ) {
-    return (this as ValueProxy<T>).stage(
+    return ValueProxy.#stageOf(
+      this,
       ValueProxy<boolean>,
       "cmp_gt",
       undefined,
@@ -458,7 +472,8 @@ export class ValueProxy<T> extends StagedObject {
     this: Is<Date | number | string, T, this>,
     other: ValueProxyOrValue<T>,
   ) {
-    return (this as ValueProxy<T>).stage(
+    return ValueProxy.#stageOf(
+      this,
       ValueProxy<boolean>,
       "cmp_ge",
       undefined,
@@ -476,7 +491,8 @@ export class ValueProxy<T> extends StagedObject {
     this: Is<Date | number | string, T, this>,
     other: ValueProxyOrValue<T>,
   ) {
-    return (this as ValueProxy<T>).stage(
+    return ValueProxy.#stageOf(
+      this,
       ValueProxy<boolean>,
       "cmp_lt",
       undefined,
@@ -494,7 +510,8 @@ export class ValueProxy<T> extends StagedObject {
     this: Is<Date | number | string, T, this>,
     other: ValueProxyOrValue<T>,
   ) {
-    return (this as ValueProxy<T>).stage(
+    return ValueProxy.#stageOf(
+      this,
       ValueProxy<boolean>,
       "cmp_le",
       undefined,
@@ -674,7 +691,7 @@ export class ValueProxy<T> extends StagedObject {
    * @returns Sum
    */
   public sum(this: IsArray<number, T, this>) {
-    return (this as ValueProxy<T>).stage(ValueProxy<number>, "arr_sum");
+    return ValueProxy.#stageOf(this, ValueProxy<number>, "arr_sum");
   }
 
   /**
@@ -683,7 +700,7 @@ export class ValueProxy<T> extends StagedObject {
    * @returns Average
    */
   public avg(this: IsArray<number, T, this>) {
-    return (this as ValueProxy<T>).stage(ValueProxy<number>, "arr_avg");
+    return ValueProxy.#stageOf(this, ValueProxy<number>, "arr_avg");
   }
 
   /**
@@ -692,7 +709,7 @@ export class ValueProxy<T> extends StagedObject {
    * @returns Minimum
    */
   public min(this: IsArray<number, T, this>) {
-    return (this as ValueProxy<T>).stage(ValueProxy<number>, "arr_min");
+    return ValueProxy.#stageOf(this, ValueProxy<number>, "arr_min");
   }
 
   /**
@@ -701,7 +718,7 @@ export class ValueProxy<T> extends StagedObject {
    * @returns Maximum
    */
   public max(this: IsArray<number, T, this>) {
-    return (this as ValueProxy<T>).stage(ValueProxy<number>, "arr_max");
+    return ValueProxy.#stageOf(this, ValueProxy<number>, "arr_max");
   }
 
   /**
@@ -714,7 +731,7 @@ export class ValueProxy<T> extends StagedObject {
    * @returns Value of the field
    */
   public key<TO = OnlyObject<T>, K extends keyof TO = keyof TO, U = undefined>(
-    this: Is<T, Record<any, any>, this>,
+    this: Is<T, object, this>,
     key: ValueProxyOrValue<K>,
     def?: ValueProxyOrValue<U>,
   ) {
@@ -736,7 +753,7 @@ export class ValueProxy<T> extends StagedObject {
    * @returns `{...A, ...B}`
    */
   public merge<U, TO = OnlyObject<T>>(
-    this: Is<T, Record<any, any>, this>,
+    this: Is<T, object, this>,
     other: ValueProxyOrValue<U>,
   ) {
     return this.stage(
@@ -752,7 +769,7 @@ export class ValueProxy<T> extends StagedObject {
    *
    * @returns Array of keys
    */
-  public keys<TO = OnlyObject<T>>(this: Is<T, Record<any, any>, this>) {
+  public keys<TO = OnlyObject<T>>(this: Is<T, object, this>) {
     return this.stage(ValueProxy<Array<keyof TO>>, "obj_keys");
   }
 
@@ -761,7 +778,7 @@ export class ValueProxy<T> extends StagedObject {
    *
    * @returns Array of values
    */
-  public values<TO = OnlyObject<T>>(this: Is<T, Record<any, any>, this>) {
+  public values<TO = OnlyObject<T>>(this: Is<T, object, this>) {
     return this.stage(ValueProxy<Array<TO[keyof TO]>>, "obj_values");
   }
 
@@ -771,7 +788,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param fields field list
    * @returns True if the object matches
    */
-  public hasfields(this: Is<T, Record<any, any>, this>, ...fields: string[]) {
+  public hasfields(this: Is<T, object, this>, ...fields: string[]) {
     return this.stage(ValueProxy<boolean>, "obj_has", undefined, fields);
   }
 }

@@ -21,10 +21,12 @@ const productsTable = schema.instance("default").table(productsTableName);
 const usersData = getUniqueUsers();
 const productsData = getUniqueProducts();
 
-const insertedKeys: {
+interface InsertedKeys {
   users: string[];
   products: string[];
-} = {
+}
+
+const insertedKeys: InsertedKeys = {
   users: [],
   products: [],
 };

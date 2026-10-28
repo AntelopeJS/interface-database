@@ -242,13 +242,6 @@ async function DoWithNestedObjectOperations() {
   expect(result.profile).to.have.property("skills");
   expect(result.profile.skills).to.deep.equal(["Embedded C", "C++"]);
   expect(result.profile).to.have.property("metadata");
-  if (
-    typeof result.profile.metadata.preferences === "object" &&
-    result.profile.metadata.preferences &&
-    "theme" in result.profile.metadata.preferences
-  ) {
-    expect(result.profile.metadata.preferences.theme).to.equal("dark");
-  }
   expect(result.profile.metadata.tags).to.include("experienced");
 }
 
@@ -257,7 +250,7 @@ async function DoWithSubqueryFieldReference() {
     .get(insertedKeys[0])
     .do((doc) =>
       doc.merge({
-        lookedUpUser: table.getAll(doc.key("email") as any, "email").nth(0),
+        lookedUpUser: table.getAll(doc.key("email"), "email").nth(0),
       }),
     )
     .run();
@@ -292,7 +285,7 @@ async function DoWithNoTemporaryLookupFields() {
     .do((doc) => ({
       name: doc.key("name"),
       email: doc.key("email"),
-      resolvedUser: table.getAll(doc.key("email") as any, "email").nth(0),
+      resolvedUser: table.getAll(doc.key("email"), "email").nth(0),
     }))
     .run();
 

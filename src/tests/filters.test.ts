@@ -89,7 +89,7 @@ async function FilterByNumberComparison() {
     expect(doc.age).to.be.greaterThan(25);
   });
 
-  const ages = result.map((doc) => doc.age).sort();
+  const ages = result.map((doc) => doc.age).sort((a, b) => a - b);
   expect(ages).to.deep.equal([28, 30, 35]);
 }
 
@@ -146,7 +146,7 @@ async function FilterWithConstantNumber() {
     expect(doc.age).to.be.greaterThan(25);
   });
 
-  const ages = result.map((doc) => doc.age).sort();
+  const ages = result.map((doc) => doc.age).sort((a, b) => a - b);
   expect(ages).to.deep.equal([28, 30, 35]);
 }
 

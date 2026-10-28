@@ -41,7 +41,7 @@ export type AtomicMutationOutcome = "applied" | "not-applied" | "unknown";
 const tableStages = ["schema", "instance", "table"];
 const identityFields = ["id", "_id"];
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+function isRecord<Value>(value: Value): value is Value & object {
   return (
     value !== null &&
     typeof value === "object" &&
@@ -49,7 +49,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   );
 }
 
-function isToken(value: unknown): value is string {
+function isToken<Value>(value: Value): value is Value & string {
   return typeof value === "string" && value.length > 0;
 }
 
@@ -59,7 +59,7 @@ function validateField(field: string) {
   }
 }
 
-function validateConstant(value: unknown, ancestors = new Set<unknown>()) {
+function validateConstant<Value>(value: Value, ancestors = new Set<unknown>()) {
   if (value === null || ["string", "boolean"].includes(typeof value)) return;
   if (typeof value === "number" && Number.isFinite(value)) return;
   if (value instanceof Date && Number.isFinite(value.getTime())) return;

@@ -34,11 +34,13 @@ const usersData = getUniqueUsers();
 const ordersData = getUniqueOrders();
 const productsData = getUniqueProducts();
 
-const insertedKeys: {
+interface InsertedKeys {
   users: string[];
   orders: string[];
   products: string[];
-} = {
+}
+
+const insertedKeys: InsertedKeys = {
   users: [],
   orders: [],
   products: [],
@@ -151,7 +153,7 @@ async function LookupWithSubqueryInsideMap() {
       order.merge({
         resolvedProducts: order
           .key("productIds")
-          .map((pid) => productsTable.get(pid as any)),
+          .map((pid) => productsTable.get(pid)),
       }),
     )
     .run();
@@ -170,7 +172,7 @@ async function LookupWithSubqueryInsideMap() {
 
   await ordersTable
     .get(insertedKeys.orders[0])
-    .update({ productIds: undefined } as any)
+    .update({ productIds: undefined })
     .run();
 }
 

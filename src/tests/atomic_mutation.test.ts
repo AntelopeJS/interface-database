@@ -9,15 +9,25 @@ import {
   SchemaInstance,
   ValidateAtomicMutation,
   ValueProxy,
-  type AtomicMutation,
   type AtomicMutationOutcome,
   type AtomicUpdate,
 } from "../index";
 
+interface RecordDetails {
+  count?: number;
+  nested?: unknown[];
+  date?: Date;
+  nil?: null;
+}
+
 interface RecordData {
   revision?: string;
   title: string;
-  details: Record<string, unknown>;
+  details: RecordDetails;
+}
+
+interface TenantRecordData extends RecordData {
+  tenant_id: string;
 }
 
 interface TestTables {
@@ -87,17 +97,18 @@ function ValidateRevision() {
       expectedRevision: { kind: "missing" },
     }),
   ).not.to.throw();
-  for (const expectedRevision of [
+  const malformedRevisions: any[] = [
     null,
     undefined,
     "",
     { kind: "missing", extra: true },
-  ]) {
+  ];
+  for (const expectedRevision of malformedRevisions) {
     expect(() =>
       ValidateAtomicMutation("record-a", {
         ...request,
         expectedRevision,
-      } as AtomicMutation<RecordData>),
+      }),
     ).to.throw(TypeError);
   }
   expect(() =>
@@ -122,7 +133,7 @@ function ValidateProtectedFields() {
     ).to.throw(TypeError);
   }
   expect(() =>
-    ValidateAtomicMutation<Record<string, unknown>>(
+    ValidateAtomicMutation<TenantRecordData>(
       "record-a",
       {
         ...request,
@@ -185,23 +196,27 @@ function ValidateEquality() {
       }),
     ).not.to.throw();
   }
-  for (const expectedValue of [null, undefined, {}, [], NaN, new Date(NaN)]) {
+  const malformedValues: any[] = [null, undefined, {}, [], NaN, new Date(NaN)];
+  for (const expectedValue of malformedValues) {
     expect(() =>
       ValidateAtomicMutation("record-a", {
         type: "deleteIfEqual",
         field: "title",
         expectedValue,
-      } as AtomicMutation<RecordData>),
+      }),
     ).to.throw(TypeError);
   }
 }
 
-async function WithResult(result: unknown, check: () => Promise<void>) {
+async function WithResult(
+  result: Awaited<ReturnType<typeof Query.prototype.run>>,
+  check: () => Promise<void>,
+) {
   const original = Object.getOwnPropertyDescriptor(Query.prototype, "run")!;
   let calls = 0;
   Query.prototype.run = () => {
     calls++;
-    return Promise.resolve(result as never);
+    return Promise.resolve(result);
   };
   try {
     await check();
@@ -227,7 +242,7 @@ async function RejectLegacyResults() {
         .run()
         .then(
           () => undefined,
-          (reason: unknown) => reason,
+          (reason) => reason,
         );
       expect(error).to.be.instanceOf(AtomicMutationUnsupportedError);
     });
@@ -239,7 +254,7 @@ async function RejectLegacyResults() {
       .run()
       .then(
         () => undefined,
-        (reason: unknown) => reason,
+        (reason) => reason,
       );
     expect(error).to.equal(failure);
   });
@@ -257,7 +272,7 @@ async function ValidateTerminal() {
     Object.assign(query.build().at(-1)!, terminal);
     const error = await query.run().then(
       () => undefined,
-      (reason: unknown) => reason,
+      (reason) => reason,
     );
     expect(error).to.be.instanceOf(TypeError);
   }

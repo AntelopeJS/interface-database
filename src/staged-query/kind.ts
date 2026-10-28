@@ -1,6 +1,10 @@
+import type { StagedObject } from "./common";
+
+type KindOwner = StagedObject | Error;
+
 type KindHolder = Record<symbol, unknown>;
 
-export function MarkKind(target: object, kind: symbol): void {
+export function MarkKind(target: KindOwner, kind: symbol): void {
   Object.defineProperty(target, kind, { value: true });
 }
 

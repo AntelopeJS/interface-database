@@ -11,9 +11,28 @@ interface LoadableModule {
   load(filename: string): void;
 }
 
-type ModuleRequire = (request: string) => unknown;
+type ModuleExports = Module["exports"];
 
-const internals = Module as unknown as ModuleInternals;
+type ModuleRequire = (request: string) => ModuleExports;
+
+function hasInternals(
+  candidate: typeof Module,
+): candidate is typeof Module & ModuleInternals {
+  return "_resolveFilename" in candidate && "_nodeModulePaths" in candidate;
+}
+
+function isLoadable(candidate: Module): candidate is Module & LoadableModule {
+  return "load" in candidate;
+}
+
+function resolveInternals() {
+  if (!hasInternals(Module)) {
+    throw new Error("node:module does not expose its resolution internals");
+  }
+  return Module;
+}
+
+const internals = resolveInternals();
 
 /**
  * Evaluates built packages a second time, the way the core gives each
@@ -29,7 +48,7 @@ export function CreateOtherInstance(folders: string[]): ModuleRequire {
   const owned = folders.map((folder) => realpathSync(folder) + path.sep);
   const modules = new Map<string, Module>();
 
-  const load = (filename: string, parent: Module): unknown => {
+  const load = (filename: string, parent: Module): ModuleExports => {
     const cached = modules.get(filename);
     if (cached) {
       return cached.exports;
@@ -37,14 +56,16 @@ export function CreateOtherInstance(folders: string[]): ModuleRequire {
     const loaded = new Module(filename, parent);
     loaded.filename = filename;
     loaded.paths = internals._nodeModulePaths(path.dirname(filename));
-    loaded.require = ((request: string) =>
-      requireFrom(loaded, request)) as Module["require"];
+    loaded.require = (request: string) => requireFrom(loaded, request);
     modules.set(filename, loaded);
-    (loaded as unknown as LoadableModule).load(filename);
+    if (!isLoadable(loaded)) {
+      throw new Error("node:module instances cannot load a file directly");
+    }
+    loaded.load(filename);
     return loaded.exports;
   };
 
-  const requireFrom = (parent: Module, request: string): unknown => {
+  const requireFrom = (parent: Module, request: string): ModuleExports => {
     const filename = internals._resolveFilename(request, parent);
     const isOwned = owned.some((root) => filename.startsWith(root));
     return isOwned

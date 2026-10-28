@@ -142,6 +142,8 @@ async function BulkInsertEventTest() {
     expect(entry).to.have.property("newValue");
   });
 
-  const insertedCars = results.map((r: any) => r.newValue.car).sort();
+  const insertedCars = results
+    .map((r: any) => r.newValue.car)
+    .sort((a, b) => Number(a > b) - Number(a < b));
   expect(insertedCars).to.deep.equal(["BMW", "Tesla"]);
 }

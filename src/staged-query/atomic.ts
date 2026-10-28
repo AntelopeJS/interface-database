@@ -61,7 +61,7 @@ function validateField(field: string) {
 
 function validateConstant<Value>(value: Value, ancestors = new Set<unknown>()) {
   if (value === null || ["string", "boolean"].includes(typeof value)) return;
-  if (typeof value === "number" && Number.isFinite(value)) return;
+  if (Number.isFinite(value)) return;
   if (value instanceof Date && Number.isFinite(value.getTime())) return;
   if ((!Array.isArray(value) && !isRecord(value)) || ancestors.has(value)) {
     throw new TypeError("Atomic mutation patches must contain constant data");

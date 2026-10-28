@@ -11,9 +11,7 @@ interface LoadableModule {
   load(filename: string): void;
 }
 
-type ModuleExports = Module["exports"];
-
-type ModuleRequire = (request: string) => ModuleExports;
+type ModuleRequire = (request: string) => unknown;
 
 function hasInternals(
   candidate: typeof Module,
@@ -32,8 +30,6 @@ function resolveInternals() {
   return Module;
 }
 
-const internals = resolveInternals();
-
 /**
  * Evaluates built packages a second time, the way the core gives each
  * provider binding its own copy of an interface: every file under `folders`
@@ -48,14 +44,14 @@ export function CreateOtherInstance(folders: string[]): ModuleRequire {
   const owned = folders.map((folder) => realpathSync(folder) + path.sep);
   const modules = new Map<string, Module>();
 
-  const load = (filename: string, parent: Module): ModuleExports => {
+  const load = (filename: string, parent: Module): unknown => {
     const cached = modules.get(filename);
     if (cached) {
       return cached.exports;
     }
     const loaded = new Module(filename, parent);
     loaded.filename = filename;
-    loaded.paths = internals._nodeModulePaths(path.dirname(filename));
+    loaded.paths = resolveInternals()._nodeModulePaths(path.dirname(filename));
     loaded.require = (request: string) => requireFrom(loaded, request);
     modules.set(filename, loaded);
     if (!isLoadable(loaded)) {
@@ -65,8 +61,8 @@ export function CreateOtherInstance(folders: string[]): ModuleRequire {
     return loaded.exports;
   };
 
-  const requireFrom = (parent: Module, request: string): ModuleExports => {
-    const filename = internals._resolveFilename(request, parent);
+  const requireFrom = (parent: Module, request: string): unknown => {
+    const filename = resolveInternals()._resolveFilename(request, parent);
     const isOwned = owned.some((root) => filename.startsWith(root));
     return isOwned
       ? load(filename, parent)

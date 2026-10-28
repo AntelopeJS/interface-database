@@ -8,9 +8,9 @@ type DatabaseModule = typeof Database;
 
 const buildFolder = path.resolve(__dirname, "..");
 const otherInstance = CreateOtherInstance([buildFolder]);
-const Other: DatabaseModule = otherInstance(
+const Other = otherInstance(
   path.join(buildFolder, "staged-query", "index.js"),
-);
+) as DatabaseModule;
 
 function OtherTable() {
   return new Other.Schema("cross-instance-other", {

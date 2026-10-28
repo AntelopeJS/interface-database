@@ -13,9 +13,8 @@ export class Datum<T> extends Query<T> {
    *
    * @returns Same datum with a different type
    */
-  public cast<U>(): Datum<U>;
-  public cast() {
-    return this;
+  public cast<U>() {
+    return this as unknown as Datum<U>;
   }
 
   /**

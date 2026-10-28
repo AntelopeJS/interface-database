@@ -9,6 +9,7 @@ import {
   SchemaInstance,
   ValidateAtomicMutation,
   ValueProxy,
+  type AtomicMutation,
   type AtomicMutationOutcome,
   type AtomicUpdate,
 } from "../index";
@@ -97,18 +98,17 @@ function ValidateRevision() {
       expectedRevision: { kind: "missing" },
     }),
   ).not.to.throw();
-  const malformedRevisions: any[] = [
+  for (const expectedRevision of [
     null,
     undefined,
     "",
     { kind: "missing", extra: true },
-  ];
-  for (const expectedRevision of malformedRevisions) {
+  ]) {
     expect(() =>
       ValidateAtomicMutation("record-a", {
         ...request,
         expectedRevision,
-      }),
+      } as AtomicMutation<RecordData>),
     ).to.throw(TypeError);
   }
   expect(() =>
@@ -196,22 +196,26 @@ function ValidateEquality() {
       }),
     ).not.to.throw();
   }
-  const malformedValues: any[] = [null, undefined, {}, [], NaN, new Date(NaN)];
-  for (const expectedValue of malformedValues) {
+  for (const expectedValue of [null, undefined, {}, [], NaN, new Date(NaN)]) {
     expect(() =>
       ValidateAtomicMutation("record-a", {
         type: "deleteIfEqual",
         field: "title",
         expectedValue,
-      }),
+      } as AtomicMutation<RecordData>),
     ).to.throw(TypeError);
   }
 }
 
-async function WithResult(
-  result: Awaited<ReturnType<typeof Query.prototype.run>>,
-  check: () => Promise<void>,
-) {
+type StubbedResult =
+  | AtomicMutationOutcome
+  | number
+  | undefined
+  | readonly never[]
+  | Record<string, never>
+  | Promise<never>;
+
+async function WithResult(result: StubbedResult, check: () => Promise<void>) {
   const original = Object.getOwnPropertyDescriptor(Query.prototype, "run")!;
   let calls = 0;
   Query.prototype.run = () => {
@@ -227,7 +231,12 @@ async function WithResult(
 }
 
 async function PreserveOutcomes() {
-  for (const result of ["applied", "not-applied", "unknown"]) {
+  const outcomes: AtomicMutationOutcome[] = [
+    "applied",
+    "not-applied",
+    "unknown",
+  ];
+  for (const result of outcomes) {
     await WithResult(result, async () => {
       expect(await table.atomicMutation("record-a", request)).to.equal(result);
     });

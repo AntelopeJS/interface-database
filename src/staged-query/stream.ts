@@ -14,9 +14,8 @@ export class Stream<T> extends Query<T[]> {
    *
    * @returns Same stream with a different type
    */
-  public cast<U>(): Stream<U>;
-  public cast() {
-    return this;
+  public cast<U>() {
+    return this as unknown as Stream<U>;
   }
 
   /**

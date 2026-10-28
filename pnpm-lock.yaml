@@ -14,6 +14,9 @@ importers:
       '@antelopejs/interface-core':
         specifier: '>=0.2.4 <1.0.0'
         version: 0.2.4
+      '@antelopejs/interface-database':
+        specifier: link:.
+        version: 'link:'
       '@antelopejs/tooling-configs':
         specifier: ^0.2.11
         version: 0.2.11(eslint-plugin-perfectionist@5.11.0(eslint@10.10.0(jiti@2.7.0))(typescript@5.9.3))(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))

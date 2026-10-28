@@ -18,6 +18,14 @@ import {
 
 type SelectionKey = string | number | boolean;
 
+type Updater<T, U> = (val: ValueProxy<T>) => U;
+
+function isUpdater<T, U>(
+  document: DeepPartial<T> | Updater<T, U>,
+): document is Updater<T, U> {
+  return typeof document === "function";
+}
+
 /**
  * Selection containing a single element
  */
@@ -33,7 +41,7 @@ export class SingleSelection<T> extends Datum<T> {
     document: (val: ValueProxy<T>) => U,
   ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
   public update<U>(document: DeepPartial<T> | ((val: ValueProxy<T>) => U)) {
-    if (typeof document === "function") {
+    if (isUpdater(document)) {
       return this.stage(
         Query<number>,
         "update",
@@ -88,7 +96,7 @@ export class Selection<T> extends Stream<T> {
     document: (val: ValueProxy<T>) => U,
   ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
   public update<U>(document: DeepPartial<T> | ((val: ValueProxy<T>) => U)) {
-    if (typeof document === "function") {
+    if (isUpdater(document)) {
       return this.stage(
         Query<number>,
         "update",

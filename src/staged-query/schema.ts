@@ -105,7 +105,7 @@ export class Schema<
   T = any,
   Definition = SchemaDefinition,
 > extends StagedObject {
-  private static readonly registry = new Map<string, Schema<any, unknown>>();
+  private static readonly registry = new Map<string, Schema<any, any>>();
 
   /**
    * Retrieves a previously defined schema by its ID
@@ -116,7 +116,7 @@ export class Schema<
   public static get<T = any, Definition = SchemaDefinition>(
     id: string,
   ): Schema<T, Definition> | undefined {
-    return Schema.registry.get(id) as Schema<T, Definition> | undefined;
+    return Schema.registry.get(id);
   }
 
   /**

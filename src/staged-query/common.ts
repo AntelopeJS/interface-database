@@ -58,6 +58,24 @@ export function QueryStage(stage: string, options?: any, ...args: any[]) {
   };
 }
 
+function isStagedConstructor(
+  candidate: Function,
+): candidate is StagedConstructor {
+  return (
+    candidate === StagedObject || candidate.prototype instanceof StagedObject
+  );
+}
+
+function ownConstructor(instance: StagedObject): StagedConstructor {
+  const constructor = instance.constructor;
+  if (!isStagedConstructor(constructor)) {
+    throw new TypeError(
+      "A staged object must be built by a StagedObject class",
+    );
+  }
+  return constructor;
+}
+
 export class StagedObject {
   protected readonly stages: QueryStage[];
 
@@ -88,7 +106,7 @@ export class StagedObject {
     options?: any,
     ...args: any[]
   ) {
-    const Constructor = type ?? (this.constructor as StagedConstructor<T>);
+    const Constructor = type ?? ownConstructor(this);
     return new Constructor(
       {
         stage,

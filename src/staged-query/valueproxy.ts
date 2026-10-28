@@ -44,8 +44,8 @@ export class ValueProxy<T> extends StagedObject {
    *
    * @returns Same proxy with a different type
    */
-  public cast<U>() {
-    return this as unknown as ValueProxy<U>;
+  public cast<U>(): ValueProxy<U> {
+    return this as this & ValueProxy<U>;
   }
 
   /**

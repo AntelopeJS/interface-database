@@ -13,7 +13,22 @@ interface LoadableModule {
 
 type ModuleRequire = (request: string) => unknown;
 
-const internals = Module as unknown as ModuleInternals;
+function hasInternals(
+  candidate: typeof Module,
+): candidate is typeof Module & ModuleInternals {
+  return "_resolveFilename" in candidate && "_nodeModulePaths" in candidate;
+}
+
+function isLoadable(candidate: Module): candidate is Module & LoadableModule {
+  return "load" in candidate;
+}
+
+function resolveInternals() {
+  if (!hasInternals(Module)) {
+    throw new Error("node:module does not expose its resolution internals");
+  }
+  return Module;
+}
 
 /**
  * Evaluates built packages a second time, the way the core gives each
@@ -36,16 +51,18 @@ export function CreateOtherInstance(folders: string[]): ModuleRequire {
     }
     const loaded = new Module(filename, parent);
     loaded.filename = filename;
-    loaded.paths = internals._nodeModulePaths(path.dirname(filename));
-    loaded.require = ((request: string) =>
-      requireFrom(loaded, request)) as Module["require"];
+    loaded.paths = resolveInternals()._nodeModulePaths(path.dirname(filename));
+    loaded.require = (request: string) => requireFrom(loaded, request);
     modules.set(filename, loaded);
-    (loaded as unknown as LoadableModule).load(filename);
+    if (!isLoadable(loaded)) {
+      throw new Error("node:module instances cannot load a file directly");
+    }
+    loaded.load(filename);
     return loaded.exports;
   };
 
   const requireFrom = (parent: Module, request: string): unknown => {
-    const filename = internals._resolveFilename(request, parent);
+    const filename = resolveInternals()._resolveFilename(request, parent);
     const isOwned = owned.some((root) => filename.startsWith(root));
     return isOwned
       ? load(filename, parent)

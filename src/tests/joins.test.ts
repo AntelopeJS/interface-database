@@ -27,11 +27,13 @@ const usersData = getUniqueUsers();
 const productsData = getUniqueProducts();
 const ordersData = getUniqueOrders();
 
-const insertedKeys: {
+interface InsertedKeys {
   users: string[];
   products: string[];
   orders: string[];
-} = {
+}
+
+const insertedKeys: InsertedKeys = {
   users: [],
   products: [],
   orders: [],

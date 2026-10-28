@@ -100,12 +100,15 @@ assert.equal(executableTable instanceof executable.Table, true);
 assert.equal(executableTable instanceof executable.Selection, true);
 assert.equal(executableTable instanceof executable.Stream, true);
 assert.equal(executableTable instanceof executable.Query, true);
-assert.equal(typeof executableTable.run, "function");
-assert.equal(typeof executableTable.atomicMutation, "function");
+assert.ok(executableTable.run instanceof Function);
+assert.ok(executableTable.atomicMutation instanceof Function);
 assert.equal(executableInsert instanceof executable.Query, true);
-assert.equal(typeof executableInsert.run, "function");
+assert.ok(executableInsert.run instanceof Function);
 
-const originalRun = executable.Query.prototype.run;
+const originalRun = Object.getOwnPropertyDescriptor(
+  executable.Query.prototype,
+  "run",
+);
 executable.Query.prototype.run = async () => "not-applied";
 const executableAtomic = executableTable.atomicMutation("record-1", {
   type: "deleteIfEqual",
@@ -116,7 +119,7 @@ void executableAtomic
   .run()
   .then((result) => assert.equal(result, "not-applied"))
   .finally(() => {
-    executable.Query.prototype.run = originalRun;
+    Object.defineProperty(executable.Query.prototype, "run", originalRun);
   })
   .then(() => {
     console.log(

@@ -32,7 +32,7 @@ export class SingleSelection<T> extends Datum<T> {
   public update<U>(
     document: (val: ValueProxy<T>) => U,
   ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
-  public update(document: DeepPartial<T> | ((val: ValueProxy<T>) => unknown)) {
+  public update<U>(document: DeepPartial<T> | ((val: ValueProxy<T>) => U)) {
     if (typeof document === "function") {
       return this.stage(
         Query<number>,
@@ -87,7 +87,7 @@ export class Selection<T> extends Stream<T> {
   public update<U>(
     document: (val: ValueProxy<T>) => U,
   ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
-  public update(document: DeepPartial<T> | ((val: ValueProxy<T>) => unknown)) {
+  public update<U>(document: DeepPartial<T> | ((val: ValueProxy<T>) => U)) {
     if (typeof document === "function") {
       return this.stage(
         Query<number>,

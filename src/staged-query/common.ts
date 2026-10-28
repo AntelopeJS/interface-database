@@ -65,7 +65,7 @@ export class StagedObject {
     this.stages = previous ? [...previous.stages, newStage] : [newStage];
   }
 
-  //@internal
+  /** @internal */
   public build() {
     return this.stages;
   }
@@ -112,13 +112,12 @@ export class StagedObject {
       argValues[i] = new args[i](QueryStage("arg", undefined, id));
     }
     return {
-      stage: "func", // TODO: using the query stage structure here doesnt make any sense
+      stage: "func",
       args: [argNumbers, func(...(argValues as T))],
     };
   }
 }
 
-// TODO: This adds a lot of complexity to implementations, investigate if we should remove it.
 export type Value<T> = Datum<T> | ValueProxyOrValue<T>;
 
 type UnknownObject = Record<keyof any, unknown>;

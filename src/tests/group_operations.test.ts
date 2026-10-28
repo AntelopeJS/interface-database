@@ -9,8 +9,7 @@ const schema = new Schema<{ [tableName]: Order }>("test-group-operations", {
 });
 const table = schema.instance("default").table(tableName);
 
-// Utiliser les données commandes dédupliquées pour les groupements
-const testData = getUniqueOrders(); // Prendre seulement les commandes avec un type de livraison
+const testData = getUniqueOrders();
 
 let insertedKeys: string[] = [];
 

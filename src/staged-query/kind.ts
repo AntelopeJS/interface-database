@@ -1,10 +1,14 @@
-type KindHolder = Record<symbol, unknown>;
+import type { StagedObject } from "./common";
 
-export function MarkKind(target: object, kind: symbol): void {
+type KindOwner = StagedObject | Error;
+
+type KindHolder = Partial<Record<symbol, boolean>>;
+
+export function MarkKind(target: KindOwner, kind: symbol): void {
   Object.defineProperty(target, kind, { value: true });
 }
 
-export function HasKind(value: unknown, kind: symbol): boolean {
+export function HasKind<Value>(value: Value, kind: symbol): boolean {
   return (
     typeof value === "object" &&
     value !== null &&

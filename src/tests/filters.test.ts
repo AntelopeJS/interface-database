@@ -9,7 +9,6 @@ const schema = new Schema<{ [tableName]: User }>("test-filters", {
 });
 const table = schema.instance("default").table(tableName);
 
-// Utiliser le dataset unifié
 const testData = getUniqueUsers();
 
 let insertedKeys: string[] = [];
@@ -90,7 +89,7 @@ async function FilterByNumberComparison() {
     expect(doc.age).to.be.greaterThan(25);
   });
 
-  const ages = result.map((doc) => doc.age).sort();
+  const ages = result.map((doc) => doc.age).sort((a, b) => a - b);
   expect(ages).to.deep.equal([28, 30, 35]);
 }
 
@@ -147,7 +146,7 @@ async function FilterWithConstantNumber() {
     expect(doc.age).to.be.greaterThan(25);
   });
 
-  const ages = result.map((doc) => doc.age).sort();
+  const ages = result.map((doc) => doc.age).sort((a, b) => a - b);
   expect(ages).to.deep.equal([28, 30, 35]);
 }
 

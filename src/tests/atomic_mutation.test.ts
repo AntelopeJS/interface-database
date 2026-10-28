@@ -14,10 +14,21 @@ import {
   type AtomicUpdate,
 } from "../index";
 
+interface RecordDetails {
+  count?: number;
+  nested?: unknown[];
+  date?: Date;
+  nil?: null;
+}
+
 interface RecordData {
   revision?: string;
   title: string;
-  details: Record<string, unknown>;
+  details: RecordDetails;
+}
+
+interface TenantRecordData extends RecordData {
+  tenant_id: string;
 }
 
 interface TestTables {
@@ -122,7 +133,7 @@ function ValidateProtectedFields() {
     ).to.throw(TypeError);
   }
   expect(() =>
-    ValidateAtomicMutation<Record<string, unknown>>(
+    ValidateAtomicMutation<TenantRecordData>(
       "record-a",
       {
         ...request,
@@ -196,12 +207,20 @@ function ValidateEquality() {
   }
 }
 
-async function WithResult(result: unknown, check: () => Promise<void>) {
+type StubbedResult =
+  | AtomicMutationOutcome
+  | number
+  | undefined
+  | readonly never[]
+  | Record<string, never>
+  | Promise<never>;
+
+async function WithResult(result: StubbedResult, check: () => Promise<void>) {
   const original = Object.getOwnPropertyDescriptor(Query.prototype, "run")!;
   let calls = 0;
   Query.prototype.run = () => {
     calls++;
-    return Promise.resolve(result as never);
+    return Promise.resolve(result);
   };
   try {
     await check();
@@ -212,7 +231,12 @@ async function WithResult(result: unknown, check: () => Promise<void>) {
 }
 
 async function PreserveOutcomes() {
-  for (const result of ["applied", "not-applied", "unknown"]) {
+  const outcomes: AtomicMutationOutcome[] = [
+    "applied",
+    "not-applied",
+    "unknown",
+  ];
+  for (const result of outcomes) {
     await WithResult(result, async () => {
       expect(await table.atomicMutation("record-a", request)).to.equal(result);
     });
@@ -227,7 +251,7 @@ async function RejectLegacyResults() {
         .run()
         .then(
           () => undefined,
-          (reason: unknown) => reason,
+          (reason) => reason,
         );
       expect(error).to.be.instanceOf(AtomicMutationUnsupportedError);
     });
@@ -239,7 +263,7 @@ async function RejectLegacyResults() {
       .run()
       .then(
         () => undefined,
-        (reason: unknown) => reason,
+        (reason) => reason,
       );
     expect(error).to.equal(failure);
   });
@@ -257,7 +281,7 @@ async function ValidateTerminal() {
     Object.assign(query.build().at(-1)!, terminal);
     const error = await query.run().then(
       () => undefined,
-      (reason: unknown) => reason,
+      (reason) => reason,
     );
     expect(error).to.be.instanceOf(TypeError);
   }

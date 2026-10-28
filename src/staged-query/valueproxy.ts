@@ -23,7 +23,7 @@ export type OnlyObject<T> = T extends Record<any, any> ? T : never;
  * Actions performed on this proxy are not executed right away but instead recorded for the actual query
  */
 export class ValueProxy<T> extends StagedObject {
-  //@internal
+  /** @internal */
   public static arg<T = unknown>(id: number) {
     return new ValueProxy<T>(QueryStage("arg", undefined, id));
   }
@@ -47,8 +47,6 @@ export class ValueProxy<T> extends StagedObject {
   public cast<U>() {
     return this as unknown as ValueProxy<U>;
   }
-
-  //#region Any
 
   /**
    * Returns the parameter if the proxy is null.
@@ -114,10 +112,6 @@ export class ValueProxy<T> extends StagedObject {
     return this.stage(ValueProxy<boolean>, "ne", undefined, value);
   }
 
-  //#endregion
-
-  //#region Date & number arithmethic
-
   /**
    * Addition operator.
    *
@@ -157,10 +151,6 @@ export class ValueProxy<T> extends StagedObject {
     );
   }
 
-  //#endregion
-
-  //#region Date
-
   /**
    * Determines whether or not the proxy is between the two bounds.
    *
@@ -182,7 +172,7 @@ export class ValueProxy<T> extends StagedObject {
     );
   }
 
-  //@internal
+  /** @internal */
   private withTimezone(timezone?: ValueProxyOrValue<string>) {
     if (timezone) {
       return this.stage(
@@ -305,10 +295,6 @@ export class ValueProxy<T> extends StagedObject {
   public epoch(this: Is<Date, T, this>) {
     return this.stage(ValueProxy<number>, "date_epoch");
   }
-
-  //#endregion
-
-  //#region Number
 
   /**
    * Multiplication operator.
@@ -444,10 +430,6 @@ export class ValueProxy<T> extends StagedObject {
     );
   }
 
-  //#endregion
-
-  //#region Comparison
-
   /**
    * Greater-than operator.
    *
@@ -520,10 +502,6 @@ export class ValueProxy<T> extends StagedObject {
     );
   }
 
-  //#endregion
-
-  //#region String
-
   /**
    * Splits the string using a separator.
    *
@@ -588,10 +566,6 @@ export class ValueProxy<T> extends StagedObject {
   public match(this: Is<string, T, this>, regex: ValueProxyOrValue<string>) {
     return this.stage(ValueProxy<boolean>, "str_match", undefined, regex);
   }
-
-  //#endregion
-
-  //#region Array
 
   /**
    * Indexes the array with a given number position
@@ -730,10 +704,6 @@ export class ValueProxy<T> extends StagedObject {
     return (<ValueProxy<unknown>>this).stage(ValueProxy<number>, "arr_max");
   }
 
-  //#endregion
-
-  //#region Object
-
   /**
    * Indexes the object.
    *
@@ -804,8 +774,6 @@ export class ValueProxy<T> extends StagedObject {
   public hasfields(this: Is<T, Record<any, any>, this>, ...fields: string[]) {
     return this.stage(ValueProxy<boolean>, "obj_has", undefined, fields);
   }
-
-  //#endregion
 }
 
 MarkKind(ValueProxy.prototype, VALUEPROXY_KIND);

@@ -35,6 +35,12 @@ async function InsertTest() {
   });
 }
 
+const WATCHER_SETTLE_MS = 200;
+
+function waitForWatcher() {
+  return new Promise((resolve) => setTimeout(resolve, WATCHER_SETTLE_MS));
+}
+
 async function ReadChanges<T>(
   stream: Query<T[]>,
   actor: (results: T[]) => Promise<void>,
@@ -47,13 +53,11 @@ async function ReadChanges<T>(
       }
     })(),
     (async () => {
-      // Make sure watcher is ready
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await waitForWatcher();
 
       await actor(results);
 
-      // Make sure watcher has received the last changes
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await waitForWatcher();
     })(),
   ]);
 

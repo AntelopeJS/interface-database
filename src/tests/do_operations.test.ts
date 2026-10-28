@@ -9,7 +9,6 @@ const schema = new Schema<{ [tableName]: User }>("test-do-operations", {
 });
 const table = schema.instance("default").table(tableName);
 
-// Utiliser le dataset unifié
 const testData = getUniqueUsers();
 
 let insertedKeys: string[] = [];

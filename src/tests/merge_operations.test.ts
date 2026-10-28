@@ -24,7 +24,6 @@ const ordersTable = schema.instance("default").table(ordersTableName);
 const usersTable = schema.instance("default").table(usersTableName);
 const productsTable = schema.instance("default").table(productsTableName);
 
-// Utiliser le dataset unifié
 const usersData = getUniqueUsers();
 const productsData = getUniqueProducts();
 const ordersData = getUniqueOrders();

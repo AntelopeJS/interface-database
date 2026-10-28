@@ -3,15 +3,15 @@ import { InterfaceFunction } from "@antelopejs/interface-core";
 import { StagedObject } from "./staged-query/common";
 import { Query as StagedQuery } from "./staged-query/query";
 
-//@internal
+/** @internal */
 export const RunQuery =
   InterfaceFunction<(query: StagedObject["stages"]) => any>();
-//@internal
+/** @internal */
 export const ReadCursor =
   InterfaceFunction<
     (reqId: number, stages: StagedObject["stages"]) => IteratorResult<any, void>
   >();
-//@internal
+/** @internal */
 export const CloseCursor = InterfaceFunction<(reqId: number) => void>();
 
 let nextReqId = 0;

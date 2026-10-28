@@ -5,7 +5,7 @@ import {
   type SchemaDefinition,
 } from "./staged-query/schema";
 
-//@internal
+/** @internal */
 export const Schemas = new RegisteringProxy<
   (name: string, def: SchemaDefinition) => void
 >();

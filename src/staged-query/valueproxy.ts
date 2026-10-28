@@ -115,7 +115,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A == B
    */
-  public eq<U>(value: ValueProxyOrValue<U>) {
+  public eq(value: unknown) {
     return this.stage(ValueProxy<boolean>, "eq", undefined, value);
   }
 
@@ -125,7 +125,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A != B
    */
-  public ne<U>(value: ValueProxyOrValue<U>) {
+  public ne(value: unknown) {
     return this.stage(ValueProxy<boolean>, "ne", undefined, value);
   }
 

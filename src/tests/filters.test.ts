@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Schema, ValueProxy } from "@antelopejs/interface-database";
+import { Schema, ValueProxy } from "..";
 
 import { getUniqueUsers, User } from "./datasets/users";
 

@@ -11,7 +11,7 @@ interface LoadableModule {
   load(filename: string): void;
 }
 
-type ModuleRequire = (request: string) => unknown;
+type ModuleRequire = (request: string) => object;
 
 function hasInternals(
   candidate: typeof Module,
@@ -44,7 +44,7 @@ export function CreateOtherInstance(folders: string[]): ModuleRequire {
   const owned = folders.map((folder) => realpathSync(folder) + path.sep);
   const modules = new Map<string, Module>();
 
-  const load = (filename: string, parent: Module): unknown => {
+  const load = (filename: string, parent: Module): object => {
     const cached = modules.get(filename);
     if (cached) {
       return cached.exports;
@@ -61,7 +61,7 @@ export function CreateOtherInstance(folders: string[]): ModuleRequire {
     return loaded.exports;
   };
 
-  const requireFrom = (parent: Module, request: string): unknown => {
+  const requireFrom = (parent: Module, request: string): object => {
     const filename = resolveInternals()._resolveFilename(request, parent);
     const isOwned = owned.some((root) => filename.startsWith(root));
     return isOwned

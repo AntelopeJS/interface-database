@@ -8,9 +8,24 @@ type DatabaseModule = typeof Database;
 
 const buildFolder = path.resolve(__dirname, "..");
 const otherInstance = CreateOtherInstance([buildFolder]);
-const Other = otherInstance(
-  path.join(buildFolder, "staged-query", "index.js"),
-) as DatabaseModule;
+
+function isDatabaseModule(
+  candidate: Partial<DatabaseModule>,
+): candidate is DatabaseModule {
+  return Object.keys(Database).every((name) => name in candidate);
+}
+
+function loadOtherInstance(): DatabaseModule {
+  const loaded = otherInstance(
+    path.join(buildFolder, "staged-query", "index.js"),
+  );
+  if (!isDatabaseModule(loaded)) {
+    throw new Error("The other instance does not expose the database exports");
+  }
+  return loaded;
+}
+
+const Other = loadOtherInstance();
 
 function OtherTable() {
   return new Other.Schema("cross-instance-other", {

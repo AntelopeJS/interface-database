@@ -49,8 +49,20 @@ function isRecord<Value>(value: Value): value is Value & object {
   );
 }
 
+function isString<Value>(value: Value): value is Value & string {
+  return typeof value === "string";
+}
+
+function isNumber<Value>(value: Value): value is Value & number {
+  return typeof value === "number";
+}
+
+function isBoolean<Value>(value: Value): value is Value & boolean {
+  return typeof value === "boolean";
+}
+
 function isToken<Value>(value: Value): value is Value & string {
-  return typeof value === "string" && value.length > 0;
+  return isString(value) && value.length > 0;
 }
 
 function validateField(field: string) {
@@ -60,7 +72,7 @@ function validateField(field: string) {
 }
 
 function validateConstant<Value>(value: Value, ancestors = new Set<unknown>()) {
-  if (value === null || ["string", "boolean"].includes(typeof value)) return;
+  if (value === null || isString(value) || isBoolean(value)) return;
   if (Number.isFinite(value)) return;
   if (value instanceof Date && Number.isFinite(value.getTime())) return;
   if ((!Array.isArray(value) && !isRecord(value)) || ancestors.has(value)) {
@@ -120,7 +132,9 @@ function validateEquality<T>(
   }
   const value = request.expectedValue;
   if (
-    !["string", "number", "boolean"].includes(typeof value) &&
+    !isString(value) &&
+    !isNumber(value) &&
+    !isBoolean(value) &&
     !(value instanceof Date)
   ) {
     throw new TypeError("Atomic equality requires a scalar or Date");
@@ -152,8 +166,7 @@ export function ValidateAtomicMutationTable(stages: QueryStage[]): void {
   if (
     stages.length !== tableStages.length ||
     stages.some((stage, index) => stage.stage !== tableStages[index]) ||
-    (stages[1].options?.id !== undefined &&
-      typeof stages[1].options.id !== "string")
+    (stages[1].options?.id !== undefined && !isString(stages[1].options.id))
   ) {
     throw new TypeError("Atomic mutation requires one instance-scoped table");
   }

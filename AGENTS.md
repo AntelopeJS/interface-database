@@ -16,7 +16,7 @@ AQL, the AntelopeJS database query builder, published as `@antelopejs/interface-
 
 ## Tests
 
-- `pnpm test` builds, then runs `ajs module test .` with `src/antelope.test.ts`: it starts an in-memory MongoDB 8.0.8 replica set and runs `dist/tests` through `@antelopejs/mongodb` 1.3.1. The first run downloads the MongoDB binary.
+- `pnpm test` builds, then runs `ajs module test .` with `src/antelope.test.ts`: it starts an in-memory MongoDB 8.0.8 replica set and runs `dist/tests` through `@antelopejs/mongodb` 1.3.1, a devDependency loaded as a local module. `pnpm-workspace.yaml` overrides the `@antelopejs/interface-database` dependency of `@antelopejs/mongodb` with a link to this package, and the suites import the code under test by relative path, so they exercise the local build: without the override they would run the published copy the implementer installs. Do not import `@antelopejs/interface-database` by name in a suite. The first run downloads the MongoDB binary.
 - `pnpm run checks` does not run the docs check (links and type-checked samples in `README.md` and `docs/`); only CI runs it, through the `docs-files` input of `ci.yml`.
 - `pnpm run checks` and CI do not run `pnpm test:staged-query`, the isolation and parity test of the build-only entry point. Run it when you change `src/staged-query/`.
 
@@ -76,6 +76,7 @@ Verify a boundary against the imports a developer or agent would plausibly write
 | Comments are TSDoc, directives, or `SAFETY:` only                              | `antelopejs/no-comments`                            |
 | Every test asserts                                                             | `antelopejs/require-assertion`                      |
 | Tests read no files outside fixtures, helpers, locales                         | `antelopejs/no-fs-read-in-tests`                    |
+| Tests import the code under test from local source, not their own package name | `antelopejs/no-self-import-in-tests`                |
 | No assertion that restates a constant                                          | `antelopejs/no-constant-value-assertion`            |
 | No test whose only check is "is a function"                                    | `antelopejs/no-typeof-function-only-test`           |
 | Params ≤ 5, function ≤ 120 lines, file ≤ 500 lines, depth ≤ 4, complexity ≤ 20 | `eslint/max-*`, `eslint/complexity`                 |

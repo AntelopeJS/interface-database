@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import type { InstanceId, Table } from "@antelopejs/interface-database";
 
 import { QueryStage, StagedObject } from "../common";
 import {
@@ -12,6 +11,8 @@ import {
   type AtomicMutation,
   type AtomicMutationOutcome,
   type AtomicUpdate,
+  type InstanceId,
+  type Table,
 } from "../index";
 
 interface RecordDetails {

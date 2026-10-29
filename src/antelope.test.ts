@@ -8,11 +8,7 @@ export default defineConfig({
   cacheFolder: ".antelope/cache",
   modules: {
     mongodb: {
-      source: {
-        type: "package",
-        package: "@antelopejs/mongodb",
-        version: "1.3.1",
-      },
+      source: { type: "local", path: "node_modules/@antelopejs/mongodb" },
     },
   },
   test: {

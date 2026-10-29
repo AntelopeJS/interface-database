@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Schema } from "@antelopejs/interface-database";
+import { Schema } from "..";
 
 import { getUniqueOrders, Order } from "./datasets/orders";
 

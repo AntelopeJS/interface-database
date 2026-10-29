@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { expect } from "chai";
-import { Schema } from "@antelopejs/interface-database";
+import { Schema } from "..";
 
 import { getUniqueUsers, User } from "./datasets/users";
 import { getUniqueOrders, Order } from "./datasets/orders";

@@ -129,6 +129,14 @@ export class StagedObject {
       argNumbers[i] = id;
       argValues[i] = new args[i](QueryStage("arg", undefined, id));
     }
+    /*
+     * SAFETY: argValues[i] is built by `new args[i]`, so it is an instance of
+     * the i-th class passed. T is inferred from func alone, so the cast holds
+     * when func's i-th parameter is an instance of that class; every caller in
+     * staged-query passes ValueProxy or Stream for the parameter typed
+     * ValueProxy or Stream, and only a type argument, which has no runtime
+     * form, may differ.
+     */
     return {
       stage: "func",
       args: [argNumbers, func(...(argValues as T))],
@@ -138,8 +146,7 @@ export class StagedObject {
 
 export type Value<T> = Datum<T> | ValueProxyOrValue<T>;
 
-type UnknownObject = Record<keyof any, unknown>;
-type ExtractTypeObject<T extends UnknownObject> = T extends infer O
+type ExtractTypeObject<T> = T extends infer O
   ? {
       [K in keyof O]: ExtractType<O[K]>;
     }
@@ -149,7 +156,7 @@ export type ExtractType<T> =
     ? A
     : T extends Query<infer A>
       ? A
-      : T extends UnknownObject
+      : T extends Record<PropertyKey, T[keyof T]>
         ? ExtractTypeObject<T>
         : T extends Array<infer A>
           ? Array<ExtractType<A>>

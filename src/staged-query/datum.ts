@@ -14,6 +14,12 @@ export class Datum<T> extends Query<T> {
    * @returns Same datum with a different type
    */
   public cast<U>() {
+    /*
+     * SAFETY: A Datum keeps no value of type T. Its only instance state is the
+     * untyped `stages` array inherited from StagedObject, so the same object is
+     * a valid Datum<U> for every U. Whether U matches what the query yields is
+     * the caller's claim, which nothing here checks.
+     */
     return this as unknown as Datum<U>;
   }
 

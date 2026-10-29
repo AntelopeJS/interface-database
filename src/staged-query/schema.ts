@@ -45,14 +45,18 @@ export type StringFieldType =
   | Array<StringFieldType>
   | { [subfield: string]: StringFieldType };
 
-interface IoTsCodec {
-  readonly _A: unknown;
-  readonly _O: unknown;
-  readonly _I: unknown;
+interface IoTsValidation {
+  readonly _tag: "Left" | "Right";
+}
+
+interface IoTsCodec<A = unknown, O = unknown, I = unknown> {
+  readonly _A: A;
+  readonly _O: O;
+  readonly _I: I;
   readonly name: string;
-  is(u: unknown): boolean;
-  encode(a: never): unknown;
-  decode(i: unknown): unknown;
+  is(u: A | I): boolean;
+  encode(a: A): O;
+  decode(i: I): IoTsValidation;
 }
 
 export type FieldType = StringFieldType | IoTsCodec;
@@ -116,6 +120,13 @@ export class Schema<
   public static get<T = any, Definition = SchemaDefinition>(
     id: string,
   ): Schema<T, Definition> | undefined {
+    /*
+     * SAFETY: The registry only holds instances stored by the Schema
+     * constructor, so a hit is a Schema. T and Definition are chosen by the
+     * caller and hold only when they are the type arguments of the constructor
+     * call that registered this id; the registry keeps them nowhere, so
+     * nothing here checks them.
+     */
     return Schema.registry.get(id) as Schema<T, Definition> | undefined;
   }
 

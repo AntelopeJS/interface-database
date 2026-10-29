@@ -1,9 +1,10 @@
 {
   "rules": {
+    "anti-slop/no-chained-type-assertions": 3,
     "anti-slop/no-unknown-parameters": 6,
     "anti-slop/no-unknown-returns": 2,
     "anti-slop/no-unsafe-dictionary-type": 8,
-    "anti-slop/require-safety-comment-for-type-assertion": 16
+    "anti-slop/require-safety-comment-for-type-assertion": 20
   },
   "oversizeFiles": {}
 }

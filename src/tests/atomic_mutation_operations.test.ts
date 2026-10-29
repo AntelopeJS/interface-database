@@ -6,7 +6,7 @@ import {
   type AtomicMutation,
   type AtomicUpdate,
   type AtomicEqualityValue,
-} from "@antelopejs/interface-database";
+} from "..";
 
 interface NestedData {
   removed?: boolean;

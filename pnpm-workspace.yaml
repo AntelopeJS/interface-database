@@ -1,0 +1,2 @@
+overrides:
+  "@antelopejs/mongodb>@antelopejs/interface-database": "link:."

@@ -16,7 +16,7 @@ AQL, the AntelopeJS database query builder, published as `@antelopejs/interface-
 
 ## Tests
 
-- `pnpm test` builds, then runs `ajs module test .` with `src/antelope.test.ts`: it starts an in-memory MongoDB 8.0.8 replica set and runs `dist/tests` through `@antelopejs/mongodb` 1.3.1. The first run downloads the MongoDB binary.
+- `pnpm test` builds, then runs `ajs module test .` with `src/antelope.test.ts`: it starts an in-memory MongoDB 8.0.8 replica set and runs `dist/tests` through `@antelopejs/mongodb` 1.3.1, a devDependency loaded as a local module. `pnpm-workspace.yaml` overrides the `@antelopejs/interface-database` dependency of `@antelopejs/mongodb` with a link to this package, and the suites import the code under test by relative path, so they exercise the local build: without the override they would run the published copy the implementer installs. Do not import `@antelopejs/interface-database` by name in a suite. The first run downloads the MongoDB binary.
 - `pnpm run checks` does not run the docs check (links and type-checked samples in `README.md` and `docs/`); only CI runs it, through the `docs-files` input of `ci.yml`.
 - `pnpm run checks` and CI do not run `pnpm test:staged-query`, the isolation and parity test of the build-only entry point. Run it when you change `src/staged-query/`.
 

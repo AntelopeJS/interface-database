@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { CROSS_INSTANCE, Schema } from "@antelopejs/interface-database";
+import { CROSS_INSTANCE, Schema } from "..";
 
 import { Vehicle } from "./datasets/vehicles";
 

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { type Query, Schema } from "@antelopejs/interface-database";
+import { type Query, Schema } from "..";
 
 import { Vehicle, vehicles } from "./datasets/vehicles";
 

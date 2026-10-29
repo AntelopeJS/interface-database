@@ -18,8 +18,8 @@ importers:
         specifier: '>=0.2.4 <1.0.0'
         version: 0.2.4
       '@antelopejs/mongodb':
-        specifier: 1.3.1
-        version: 1.3.1(socks@2.8.7)
+        specifier: 1.6.0
+        version: 1.6.0(socks@2.8.7)
       '@antelopejs/tooling-configs':
         specifier: ^0.2.11
         version: 0.2.11(eslint-plugin-perfectionist@5.11.0(eslint@10.10.0(jiti@2.7.0))(typescript@5.9.3))(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
@@ -88,11 +88,16 @@ packages:
   '@antelopejs/interface-core@0.2.4':
     resolution: {integrity: sha512-2qF6/KwahCQvvNuC/piUvPWD4wq2Npmco941HMg2/bMBoJKbhMH16WcXXRvPYznNSkU0U+6vqK6KE+2N5NojSA==}
 
+  '@antelopejs/interface-database-catalog@0.0.3':
+    resolution: {integrity: sha512-ZT7bZ0ycEs8VvEgNGQTGMAzKiFQC1BOYOM2f2e+vFuCN/1VPBZZFxg3XOmHClTzdW/RzX2k7lasfMyaVOUzOCA==}
+    peerDependencies:
+      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
+
   '@antelopejs/interface-mongodb@0.0.6':
     resolution: {integrity: sha512-jNb6fVIMQFFTkUnaY4KrSdA5JknmUCpnjIMC6/GuN8wEoUbo/LBZGq7q1Kz1IGcNpiByRbWHvDVW9J693i1kFw==}
 
-  '@antelopejs/mongodb@1.3.1':
-    resolution: {integrity: sha512-gk7JqpEn4y1arze4eH4P4f3n0WRdvDpElp326gY97Uta5LJ9Hm5XTyps+eT0SZKcAvvhyYtj3Br8brMj2HYLdA==}
+  '@antelopejs/mongodb@1.6.0':
+    resolution: {integrity: sha512-HKPw1FC+NDqHe0B7ceEUGpbH8oOg9AcdEhcBjSnBwrmf0Z0hWwn2T95p0hEcW3TunaFRoueAJsQjSdUqdckSFA==}
 
   '@antelopejs/tooling-configs@0.2.11':
     resolution: {integrity: sha512-11reej4rSQuPEQqQgef60SyQZ8XGWlUSshD4RXLXPBpyFGVQmOqagKmj1zTg8QAktzwxxokhk/8JrIyChIv3LA==}
@@ -2811,6 +2816,10 @@ snapshots:
     dependencies:
       reflect-metadata: 0.2.2
 
+  '@antelopejs/interface-database-catalog@0.0.3(@antelopejs/interface-core@0.2.4)':
+    dependencies:
+      '@antelopejs/interface-core': 0.2.4
+
   '@antelopejs/interface-mongodb@0.0.6(socks@2.8.7)':
     dependencies:
       mongodb: 6.21.0(socks@2.8.7)
@@ -2822,17 +2831,20 @@ snapshots:
       - mongodb-client-encryption
       - snappy
       - socks
+    optional: true
 
-  '@antelopejs/mongodb@1.3.1(socks@2.8.7)':
+  '@antelopejs/mongodb@1.6.0(socks@2.8.7)':
     dependencies:
       '@antelopejs/interface-core': 0.2.4
       '@antelopejs/interface-database': 'link:'
-      '@antelopejs/interface-mongodb': 0.0.6(socks@2.8.7)
+      '@antelopejs/interface-database-catalog': 0.0.3(@antelopejs/interface-core@0.2.4)
       chai: 4.5.0
       mongodb: 6.21.0(socks@2.8.7)
       randomstring: 1.3.2
       reflect-metadata: 0.2.2
       uuid: 11.1.1
+    optionalDependencies:
+      '@antelopejs/interface-mongodb': 0.0.6(socks@2.8.7)
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'

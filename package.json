@@ -1,6 +1,6 @@
 {
   "name": "@antelopejs/interface-database",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "description": "AQL, the AntelopeJS database-agnostic query builder: schemas, CRUD, joins, aggregations and change feeds",
   "keywords": [
     "antelopejs",

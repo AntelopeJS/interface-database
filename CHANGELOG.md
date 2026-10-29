@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.2.0
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.11...v0.2.0)
+
+### 🚀 Enhancements
+
+- **database:** ⚠️  Tighten the published contract ([960eb17](https://github.com/AntelopeJS/interface-database/commit/960eb17))
+
+### 💅 Refactors
+
+- Clean the repo with the guardrail pack ([#43](https://github.com/AntelopeJS/interface-database/pull/43))
+- Clear avoidable findings with pack 0.2.11 ([#44](https://github.com/AntelopeJS/interface-database/pull/44))
+
+### 📖 Documentation
+
+- **changelog:** Upgrade notes of interface-database 0.1.11 ([#38](https://github.com/AntelopeJS/interface-database/pull/38))
+
+### 📦 Build
+
+- Adopt the AntelopeJS guardrail pack ([#39](https://github.com/AntelopeJS/interface-database/pull/39))
+
+### 🏡 Chore
+
+- Configure Renovate with the shared preset ([#40](https://github.com/AntelopeJS/interface-database/pull/40))
+
+### ✅ Tests
+
+- **skills:** Add eval cases for database-interface ([#41](https://github.com/AntelopeJS/interface-database/pull/41))
+
+#### ⚠️ Breaking Changes
+
+- **database:** ⚠️  Tighten the published contract ([960eb17](https://github.com/AntelopeJS/interface-database/commit/960eb17))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.1.11
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.10...v0.1.11)

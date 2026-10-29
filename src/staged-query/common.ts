@@ -129,6 +129,14 @@ export class StagedObject {
       argNumbers[i] = id;
       argValues[i] = new args[i](QueryStage("arg", undefined, id));
     }
+    /*
+     * SAFETY: argValues[i] is built by `new args[i]`, so it is an instance of
+     * the i-th class passed. T is inferred from func alone, so the cast holds
+     * when func's i-th parameter is an instance of that class; every caller in
+     * staged-query passes ValueProxy or Stream for the parameter typed
+     * ValueProxy or Stream, and only a type argument, which has no runtime
+     * form, may differ.
+     */
     return {
       stage: "func",
       args: [argNumbers, func(...(argValues as T))],

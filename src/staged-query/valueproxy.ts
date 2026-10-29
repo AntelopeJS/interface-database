@@ -60,6 +60,12 @@ export class ValueProxy<T> extends StagedObject {
    * @returns Same proxy with a different type
    */
   public cast<U>() {
+    /*
+     * SAFETY: A ValueProxy keeps no value of type T. Its only instance state is the
+     * untyped `stages` array inherited from StagedObject, so the same object is
+     * a valid ValueProxy<U> for every U. Whether U matches what the query yields is
+     * the caller's claim, which nothing here checks.
+     */
     return this as unknown as ValueProxy<U>;
   }
 

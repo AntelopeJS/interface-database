@@ -120,6 +120,13 @@ export class Schema<
   public static get<T = any, Definition = SchemaDefinition>(
     id: string,
   ): Schema<T, Definition> | undefined {
+    /*
+     * SAFETY: The registry only holds instances stored by the Schema
+     * constructor, so a hit is a Schema. T and Definition are chosen by the
+     * caller and hold only when they are the type arguments of the constructor
+     * call that registered this id; the registry keeps them nowhere, so
+     * nothing here checks them.
+     */
     return Schema.registry.get(id) as Schema<T, Definition> | undefined;
   }
 

@@ -81,7 +81,7 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * AND operator.
    *
-   * @param other Operand B
+   * @param value Operand B, a boolean or a proxy of a boolean, possibly null or undefined
    * @returns A && B
    */
   public and<U extends boolean | null | undefined>(
@@ -93,7 +93,7 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * OR operator.
    *
-   * @param other Operand B
+   * @param value Operand B, a boolean or a proxy of a boolean, possibly null or undefined
    * @returns A || B
    */
   public or<U extends boolean | null | undefined>(value: ValueProxyOrValue<U>) {
@@ -112,7 +112,7 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * Equality operator.
    *
-   * @param other Operand B
+   * @param value Operand B
    * @returns A == B
    */
   public eq(value: unknown) {
@@ -122,7 +122,7 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * Inequality operator.
    *
-   * @param other Operand B
+   * @param value Operand B
    * @returns A != B
    */
   public ne(value: unknown) {

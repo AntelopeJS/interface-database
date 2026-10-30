@@ -4,7 +4,7 @@ import {
   type ExtractType,
   type StagedConstructor,
 } from "./common";
-import { HasKind, MarkKind } from "./kind";
+import { isKindHolder, MarkKind } from "./kind";
 
 const VALUEPROXY_KIND = Symbol.for(
   "@antelopejs/interface-database/ValueProxy@1",
@@ -811,5 +811,5 @@ MarkKind(ValueProxy.prototype, VALUEPROXY_KIND);
  * @returns True if the value is a value proxy
  */
 export function IsValueProxy(value: unknown): value is ValueProxy<unknown> {
-  return HasKind(value, VALUEPROXY_KIND);
+  return isKindHolder(value) && value[VALUEPROXY_KIND] === true;
 }

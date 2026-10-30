@@ -42,11 +42,9 @@ const tableStages = ["schema", "instance", "table"];
 const identityFields = ["id", "_id"];
 
 function isRecord<Value>(value: Value): value is Value & object {
-  return (
-    value !== null &&
-    typeof value === "object" &&
-    [Object.prototype, null].includes(Object.getPrototypeOf(value))
-  );
+  if (value === null || typeof value !== "object") return false;
+  const prototype: unknown = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
 }
 
 function isString<Value>(value: Value): value is Value & string {

@@ -1,15 +1,12 @@
 {
   "pack": "0.2.17",
   "rules": {
-    "antelopejs/no-presence-only-type-guard": 3,
     "anti-slop/no-chained-type-assertions": 3,
     "anti-slop/no-unknown-parameters": 2,
     "anti-slop/require-safety-comment-for-type-assertion": 2,
-    "typescript/no-unnecessary-type-parameters": 5,
-    "typescript/no-unsafe-argument": 5,
-    "typescript/no-unsafe-assignment": 14,
-    "typescript/no-unsafe-return": 11,
-    "typescript/use-unknown-in-catch-callback-variable": 3
+    "typescript/no-unnecessary-type-parameters": 2,
+    "typescript/no-unsafe-argument": 3,
+    "typescript/no-unsafe-assignment": 2
   },
   "oversizeFiles": {}
 }

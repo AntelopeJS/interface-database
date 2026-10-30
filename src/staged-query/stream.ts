@@ -3,7 +3,7 @@ import { Query } from "./query";
 import type { Selection } from "./selection";
 import type { Changes, ExtractType, Value } from "./common";
 import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
-import { HasKind, MarkKind } from "./kind";
+import { isKindHolder, MarkKind } from "./kind";
 
 const STREAM_KIND = Symbol.for("@antelopejs/interface-database/Stream@1");
 
@@ -33,7 +33,10 @@ export class Stream<T> extends Query<T[]> {
    * @param def Default value
    * @returns New stream
    */
-  public key<K extends keyof T, U = undefined>(key: K, def?: U) {
+  public key<K extends keyof T, U = undefined>(
+    key: K,
+    def?: U,
+  ): Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U> {
     return this.stage(
       Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U>,
       "key",
@@ -316,10 +319,11 @@ export class Stream<T> extends Query<T[]> {
    * @returns New stream
    */
   public distinct<TK extends keyof T>(field: TK): Stream<T[TK]>;
-  public distinct(field?: keyof T) {
-    return this.stage<any>(field ? Stream<T> : Datum<T[]>, "distinct", {
-      field,
-    });
+  public distinct(field?: keyof T): Datum<T[]> | Stream<T[keyof T]> {
+    if (field) {
+      return this.stage(Stream<T[keyof T]>, "distinct", { field });
+    }
+    return this.stage(Datum<T[]>, "distinct", { field });
   }
 
   /**
@@ -344,5 +348,5 @@ MarkKind(Stream.prototype, STREAM_KIND);
  * @returns True if the value is a stream
  */
 export function IsStream(value: unknown): value is Stream<unknown> {
-  return HasKind(value, STREAM_KIND);
+  return isKindHolder(value) && value[STREAM_KIND] === true;
 }

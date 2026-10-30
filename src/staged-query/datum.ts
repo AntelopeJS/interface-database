@@ -2,7 +2,7 @@ import { Query } from "./query";
 import { ValueProxy } from "./valueproxy";
 import type { Selection } from "./selection";
 import type { ExtractType, Value } from "./common";
-import { HasKind, MarkKind } from "./kind";
+import { isKindHolder, MarkKind } from "./kind";
 
 const DATUM_KIND = Symbol.for("@antelopejs/interface-database/Datum@1");
 
@@ -33,7 +33,12 @@ export class Datum<T> extends Query<T> {
    * @param def Default value
    * @returns New datum with the value
    */
-  public key<K extends keyof NonNullable<T>, U = undefined>(key: K, def?: U) {
+  public key<K extends keyof NonNullable<T>, U = undefined>(
+    key: K,
+    def?: U,
+  ): Datum<
+    U extends undefined ? NonNullable<T>[K] : NonNullable<NonNullable<T>[K]> | U
+  > {
     return this.stage(
       Datum<
         U extends undefined
@@ -122,5 +127,5 @@ MarkKind(Datum.prototype, DATUM_KIND);
  * @returns True if the value is a datum
  */
 export function IsDatum(value: unknown): value is Datum<unknown> {
-  return HasKind(value, DATUM_KIND);
+  return isKindHolder(value) && value[DATUM_KIND] === true;
 }

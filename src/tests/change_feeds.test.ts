@@ -143,7 +143,7 @@ async function BulkInsertEventTest() {
   });
 
   const insertedCars = results
-    .map((r: any) => r.newValue.car)
+    .flatMap((entry) => (entry.newValue ? [entry.newValue.car] : []))
     .sort((a, b) => Number(a > b) - Number(a < b));
   expect(insertedCars).to.deep.equal(["BMW", "Tesla"]);
 }

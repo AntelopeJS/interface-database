@@ -14,6 +14,7 @@ import {
   type InstanceId,
   type Table,
 } from "../index";
+import { rejectionOf } from "./helpers/rejection";
 
 interface RecordDetails {
   count?: number;
@@ -247,25 +248,18 @@ async function PreserveOutcomes() {
 async function RejectLegacyResults() {
   for (const result of [undefined, 0, 1, {}, []]) {
     await WithResult(result, async () => {
-      const error = await table
-        .atomicMutation("record-a", request)
-        .run()
-        .then(
-          () => undefined,
-          (reason) => reason,
-        );
-      expect(error).to.be.instanceOf(AtomicMutationUnsupportedError);
+      await rejectionOf(
+        table.atomicMutation("record-a", request).run(),
+        AtomicMutationUnsupportedError,
+      );
     });
   }
   const failure = new TypeError("definitive validation failure");
   await WithResult(Promise.reject(failure), async () => {
-    const error = await table
-      .atomicMutation("record-a", request)
-      .run()
-      .then(
-        () => undefined,
-        (reason) => reason,
-      );
+    const error = await rejectionOf(
+      table.atomicMutation("record-a", request).run(),
+      TypeError,
+    );
     expect(error).to.equal(failure);
   });
 }
@@ -280,11 +274,7 @@ async function ValidateTerminal() {
   ]) {
     const query = table.atomicMutation("record-a", request);
     Object.assign(query.build().at(-1)!, terminal);
-    const error = await query.run().then(
-      () => undefined,
-      (reason) => reason,
-    );
-    expect(error).to.be.instanceOf(TypeError);
+    await rejectionOf(query.run(), TypeError);
   }
 }
 

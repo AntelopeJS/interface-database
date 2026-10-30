@@ -1,5 +1,5 @@
 import { StagedObject } from "./common";
-import { HasKind, MarkKind } from "./kind";
+import { isKindHolder, MarkKind } from "./kind";
 
 const QUERY_KIND = Symbol.for("@antelopejs/interface-database/Query@1");
 
@@ -18,5 +18,5 @@ MarkKind(Query.prototype, QUERY_KIND);
  * @returns True if the value is a query
  */
 export function IsQuery(value: unknown): value is Query<unknown> {
-  return HasKind(value, QUERY_KIND);
+  return isKindHolder(value) && value[QUERY_KIND] === true;
 }

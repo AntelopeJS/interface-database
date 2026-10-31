@@ -189,11 +189,23 @@ export type QueryStage<Name extends QueryStageName = QueryStageName> = {
   } & StageOptions<Stage>;
 }[Name];
 
-/** Records one stage, typed by its name. */
+type StageCall<Name extends QueryStageName> =
+  QueryStageMap[Name]["args"] extends []
+    ? undefined extends QueryStageMap[Name]["options"]
+      ? [options?: QueryStageMap[Name]["options"]]
+      : [options: QueryStageMap[Name]["options"]]
+    : [
+        options: QueryStageMap[Name]["options"],
+        ...args: QueryStageMap[Name]["args"],
+      ];
+
+/**
+ * Records one stage, typed by its name. A stage that takes no arguments may
+ * leave out options it does not require.
+ */
 export function QueryStage<Name extends QueryStageName>(
   stage: Name,
-  options: QueryStageMap[Name]["options"],
-  ...args: QueryStageMap[Name]["args"]
+  ...[options, ...args]: StageCall<Name>
 ): QueryStage<Name> {
   return { stage, options, args };
 }

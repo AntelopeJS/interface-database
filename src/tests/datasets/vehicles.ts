@@ -19,6 +19,7 @@ export const Vehicle = {
     isElectric: {},
     price: {},
     car: {},
+    electricPrice: { fields: ["isElectric", "price"] },
   },
 };
 

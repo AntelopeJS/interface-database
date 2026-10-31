@@ -1,7 +1,7 @@
 import { Query } from "./query";
 import { ValueProxy } from "./valueproxy";
-import type { Selection } from "./selection";
-import type { ExtractType, Value } from "./common";
+import type { Stream } from "./stream";
+import { QueryStage, type ExtractType, type Value } from "./common";
 import { isKindHolder, MarkKind } from "./kind";
 
 const DATUM_KIND = Symbol.for("@antelopejs/interface-database/Datum@1");
@@ -16,9 +16,9 @@ export class Datum<T> extends Query<T> {
   public cast<U>() {
     /*
      * SAFETY: A Datum keeps no value of type T. Its only instance state is the
-     * untyped `stages` array inherited from StagedObject, so the same object is
-     * a valid Datum<U> for every U. Whether U matches what the query yields is
-     * the caller's claim, which nothing here checks.
+     * `stages` array inherited from StagedObject, whose type does not depend on
+     * T, so the same object is a valid Datum<U> for every U. Whether U matches
+     * what the query yields is the caller's claim, which nothing here checks.
      */
     return this as unknown as Datum<U>;
   }
@@ -33,7 +33,7 @@ export class Datum<T> extends Query<T> {
    * @param def Default value
    * @returns New datum with the value
    */
-  public key<K extends keyof NonNullable<T>, U = undefined>(
+  public key<K extends keyof NonNullable<T> & string, U = undefined>(
     key: K,
     def?: U,
   ): Datum<
@@ -45,10 +45,7 @@ export class Datum<T> extends Query<T> {
           ? NonNullable<T>[K]
           : NonNullable<NonNullable<T>[K]> | U
       >,
-      "key",
-      undefined,
-      key,
-      def,
+      QueryStage("key", undefined, key, def),
     );
   }
 
@@ -61,9 +58,7 @@ export class Datum<T> extends Query<T> {
   public default<U>(val: Value<U>) {
     return this.stage(
       Datum<Exclude<T, undefined | null> | U>,
-      "default",
-      undefined,
-      val,
+      QueryStage("default", undefined, val),
     );
   }
 
@@ -76,9 +71,7 @@ export class Datum<T> extends Query<T> {
   public do<U>(mapper: (val: ValueProxy<T>) => U) {
     return this.stage(
       Datum<ExtractType<U>>,
-      "map",
-      undefined,
-      this.callfunc(mapper, ValueProxy<T>),
+      QueryStage("map", undefined, this.callfunc(mapper, ValueProxy<T>)),
     );
   }
 
@@ -89,29 +82,28 @@ export class Datum<T> extends Query<T> {
    * @param localKey Key in local object
    * @param otherKey Key in other table
    */
-  public lookup<U = any, TK extends keyof T = keyof T>(
-    other: Selection<U>,
+  public lookup<U = any, TK extends keyof T & string = keyof T & string>(
+    other: Stream<U>,
     localKey: TK,
-    otherKey: keyof U,
+    otherKey: keyof U & string,
   ) {
     return this.stage(
       Datum<Omit<T, TK> & Record<TK, T[TK] extends any[] ? U[] : U>>,
-      "lookup",
-      { localKey, otherKey },
-      other,
+      QueryStage("lookup", { localKey, otherKey }, other),
     );
   }
 
   /**
    * Plucks fields from the documents.
    *
-   * TODO: Better typing
-   *
    * @param fields Fields to keep
    * @returns New datum
    */
-  public pluck(...fields: string[]) {
-    return this.stage(Datum<Partial<T>>, "pluck", undefined, fields);
+  public pluck<K extends keyof NonNullable<T> & string>(...fields: K[]) {
+    return this.stage(
+      Datum<Pick<NonNullable<T>, K> | Extract<T, null | undefined>>,
+      QueryStage("pluck", undefined, fields),
+    );
   }
 }
 

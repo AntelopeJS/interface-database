@@ -1,22 +1,45 @@
 import type { Datum } from "./datum";
 import type { Query } from "./query";
 import type { ValueProxy, ValueProxyOrValue } from "./valueproxy";
+import { QueryStage } from "./stages";
+
+export {
+  QueryStage,
+  type QueryStageMap,
+  type IndexKeys,
+  type QueryStageName,
+  type SelectionKey,
+} from "./stages";
 
 export type StagedConstructor<T extends StagedObject = StagedObject> = new (
   newStage: QueryStage,
   previous?: StagedObject,
 ) => T;
 
+type DeepPartialLeaf =
+  | string
+  | number
+  | boolean
+  | bigint
+  | symbol
+  | null
+  | undefined
+  | Date;
+
 /**
- * Recursive Partial generic type
+ * A partial document: every object field optional, recursively. Scalars,
+ * `null` and dates are kept as they are, a list keeps partial elements, and an
+ * `any` or `unknown` value stays as it is, so a full document is its own partial.
  */
-export type DeepPartial<T> = {
-  [K in keyof T]?: T[K] extends Array<infer U1>
-    ? Array<DeepPartial<U1>>
-    : T[K] extends ReadonlyArray<infer U2>
-      ? ReadonlyArray<DeepPartial<U2>>
-      : DeepPartial<T[K]>;
-};
+export type DeepPartial<T> = unknown extends T
+  ? T
+  : T extends DeepPartialLeaf
+    ? T
+    : T extends Array<infer U>
+      ? Array<DeepPartial<U>>
+      : T extends ReadonlyArray<infer U>
+        ? ReadonlyArray<DeepPartial<U>>
+        : { [K in keyof T]?: DeepPartial<T[K]> };
 
 /**
  * Change event
@@ -42,20 +65,6 @@ export interface Changes<T> {
 
 export interface InsertOptions {
   conflict?: "update" | "replace";
-}
-
-export interface QueryStage {
-  stage: string;
-  options?: any;
-  args: any[];
-}
-
-export function QueryStage(stage: string, options?: any, ...args: any[]) {
-  return {
-    stage,
-    options,
-    args,
-  };
 }
 
 function isStagedConstructor(
@@ -88,40 +97,24 @@ export class StagedObject {
     return this.stages;
   }
 
-  protected stage(
-    type: undefined,
-    stage: string,
-    options?: any,
-    ...args: any[]
-  ): this;
+  protected stage(type: undefined, newStage: QueryStage): this;
   protected stage<T extends StagedObject>(
     type: StagedConstructor<T>,
-    stage: string,
-    options?: any,
-    ...args: any[]
+    newStage: QueryStage,
   ): T;
   protected stage<T extends StagedObject>(
     type: StagedConstructor<T> | undefined,
-    stage: string,
-    options?: any,
-    ...args: any[]
+    newStage: QueryStage,
   ) {
     const Constructor = type ?? ownConstructor(this);
-    return new Constructor(
-      {
-        stage,
-        options,
-        args,
-      },
-      this,
-    );
+    return new Constructor(newStage, this);
   }
 
   private static nextargid = 0;
   protected callfunc<T extends StagedObject[]>(
     func: (...args: T) => any,
     ...args: (typeof StagedObject)[]
-  ): QueryStage {
+  ): QueryStage<"func"> {
     const argNumbers: number[] = [];
     const argValues: StagedObject[] = [];
     for (let i = 0; i < args.length; ++i) {

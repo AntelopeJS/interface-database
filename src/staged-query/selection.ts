@@ -2,11 +2,13 @@ import { Datum } from "./datum";
 import { Query } from "./query";
 import { Stream } from "./stream";
 import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
-import type {
-  Changes,
-  DeepPartial,
-  ExtractType,
-  InsertOptions,
+import {
+  QueryStage,
+  type Changes,
+  type DeepPartial,
+  type ExtractType,
+  type IndexKeys,
+  type InsertOptions,
 } from "./common";
 import {
   AtomicMutationQuery,
@@ -16,12 +18,10 @@ import {
   type AtomicMutationOutcome,
 } from "./atomic";
 
-type SelectionKey = string | number | boolean;
-
 type Updater<T, U> = (val: ValueProxy<T>) => U;
 
 function isUpdater<T, U>(
-  document: DeepPartial<T> | Updater<T, U>,
+  document: (DeepPartial<T> & object) | Updater<T, U>,
 ): document is Updater<T, U> {
   return typeof document === "function";
 }
@@ -36,20 +36,20 @@ export class SingleSelection<T> extends Datum<T> {
    * @param document Partial document with new values
    * @returns Number of modified documents
    */
-  public update(document: DeepPartial<T>): Query<number>;
+  public update(document: DeepPartial<T> & object): Query<number>;
   public update<U>(
     document: (val: ValueProxy<T>) => U,
   ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
-  public update<U>(document: DeepPartial<T> | ((val: ValueProxy<T>) => U)) {
+  public update<U>(
+    document: (DeepPartial<T> & object) | ((val: ValueProxy<T>) => U),
+  ) {
     if (isUpdater(document)) {
       return this.stage(
         Query<number>,
-        "update",
-        undefined,
-        this.callfunc(document, ValueProxy<T>),
+        QueryStage("update", undefined, this.callfunc(document, ValueProxy<T>)),
       );
     }
-    return this.stage(Query<number>, "update", undefined, document);
+    return this.stage(Query<number>, QueryStage("update", undefined, document));
   }
 
   /**
@@ -58,8 +58,11 @@ export class SingleSelection<T> extends Datum<T> {
    * @param document Partial document to replace with
    * @returns Number of modified documents
    */
-  public replace(document: DeepPartial<T>) {
-    return this.stage(Query<number>, "replace", undefined, document);
+  public replace(document: DeepPartial<T> & object) {
+    return this.stage(
+      Query<number>,
+      QueryStage("replace", undefined, document),
+    );
   }
 
   /**
@@ -68,7 +71,7 @@ export class SingleSelection<T> extends Datum<T> {
    * @returns Number of deleted documents
    */
   public delete() {
-    return this.stage(Query<number>, "delete");
+    return this.stage(Query<number>, QueryStage("delete", undefined));
   }
 
   /**
@@ -77,7 +80,7 @@ export class SingleSelection<T> extends Datum<T> {
    * @returns Change feed
    */
   public changes() {
-    return this.stage(Query<Changes<T>[]>, "changes");
+    return this.stage(Query<Changes<T>[]>, QueryStage("changes", undefined));
   }
 }
 
@@ -91,20 +94,20 @@ export class Selection<T> extends Stream<T> {
    * @param document Partial document with new values
    * @returns Number of modified documents
    */
-  public update(document: DeepPartial<T>): Query<number>;
+  public update(document: DeepPartial<T> & object): Query<number>;
   public update<U>(
     document: (val: ValueProxy<T>) => U,
   ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
-  public update<U>(document: DeepPartial<T> | ((val: ValueProxy<T>) => U)) {
+  public update<U>(
+    document: (DeepPartial<T> & object) | ((val: ValueProxy<T>) => U),
+  ) {
     if (isUpdater(document)) {
       return this.stage(
         Query<number>,
-        "update",
-        undefined,
-        this.callfunc(document, ValueProxy<T>),
+        QueryStage("update", undefined, this.callfunc(document, ValueProxy<T>)),
       );
     }
-    return this.stage(Query<number>, "update", undefined, document);
+    return this.stage(Query<number>, QueryStage("update", undefined, document));
   }
 
   /**
@@ -113,8 +116,11 @@ export class Selection<T> extends Stream<T> {
    * @param document Partial document to replace with
    * @returns Number of modified documents
    */
-  public replace(document: DeepPartial<T>) {
-    return this.stage(Query<number>, "replace", undefined, document);
+  public replace(document: DeepPartial<T> & object) {
+    return this.stage(
+      Query<number>,
+      QueryStage("replace", undefined, document),
+    );
   }
 
   /**
@@ -123,7 +129,7 @@ export class Selection<T> extends Stream<T> {
    * @returns Number of deleted documents
    */
   public delete() {
-    return this.stage(Query<number>, "delete");
+    return this.stage(Query<number>, QueryStage("delete", undefined));
   }
 }
 
@@ -140,10 +146,7 @@ export class Table<T> extends Selection<T> {
     ValidateAtomicMutation(key, request);
     return this.stage(
       AtomicMutationQuery,
-      "atomicMutation",
-      undefined,
-      key,
-      request,
+      QueryStage("atomicMutation", undefined, key, request),
     );
   }
 
@@ -154,10 +157,10 @@ export class Table<T> extends Selection<T> {
    * @returns Inserted IDs
    */
   public insert(
-    obj: DeepPartial<T> | DeepPartial<T>[],
+    obj: (DeepPartial<T> & object) | (DeepPartial<T> & object)[],
     options?: InsertOptions,
   ) {
-    return this.stage(Query<string[]>, "insert", options, obj);
+    return this.stage(Query<string[]>, QueryStage("insert", options, obj));
   }
 
   /**
@@ -167,7 +170,7 @@ export class Table<T> extends Selection<T> {
    * @returns Single document selection
    */
   public get(key: ValueProxyOrValue<string>) {
-    return this.stage(SingleSelection<T>, "get", undefined, key);
+    return this.stage(SingleSelection<T>, QueryStage("get", undefined, key));
   }
 
   /**
@@ -177,11 +180,8 @@ export class Table<T> extends Selection<T> {
    * @param index Secondary index, will use the primary key if undefined
    * @returns Multiple document selection
    */
-  public getAll(
-    keys: ValueProxyOrValue<SelectionKey> | ValueProxyOrValue<SelectionKey>[],
-    index?: string,
-  ) {
-    return this.stage(Selection<T>, "getAll", { index }, keys);
+  public getAll(keys: IndexKeys, index?: string) {
+    return this.stage(Selection<T>, QueryStage("getAll", { index }, keys));
   }
 
   /**
@@ -192,7 +192,14 @@ export class Table<T> extends Selection<T> {
    * @param high Highest value of the range (excluded)
    * @returns Multiple document selection
    */
-  public between<TK extends keyof T>(index: TK, low: T[TK], high: T[TK]) {
-    return this.stage(Selection<T>, "between", { index }, low, high);
+  public between<TK extends keyof T & string>(
+    index: TK,
+    low: T[TK],
+    high: T[TK],
+  ) {
+    return this.stage(
+      Selection<T>,
+      QueryStage("between", { index }, low, high),
+    );
   }
 }

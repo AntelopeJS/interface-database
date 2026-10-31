@@ -27,20 +27,24 @@ type DeepPartialLeaf =
   | undefined
   | Date;
 
+type DeepPartialValue<V> = unknown extends V
+  ? V
+  : V extends DeepPartialLeaf
+    ? V
+    : V extends Array<infer U>
+      ? Array<DeepPartialValue<U>>
+      : V extends ReadonlyArray<infer U>
+        ? ReadonlyArray<DeepPartialValue<U>>
+        : DeepPartial<V>;
+
 /**
  * A partial document: every object field optional, recursively. Scalars,
  * `null` and dates are kept as they are, a list keeps partial elements, and an
- * `any` or `unknown` value stays as it is, so a full document is its own partial.
+ * `any` or `unknown` value stays as it is, so a full document is its own
+ * partial. The top level maps `T`'s keys, so a model generic over `T` can
+ * still pass a record it built.
  */
-export type DeepPartial<T> = unknown extends T
-  ? T
-  : T extends DeepPartialLeaf
-    ? T
-    : T extends Array<infer U>
-      ? Array<DeepPartial<U>>
-      : T extends ReadonlyArray<infer U>
-        ? ReadonlyArray<DeepPartial<U>>
-        : { [K in keyof T]?: DeepPartial<T[K]> };
+export type DeepPartial<T> = { [K in keyof T]?: DeepPartialValue<T[K]> };
 
 /**
  * Change event

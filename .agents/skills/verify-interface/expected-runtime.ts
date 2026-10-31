@@ -201,6 +201,14 @@ export const EXPECTED = {
       "_id",
       "Duplicate key on index \"_id\" (_id)"
     ],
+    "pair": [
+      "owner_slug",
+      [
+        "owner",
+        "slug"
+      ],
+      "Duplicate key on index \"owner_slug\" (owner, slug)"
+    ],
     "known": [
       true,
       true,

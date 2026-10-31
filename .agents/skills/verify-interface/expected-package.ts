@@ -1,7 +1,7 @@
 import type { Printed } from "./scenario-kit.ts";
 
 /** What the packed interface prints for the build-only entry point and the exports map. */
-export const STAGED: Printed = {
+export const STAGED = {
   "isolation": {
     "blocked": [],
     "leaks": [],
@@ -59,9 +59,9 @@ export const STAGED: Printed = {
       true
     ]
   }
-} satisfies { [id: string]: Printed };
+} satisfies Printed;
 
-export const SUBPATHS: Printed = {
+export const SUBPATHS = {
   "exported": [
     ".",
     "./atomic",
@@ -167,4 +167,4 @@ export const SUBPATHS: Printed = {
       "ValueProxy"
     ]
   }
-} satisfies { [id: string]: Printed };
+} satisfies Printed;

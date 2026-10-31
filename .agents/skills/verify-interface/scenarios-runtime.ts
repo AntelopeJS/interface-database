@@ -135,12 +135,14 @@ export const KIND_BODIES = {
   "duplicate-key-error": `
     const error = new db.DuplicateKeyError("email", ["email"]);
     const compound = new db.DuplicateKeyError("_id", ["_id"]);
+    const pair = new db.DuplicateKeyError("owner_slug", ["owner", "slug"]);
     const marker = Symbol.for("@antelopejs/interface-database/DuplicateKeyError@1");
     const foreign = Object.defineProperty(new Error("from another copy"), marker, { value: true });
     const lookalike = Object.assign(new Error("Duplicate key"), { index: "_id", fields: ["_id"] });
     return {
       shape: [error.name, error.message, error.index, error.fields, error instanceof Error, error instanceof db.DuplicateKeyError],
       primary: [compound.index, compound.message],
+      pair: [pair.index, pair.fields, pair.message],
       known: [db.IsDuplicateKeyError(error), db.IsDuplicateKeyError(foreign), db.IsDuplicateKeyError(lookalike), db.IsDuplicateKeyError(new Error("x")), db.IsDuplicateKeyError(null), db.IsDuplicateKeyError(undefined), db.IsDuplicateKeyError("DuplicateKeyError"), db.IsDuplicateKeyError({})],
       markerHidden: Object.keys(error).includes(String(marker)) || Object.getOwnPropertySymbols(error).length,
     };

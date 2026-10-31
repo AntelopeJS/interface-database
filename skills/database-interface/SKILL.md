@@ -98,6 +98,7 @@ for await (const change of novels.changes()) {
 - **Recognize query kinds with `IsStream`/`IsDatum`/`IsQuery`/`IsValueProxy`, not `instanceof`,** when the object may come from another module. Each provider binding has its own copy of the classes, so `instanceof` is false for a query built by a module bound to another database; the predicates are not. `CROSS_INSTANCE` is the same value in every copy.
 - Range semantics: `Table.between(index, low, high)` and `ValueProxy.during(left, right)` exclude the upper bound. `during` also takes bounds as milliseconds since the UNIX epoch.
 - `insert` accepts one document or an array, with `{ conflict: "update" | "replace" }` as options; it resolves to the inserted ids.
+- A written document (`insert`, `update`, `replace`) holds `WriteValue`s only: text, numbers, booleans, `null`, `Date`s, lists and nested documents. A field typed `unknown` takes a `WriteValue`; `bigint` and `symbol` do not compile.
 - A write that would duplicate the key of a unique index (`_id`, or an index declared `unique: true`, unique per instance) throws `DuplicateKeyError` (`index`, `fields`); test it with `IsDuplicateKeyError(error)`, not `instanceof`.
 - `cast<U>()` on `Datum`/`Stream`/`ValueProxy` only changes the TypeScript type — no runtime conversion.
 - `update` overloads: pass a plain `DeepPartial<T>` for static values, or a `(val: ValueProxy<T>) => ...` function for computed updates.

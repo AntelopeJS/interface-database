@@ -1,5 +1,10 @@
 import type { AtomicMutation, AtomicRecord } from "./atomic";
-import type { InsertOptions, StagedObject, Value } from "./common";
+import type {
+  InsertOptions,
+  StagedObject,
+  Value,
+  WriteDocument,
+} from "./common";
 import type { InstanceId } from "./schema";
 import type { Query } from "./query";
 import type { ValueProxyOrValue } from "./valueproxy";
@@ -55,9 +60,12 @@ export interface QueryStageMap {
     NoOptions,
     [key: string, request: AtomicMutation<AtomicRecord>]
   >;
-  insert: Recorded<InsertOptions | undefined, [documents: object | object[]]>;
-  update: Recorded<NoOptions, [document: object | Func]>;
-  replace: Recorded<NoOptions, [document: object]>;
+  insert: Recorded<
+    InsertOptions | undefined,
+    [documents: WriteDocument | WriteDocument[]]
+  >;
+  update: Recorded<NoOptions, [document: WriteDocument | Func]>;
+  replace: Recorded<NoOptions, [document: WriteDocument]>;
   delete: Recorded<NoOptions, []>;
   changes: Recorded<NoOptions, []>;
   get: Recorded<NoOptions, [key: ValueProxyOrValue<string>]>;

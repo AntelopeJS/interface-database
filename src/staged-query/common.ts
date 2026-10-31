@@ -4,6 +4,7 @@ import type { ValueProxy, ValueProxyOrValue } from "./valueproxy";
 import { QueryStage } from "./stages";
 
 export {
+  IsQueryStage,
   QueryStage,
   type QueryStageMap,
   type IndexKeys,

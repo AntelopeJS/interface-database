@@ -197,3 +197,11 @@ export function QueryStage<Name extends QueryStageName>(
 ): QueryStage<Name> {
   return { stage, options, args };
 }
+
+/** Tells whether `stage` records the stage `name`, narrowing it to that stage. */
+export function IsQueryStage<Name extends QueryStageName>(
+  stage: QueryStage | undefined,
+  name: Name,
+): stage is Extract<QueryStage, { stage: Name }> {
+  return stage?.stage === name;
+}

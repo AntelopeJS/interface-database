@@ -19,32 +19,51 @@ export type StagedConstructor<T extends StagedObject = StagedObject> = new (
   previous?: StagedObject,
 ) => T;
 
-type DeepPartialLeaf =
+/**
+ * A value every adapter writes and reads back as it was given: text, a number,
+ * a boolean, `null`, a date, a list of values or a nested document. `undefined`
+ * writes no value. A `bigint` or a `symbol` is not one: MongoDB truncates a
+ * `bigint` to 64 bits and drops a `symbol`, RethinkDB refuses a `bigint` and
+ * drops a `symbol`, and PostgreSQL refuses both.
+ */
+export type WriteValue =
   | string
   | number
   | boolean
-  | bigint
-  | symbol
   | null
   | undefined
-  | Date;
+  | Date
+  | readonly WriteValue[]
+  | WriteDocument;
 
-type DeepPartialValue<V> = unknown extends V
-  ? V
-  : V extends DeepPartialLeaf
-    ? V
-    : V extends Array<infer U>
-      ? Array<DeepPartialValue<U>>
-      : V extends ReadonlyArray<infer U>
-        ? ReadonlyArray<DeepPartialValue<U>>
-        : DeepPartial<V>;
+/** A document as `insert`, `update` and `replace` record it. */
+export interface WriteDocument {
+  [field: string]: WriteValue;
+}
+
+type DeepPartialLeaf = string | number | boolean | null | undefined | Date;
+
+type DeepPartialValue<V> = 0 extends 1 & V
+  ? V & WriteValue
+  : unknown extends V
+    ? WriteValue
+    : V extends DeepPartialLeaf
+      ? V
+      : V extends Array<infer U>
+        ? Array<DeepPartialValue<U>>
+        : V extends ReadonlyArray<infer U>
+          ? ReadonlyArray<DeepPartialValue<U>>
+          : V extends object
+            ? DeepPartial<V>
+            : never;
 
 /**
  * A partial document: every object field optional, recursively. Scalars,
- * `null` and dates are kept as they are, a list keeps partial elements, and an
- * `any` or `unknown` value stays as it is, so a full document is its own
- * partial. The top level maps `T`'s keys, so a model generic over `T` can
- * still pass a record it built.
+ * `null` and dates are kept as they are, a list keeps partial elements, a
+ * field typed `unknown` takes a {@link WriteValue}, and an `any` field stays
+ * `any`, so a full document is its own partial. A type no provider stores,
+ * such as `bigint` or `symbol`, becomes `never`. The top level maps `T`'s
+ * keys, so a model generic over `T` can still pass a record it built.
  */
 export type DeepPartial<T> = { [K in keyof T]?: DeepPartialValue<T[K]> };
 

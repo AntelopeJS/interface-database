@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/datum.ts b/src/staged-query/datum.ts
+index e97f890..8101f54 100644
+--- a/src/staged-query/datum.ts
++++ b/src/staged-query/datum.ts
+@@ -46,7 +46,7 @@ export class Datum<T> extends Query<T> {
+           ? NonNullable<T>[K]
+           : NonNullable<NonNullable<T>[K]> | U
+       >,
+-      QueryStage("key", undefined, key, def),
++      QueryStage("key", undefined, key),
+     );
+   }
+ 

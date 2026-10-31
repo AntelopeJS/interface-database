@@ -7,6 +7,7 @@ import {
   type Changes,
   type DeepPartial,
   type ExtractType,
+  type IndexBound,
   type IndexKeys,
   type InsertOptions,
 } from "./common";
@@ -194,8 +195,8 @@ export class Table<T> extends Selection<T> {
    */
   public between<TK extends keyof T & string>(
     index: TK,
-    low: T[TK],
-    high: T[TK],
+    low: T[TK] & IndexBound,
+    high: T[TK] & IndexBound,
   ) {
     return this.stage(
       Selection<T>,

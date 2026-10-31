@@ -1,14 +1,20 @@
 import type { AtomicMutation, AtomicRecord } from "./atomic";
-import type { InsertOptions, Value } from "./common";
+import type { InsertOptions, StagedObject, Value } from "./common";
 import type { InstanceId } from "./schema";
 import type { Query } from "./query";
 import type { ValueProxyOrValue } from "./valueproxy";
 
-/**
- * A key `getAll` and `between` match against an index: one value, or the
- * values of a compound index in its field order.
- */
+/** A scalar key `getAll` matches against an index. */
 export type SelectionKey = string | number | boolean;
+
+/** One value an index holds. A `null` is a value, not an open bound. */
+export type IndexValue = SelectionKey | Date | null;
+
+/**
+ * A bound `between` compares an index against: one value, or the values of a
+ * compound index in its field order.
+ */
+export type IndexBound = IndexValue | IndexValue[];
 
 /**
  * The keys `getAll` matches: one key, a list of keys, or a list of compound
@@ -56,12 +62,12 @@ export interface QueryStageMap {
   changes: Recorded<NoOptions, []>;
   get: Recorded<NoOptions, [key: ValueProxyOrValue<string>]>;
   getAll: Recorded<{ index?: string }, [keys: IndexKeys]>;
-  between: Recorded<
-    { index: string },
-    [low: Value<unknown>, high: Value<unknown>]
-  >;
+  between: Recorded<{ index: string }, [low: IndexBound, high: IndexBound]>;
 
-  key: Recorded<NoOptions, [key: string, defaultValue?: Value<unknown>]>;
+  key: Recorded<
+    NoOptions,
+    [key: StagedObject | string, defaultValue?: Value<unknown>]
+  >;
   default: Recorded<NoOptions, [value: Value<unknown>]>;
   map: Recorded<NoOptions, [mapper: Func]>;
   filter: Recorded<NoOptions, [predicate: Func]>;
@@ -98,7 +104,10 @@ export interface QueryStageMap {
   not: Recorded<NoOptions, []>;
   eq: Recorded<NoOptions, [value: Value<unknown>]>;
   ne: Recorded<NoOptions, [value: Value<unknown>]>;
-  add: Recorded<NoOptions, [value: ValueProxyOrValue<number>]>;
+  add: Recorded<
+    NoOptions,
+    [value: StagedObject | number | string | unknown[] | null]
+  >;
   sub: Recorded<NoOptions, [value: Value<unknown>]>;
   mul: Recorded<NoOptions, [value: ValueProxyOrValue<number>]>;
   div: Recorded<NoOptions, [value: ValueProxyOrValue<number>]>;
@@ -122,7 +131,7 @@ export interface QueryStageMap {
 
   date_during: Recorded<
     NoOptions,
-    [left: ValueProxyOrValue<Date>, right: ValueProxyOrValue<Date>]
+    [left: StagedObject | Date | number, right: StagedObject | Date | number]
   >;
   date_with_timezone: Recorded<
     NoOptions,

@@ -6,6 +6,7 @@ import {
 } from "./common";
 import { MarkKind } from "./kind";
 import type {
+  AddOperand,
   ArrayValue,
   Is,
   IsArray,
@@ -16,6 +17,7 @@ import { VALUEPROXY_KIND } from "./valueproxy-kind";
 export type ValueProxyOrValue<T> = ValueProxy<T> | T;
 
 export type {
+  AddOperand,
   ArrayValue,
   Is,
   IsArray,
@@ -134,14 +136,15 @@ export class ValueProxy<T> extends StagedObject {
   }
 
   /**
-   * Addition operator.
+   * Addition operator: adds seconds to a date, adds two numbers, or concatenates
+   * two strings or two lists.
    *
-   * @param other Operand B
-   * @returns New value
+   * @param value Operand B
+   * @returns New value, or null when operand B is null
    */
   public add(
-    this: Is<Date | number, T, this>,
-    value: ValueProxyOrValue<number>,
+    this: Is<Date | number | string, T, this> | IsArray<unknown, T, this>,
+    value: ValueProxyOrValue<AddOperand<T>>,
   ) {
     return ValueProxy.#stageOf(
       this,
@@ -173,14 +176,14 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * Determines whether or not the proxy is between the two bounds.
    *
-   * @param left Left bound (inclusive)
-   * @param right Right bound (exclusive)
+   * @param left Left bound (inclusive): a date, or seconds since the UNIX epoch
+   * @param right Right bound (exclusive): a date, or seconds since the UNIX epoch
    * @returns True if the date is within the bounds
    */
   public during(
     this: Is<Date, T, this>,
-    left: ValueProxyOrValue<Date>,
-    right: ValueProxyOrValue<Date>,
+    left: ValueProxyOrValue<Date> | ValueProxyOrValue<number>,
+    right: ValueProxyOrValue<Date> | ValueProxyOrValue<number>,
   ) {
     return this.stage(
       ValueProxy<boolean>,
@@ -696,12 +699,14 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * Filters the array using a predicate function.
    *
-   * @param predicate Predicate function.
+   * @param predicate Predicate function. A number keeps the element unless it is 0.
    * @returns Filtered array
    */
   public filter(
     this: IsArray<unknown, T, this>,
-    predicate: (val: ValueProxy<ArrayValue<T>>) => ValueProxyOrValue<boolean>,
+    predicate: (
+      val: ValueProxy<ArrayValue<T>>,
+    ) => ValueProxyOrValue<boolean> | ValueProxyOrValue<number>,
   ) {
     return this.stage(
       ValueProxy<Array<ArrayValue<T>>>,
@@ -758,27 +763,27 @@ export class ValueProxy<T> extends StagedObject {
   }
 
   /**
-   * Gets the minimum of a number array.
+   * Gets the minimum of an array of numbers, strings or dates.
    *
    * @returns Minimum
    */
-  public min(this: IsArray<number, T, this>) {
+  public min(this: IsArray<Date | number | string, T, this>) {
     return ValueProxy.#stageOf(
       this,
-      ValueProxy<number>,
+      ValueProxy<ArrayValue<T>>,
       QueryStage("arr_min", undefined),
     );
   }
 
   /**
-   * Gets the maxmimum of a number array.
+   * Gets the maximum of an array of numbers, strings or dates.
    *
    * @returns Maximum
    */
-  public max(this: IsArray<number, T, this>) {
+  public max(this: IsArray<Date | number | string, T, this>) {
     return ValueProxy.#stageOf(
       this,
-      ValueProxy<number>,
+      ValueProxy<ArrayValue<T>>,
       QueryStage("arr_max", undefined),
     );
   }

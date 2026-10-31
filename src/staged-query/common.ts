@@ -7,7 +7,9 @@ export {
   IsQueryStage,
   QueryStage,
   type QueryStageMap,
+  type IndexBound,
   type IndexKeys,
+  type IndexValue,
   type QueryStageName,
   type SelectionKey,
 } from "./stages";

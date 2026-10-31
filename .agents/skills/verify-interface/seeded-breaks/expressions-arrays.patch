@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/valueproxy.ts b/src/staged-query/valueproxy.ts
+index cc8f071..c225935 100644
+--- a/src/staged-query/valueproxy.ts
++++ b/src/staged-query/valueproxy.ts
+@@ -724,7 +724,7 @@ export class ValueProxy<T> extends StagedObject {
+    * @returns True if the array is empty
+    */
+   public isempty(this: IsArray<unknown, T, this>) {
+-    return this.stage(ValueProxy<boolean>, QueryStage("arr_empty", undefined));
++    return this.stage(ValueProxy<boolean>, QueryStage("arr_count", undefined));
+   }
+ 
+   /**

@@ -1,0 +1,16 @@
+diff --git a/src/staged-query/atomic.ts b/src/staged-query/atomic.ts
+index 76ad227..39bb134 100644
+--- a/src/staged-query/atomic.ts
++++ b/src/staged-query/atomic.ts
+@@ -155,10 +155,7 @@ function validateEquality<T>(
+ }
+ 
+ function validateUpdate<T>(request: AtomicUpdate<T>, forbidden: string[]) {
+-  if (
+-    !isToken(request.nextRevision) ||
+-    request.nextRevision === request.expectedRevision
+-  ) {
++  if (!isToken(request.nextRevision)) {
+     throw new TypeError("Atomic mutation requires a changed revision token");
+   }
+   if (!isRecord(request.patch)) {

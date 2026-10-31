@@ -1,0 +1,12 @@
+diff --git a/src/query.ts b/src/query.ts
+index 1ec74d0..527a2c0 100644
+--- a/src/query.ts
++++ b/src/query.ts
+@@ -44,7 +44,6 @@ class IterableCursor implements AsyncGenerator<any, void, unknown> {
+       this.resolve = undefined;
+       this.reject = undefined;
+     }
+-    await CloseCursor(this.reqId);
+     return res;
+   }
+ 

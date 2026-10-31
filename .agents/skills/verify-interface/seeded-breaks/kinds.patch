@@ -1,0 +1,11 @@
+diff --git a/src/staged-query/query.ts b/src/staged-query/query.ts
+index 8ce897b..f726f26 100644
+--- a/src/staged-query/query.ts
++++ b/src/staged-query/query.ts
+@@ -18,5 +18,5 @@ MarkKind(Query.prototype, QUERY_KIND);
+  * @returns True if the value is a query
+  */
+ export function IsQuery(value: unknown): value is Query<unknown> {
+-  return isKindHolder(value) && value[QUERY_KIND] === true;
++  return value instanceof Query;
+ }

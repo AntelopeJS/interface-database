@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/valueproxy.ts b/src/staged-query/valueproxy.ts
+index cc8f071..403df98 100644
+--- a/src/staged-query/valueproxy.ts
++++ b/src/staged-query/valueproxy.ts
+@@ -264,7 +264,7 @@ export class ValueProxy<T> extends StagedObject {
+   ) {
+     return this.withTimezone(timezone).stage(
+       ValueProxy<number>,
+-      QueryStage("date_dow", undefined),
++      QueryStage("date_doy", undefined),
+     );
+   }
+ 

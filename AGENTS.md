@@ -27,6 +27,8 @@ AQL, the AntelopeJS database query builder, published as `@antelopejs/interface-
 
 Finish every change with `pnpm run checks`. It runs typecheck, lint, format, knip, tests, size, suppressions, and sync, and prints only what failed. The change is done when it prints no failure.
 
+Prove a change works with the verification skill in [`.agents/skills/verify-interface/SKILL.md`](.agents/skills/verify-interface/SKILL.md) before you call it done.
+
 The tools enforce most rules, listed in the table at the end. The sections below hold the rules no tool checks.
 
 ### Comments

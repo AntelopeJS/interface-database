@@ -151,7 +151,7 @@ export class Schema<
    * @returns Schema instance
    */
   public instance(id?: InstanceId) {
-    return this.stage(SchemaInstance<T>, "instance", { id });
+    return this.stage(SchemaInstance<T>, QueryStage("instance", { id }));
   }
 
   /**
@@ -161,7 +161,7 @@ export class Schema<
    * @returns Created instance ID
    */
   public createInstance(id?: string) {
-    return this.stage(Query<string>, "createInstance", { id });
+    return this.stage(Query<string>, QueryStage("createInstance", { id }));
   }
 
   /**
@@ -170,7 +170,7 @@ export class Schema<
    * @param id Instance ID
    */
   public destroyInstance(id?: string) {
-    return this.stage(Query<void>, "destroyInstance", { id });
+    return this.stage(Query<void>, QueryStage("destroyInstance", { id }));
   }
 
   /**
@@ -181,7 +181,7 @@ export class Schema<
    * @returns IDs of named instances of this schema
    */
   public listInstances() {
-    return this.stage(Query<string[]>, "listInstances");
+    return this.stage(Query<string[]>, QueryStage("listInstances", undefined));
   }
 }
 
@@ -195,7 +195,7 @@ export class SchemaInstance<T> extends StagedObject {
    * @param id Table name
    * @returns Table
    */
-  public table<TK extends keyof T>(id: TK) {
-    return this.stage(Table<T[TK]>, "table", { id });
+  public table<TK extends keyof T & string>(id: TK) {
+    return this.stage(Table<T[TK]>, QueryStage("table", { id }));
   }
 }

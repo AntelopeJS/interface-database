@@ -4,23 +4,24 @@ import {
   type ExtractType,
   type StagedConstructor,
 } from "./common";
-import { isKindHolder, MarkKind } from "./kind";
-
-const VALUEPROXY_KIND = Symbol.for(
-  "@antelopejs/interface-database/ValueProxy@1",
-);
+import { MarkKind } from "./kind";
+import type {
+  ArrayValue,
+  Is,
+  IsArray,
+  OnlyObject,
+} from "./valueproxy-conditions";
+import { VALUEPROXY_KIND } from "./valueproxy-kind";
 
 export type ValueProxyOrValue<T> = ValueProxy<T> | T;
 
-export type Is<Left, Right, R> = Left extends Right ? R : never;
-
-export type ArrayValue<T> = T extends (infer V)[] ? V : never;
-
-export type IsArray<Left, Right, R> = Right extends (infer A)[]
-  ? Is<A, Left, R>
-  : never;
-
-export type OnlyObject<T> = T extends object ? T : never;
+export type {
+  ArrayValue,
+  Is,
+  IsArray,
+  OnlyObject,
+} from "./valueproxy-conditions";
+export { IsValueProxy } from "./valueproxy-kind";
 
 /**
  * Proxy to an actual value in the database
@@ -859,16 +860,3 @@ export class ValueProxy<T> extends StagedObject {
 }
 
 MarkKind(ValueProxy.prototype, VALUEPROXY_KIND);
-
-/**
- * Whether a value is a value proxy, built by any instance of this interface.
- *
- * Unlike `instanceof`, it also recognises objects built by the instance of
- * another provider binding.
- *
- * @param value Value to test
- * @returns True if the value is a value proxy
- */
-export function IsValueProxy(value: unknown): value is ValueProxy<unknown> {
-  return isKindHolder(value) && value[VALUEPROXY_KIND] === true;
-}

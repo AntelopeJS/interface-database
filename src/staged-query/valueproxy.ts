@@ -144,7 +144,7 @@ export class ValueProxy<T> extends StagedObject {
    */
   public add(
     this: Is<Date | number | string, T, this> | IsArray<unknown, T, this>,
-    value: ValueProxyOrValue<AddOperand<T>>,
+    value: AddOperand<T>,
   ) {
     return ValueProxy.#stageOf(
       this,

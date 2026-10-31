@@ -42,6 +42,15 @@ describe("Recorded stages", () => {
     });
   });
 
+  it("Records a proxy operand of add", () => {
+    const other = row.key("age");
+    expect(row.key("age").add(other).build().at(-1)).to.deep.equal({
+      stage: "add",
+      options: undefined,
+      args: [other],
+    });
+  });
+
   it("Records a null operand of add", () => {
     expect(row.key("age").add(null).build().at(-1)).to.deep.equal({
       stage: "add",

@@ -3,7 +3,7 @@ import { isKindHolder, MarkKind } from "./kind";
 
 const QUERY_KIND = Symbol.for("@antelopejs/interface-database/Query@1");
 
-// oxlint-disable-next-line typescript/no-unused-vars -- The executable entry consumes T through declaration merging.
+// oxlint-disable-next-line typescript/no-unused-vars, typescript/no-unnecessary-type-parameters -- The executable entry consumes T through declaration merging (`interface Query<T> extends QueryExecution<T>` in src/query.ts); using T in the class needs a phantom member or merging the two entries.
 export class Query<T> extends StagedObject {}
 
 MarkKind(Query.prototype, QUERY_KIND);

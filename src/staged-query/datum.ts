@@ -20,6 +20,7 @@ export class Datum<T> extends Query<T> {
      * T, so the same object is a valid Datum<U> for every U. Whether U matches
      * what the query yields is the caller's claim, which nothing here checks.
      */
+    // oxlint-disable-next-line anti-slop/no-chained-type-assertions -- a single `as Datum<U>` fails TS2352 because T and U are unrelated, and widening to StagedObject first is the refused route; the cast only relabels the type argument of the same object.
     return this as unknown as Datum<U>;
   }
 

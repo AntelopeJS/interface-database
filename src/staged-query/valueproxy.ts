@@ -62,12 +62,12 @@ export class ValueProxy<T> extends StagedObject {
    */
   public cast<U>() {
     /*
-     * SAFETY: A ValueProxy keeps no value of type T. Its only instance state is
-     * the `stages` array inherited from StagedObject, whose type does not
-     * depend on T, so the same object is a valid ValueProxy<U> for every U.
-     * Whether U matches what the query yields is the caller's claim, which
-     * nothing here checks.
+     * SAFETY: A ValueProxy keeps no value of type T. Its only state is the
+     * `stages` array, whose type does not depend on T, so the same object is
+     * a valid ValueProxy<U> for every U. U matching the query is the caller's
+     * claim.
      */
+    // oxlint-disable-next-line anti-slop/no-chained-type-assertions -- a single `as` fails TS2352 (T and U unrelated); widening to StagedObject first is refused.
     return this as unknown as ValueProxy<U>;
   }
 

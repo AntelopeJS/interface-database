@@ -81,7 +81,7 @@ Callbacks such as the `filter` above receive a `ValueProxy`, not a document: onl
 
 ## Compatibility
 
-Requires AntelopeJS core `1.x` and the following peer dependency:
+The package declares this `@antelopejs/*` peer dependency:
 
 <!-- antelopejs-docs-compat:start -->
 

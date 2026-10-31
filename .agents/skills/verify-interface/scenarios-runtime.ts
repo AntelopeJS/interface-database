@@ -57,6 +57,20 @@ export const ATOMIC_BODIES = {
       equalDotted: mutate("n-1", { type: "deleteIfEqual", field: "a.b", expectedValue: 1 }),
       crossInstance: attempt(() => notes.instance(db.CROSS_INSTANCE).table("notes").atomicMutation("n-1", revise({}))),
       namedInstance: attempt(() => notes.instance("tenant").table("notes").atomicMutation("n-1", revise({}))),
+      adapterTable: [
+        attempt(() => db.ValidateAtomicMutationTable(table.build())),
+        attempt(() => db.ValidateAtomicMutationTable(notes.instance("tenant").table("notes").build())),
+        attempt(() => db.ValidateAtomicMutationTable([...table.build(), { stage: "filter", args: [] }])),
+        attempt(() => db.ValidateAtomicMutationTable(table.build().slice(0, 2))),
+        attempt(() => db.ValidateAtomicMutationTable([table.build()[1], table.build()[0], table.build()[2]])),
+        attempt(() => db.ValidateAtomicMutationTable(notes.instance(db.CROSS_INSTANCE).table("notes").build())),
+      ],
+      adapterProtected: [
+        attempt(() => db.ValidateAtomicMutation("n-1", revise({ patch: { tenant: "t" } }), ["tenant"])),
+        attempt(() => db.ValidateAtomicMutation("n-1", revise({ revisionField: "tenant" }), ["tenant"])),
+        attempt(() => db.ValidateAtomicMutation("n-1", { type: "deleteIfEqual", field: "tenant", expectedValue: "t" }, ["tenant"])),
+        attempt(() => db.ValidateAtomicMutation("n-1", revise({}), ["tenant"])),
+      ],
       stages: show(table.atomicMutation("n-1", drop)),
       queryKinds: (() => { const q = table.atomicMutation("n-1", drop); return [db.IsQuery(q), q instanceof db.AtomicMutationQuery, q instanceof db.Query]; })(),
     };

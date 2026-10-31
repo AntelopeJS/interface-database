@@ -46,6 +46,20 @@ export const EXPECTED = {
     "equalDotted": "TypeError: Atomic mutation fields must be literal field names",
     "crossInstance": "TypeError: Atomic mutation requires one instance-scoped table",
     "namedInstance": "accepted",
+    "adapterTable": [
+      "accepted",
+      "accepted",
+      "TypeError: Atomic mutation requires one instance-scoped table",
+      "TypeError: Atomic mutation requires one instance-scoped table",
+      "TypeError: Atomic mutation requires one instance-scoped table",
+      "TypeError: Atomic mutation requires one instance-scoped table"
+    ],
+    "adapterProtected": [
+      "TypeError: Atomic mutation patch cannot change identity or revision",
+      "TypeError: Atomic mutation revision cannot be an identity field",
+      "TypeError: Atomic equality field cannot be an identity field",
+      "accepted"
+    ],
     "stages": [
       "schema{id:\"notes\"}",
       "instance{id:undefined}",

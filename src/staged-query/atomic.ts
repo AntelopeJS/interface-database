@@ -80,7 +80,10 @@ function validateField(field: string) {
   }
 }
 
-function validateConstant<Value>(value: Value, ancestors = new Set<unknown>()) {
+function validateConstant(
+  value: unknown,
+  ancestors = new Set<unknown>(),
+): asserts value is AtomicConstant {
   if (value === null || isString(value) || isBoolean(value)) return;
   if (Number.isFinite(value)) return;
   if (value instanceof Date && Number.isFinite(value.getTime())) return;

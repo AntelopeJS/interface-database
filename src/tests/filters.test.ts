@@ -42,6 +42,9 @@ describe("Filter Operations", () => {
   it("Filter with match()", FilterWithMatch);
   it("Filter with concat()", FilterWithConcat);
   it("Filter with Array isempty()", FilterWithArrayIsempty);
+  it("Filter with Array filter() on a number", FilterWithArrayFilterOnANumber);
+  it("Filter with Array min() of strings", FilterWithArrayMinOfStrings);
+  it("Filter with Array max() of dates", FilterWithArrayMaxOfDates);
   it("Filter with Array index()", FilterWithArrayIndex);
   it("Filter with Object hasfields()", FilterWithObjectHasfields);
   it("Filter with Object keys()", FilterWithObjectKeys);
@@ -303,6 +306,46 @@ async function FilterWithConcat() {
     .run();
   expect(result).to.have.lengthOf(1);
   expect(result[0].greeting).to.equal("Antoine Hello");
+}
+
+async function FilterWithArrayFilterOnANumber() {
+  const result = await table
+    .filter(() =>
+      ValueProxy.constant([0, 1])
+        .filter((value) => value)
+        .includes(0)
+        .not(),
+    )
+    .run();
+
+  expect(result).to.have.lengthOf(testData.length);
+}
+
+async function FilterWithArrayMinOfStrings() {
+  const result = await table
+    .filter((doc) => doc.key("skills").min().eq("JavaScript"))
+    .run();
+
+  const expected = testData
+    .filter((user) => user.skills?.slice().sort()[0] === "JavaScript")
+    .map((user) => user.name);
+  expect(expected).to.have.lengthOf.above(0);
+  expect(result.map((doc) => doc.name)).to.deep.equal(expected);
+}
+
+async function FilterWithArrayMaxOfDates() {
+  const bounds = [new Date("2022-01-01"), new Date("2023-06-01")];
+  const result = await table
+    .filter((doc) => ValueProxy.constant(bounds).max().gt(doc.key("createdAt")))
+    .run();
+
+  const latest = new Date("2023-06-01");
+  const expected = testData
+    .filter((user) => user.createdAt !== undefined && user.createdAt < latest)
+    .map((user) => user.name)
+    .sort();
+  expect(expected).to.have.lengthOf.above(0);
+  expect(result.map((doc) => doc.name).sort()).to.deep.equal(expected);
 }
 
 async function FilterWithArrayIsempty() {

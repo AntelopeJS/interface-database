@@ -43,18 +43,28 @@ export interface WriteDocument {
 
 type DeepPartialLeaf = string | number | boolean | null | undefined | Date;
 
-type DeepPartialValue<V> = unknown extends V
-  ? WriteValue
-  : V extends DeepPartialLeaf
-    ? V
-    : V extends Array<infer U>
-      ? Array<DeepPartialValue<U>>
-      : V extends ReadonlyArray<infer U>
-        ? ReadonlyArray<DeepPartialValue<U>>
-        : V extends object
-          ? DeepPartial<V>
-          : never;
+type DeepPartialValue<V> = 0 extends 1 & V
+  ? V & WriteValue
+  : unknown extends V
+    ? WriteValue
+    : V extends DeepPartialLeaf
+      ? V
+      : V extends Array<infer U>
+        ? Array<DeepPartialValue<U>>
+        : V extends ReadonlyArray<infer U>
+          ? ReadonlyArray<DeepPartialValue<U>>
+          : V extends object
+            ? DeepPartial<V>
+            : never;
 
+/**
+ * A partial document: every object field optional, recursively. Scalars,
+ * `null` and dates are kept as they are, a list keeps partial elements, a
+ * field typed `unknown` takes a {@link WriteValue}, and an `any` field stays
+ * `any`, so a full document is its own partial. A type no provider stores,
+ * such as `bigint` or `symbol`, becomes `never`. The top level maps `T`'s
+ * keys, so a model generic over `T` can still pass a record it built.
+ */
 export type DeepPartial<T> = { [K in keyof T]?: DeepPartialValue<T[K]> };
 
 /**

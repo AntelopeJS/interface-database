@@ -8,7 +8,6 @@ import {
   SchemaInstance,
   ValidateAtomicMutation,
   ValueProxy,
-  type AtomicMutation,
   type AtomicMutationOutcome,
   type AtomicUpdate,
   type InstanceId,
@@ -109,8 +108,9 @@ function ValidateRevision() {
     expect(() =>
       ValidateAtomicMutation("record-a", {
         ...request,
+        // @ts-expect-error expectedRevision is null, undefined, "" or a tag with an extra key, off-contract values that ValidateAtomicMutation must refuse with a TypeError
         expectedRevision,
-      } as AtomicMutation<RecordData>),
+      }),
     ).to.throw(TypeError);
   }
   expect(() =>
@@ -203,8 +203,9 @@ function ValidateEquality() {
       ValidateAtomicMutation("record-a", {
         type: "deleteIfEqual",
         field: "title",
+        // @ts-expect-error expectedValue is null, undefined, {}, [], NaN or an invalid Date, off-contract values that ValidateAtomicMutation must refuse with a TypeError
         expectedValue,
-      } as AtomicMutation<RecordData>),
+      }),
     ).to.throw(TypeError);
   }
 }

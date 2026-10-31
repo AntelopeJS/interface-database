@@ -176,14 +176,14 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * Determines whether or not the proxy is between the two bounds.
    *
-   * @param left Left bound (inclusive): a date, or seconds since the UNIX epoch
-   * @param right Right bound (exclusive): a date, or seconds since the UNIX epoch
+   * @param left Left bound (inclusive): a date, or milliseconds since the UNIX epoch
+   * @param right Right bound (exclusive): a date, or milliseconds since the UNIX epoch
    * @returns True if the date is within the bounds
    */
-  public during(
+  public during<Bound extends Date | number>(
     this: Is<Date, T, this>,
-    left: ValueProxyOrValue<Date> | ValueProxyOrValue<number>,
-    right: ValueProxyOrValue<Date> | ValueProxyOrValue<number>,
+    left: ValueProxyOrValue<Bound>,
+    right: ValueProxyOrValue<Bound>,
   ) {
     return this.stage(
       ValueProxy<boolean>,

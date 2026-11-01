@@ -2,27 +2,24 @@ import {
   QueryStage,
   StagedObject,
   type ExtractType,
+  type QueryValue,
   type StagedConstructor,
 } from "./common";
 import { MarkKind } from "./kind";
 import type {
   AddOperand,
   ArrayValue,
+  ElementOperand,
+  EqualityOperand,
+  InferredOperand,
   Is,
   IsArray,
   OnlyObject,
+  QueryOperand,
+  ValueProxyOrValue,
 } from "./valueproxy-conditions";
 import { VALUEPROXY_KIND } from "./valueproxy-kind";
-
-export type ValueProxyOrValue<T> = ValueProxy<T> | T;
-
-export type {
-  AddOperand,
-  ArrayValue,
-  Is,
-  IsArray,
-  OnlyObject,
-} from "./valueproxy-conditions";
+export type * from "./valueproxy-conditions";
 export { IsValueProxy } from "./valueproxy-kind";
 
 /**
@@ -42,7 +39,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Value
    * @returns Proxy
    */
-  public static constant<T = unknown>(value: T) {
+  public static constant<T = unknown>(value: T & QueryValue) {
     return new ValueProxy<T>(QueryStage("constant", undefined, value));
   }
 
@@ -77,7 +74,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Value to use in case the proxy is null
    * @returns Non-null value.
    */
-  public default<U>(value: ValueProxyOrValue<U>) {
+  public default<U extends QueryValue>(value: ValueProxyOrValue<U>) {
     return this.stage(
       ValueProxy<Exclude<T, undefined | null> | U>,
       QueryStage("default", undefined, value),
@@ -121,7 +118,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Operand B: a constant of this value's type, or any expression
    * @returns A == B
    */
-  public eq(value: StagedObject | T) {
+  public eq(value: EqualityOperand<T>) {
     return this.stage(ValueProxy<boolean>, QueryStage("eq", undefined, value));
   }
 
@@ -131,7 +128,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Operand B: a constant of this value's type, or any expression
    * @returns A != B
    */
-  public ne(value: StagedObject | T) {
+  public ne(value: EqualityOperand<T>) {
     return this.stage(ValueProxy<boolean>, QueryStage("ne", undefined, value));
   }
 
@@ -159,7 +156,10 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns New value
    */
-  public sub<U>(this: Is<Date | number, T, this>, value: ValueProxyOrValue<U>) {
+  public sub<U extends QueryValue>(
+    this: Is<Date | number, T, this>,
+    value: ValueProxyOrValue<U>,
+  ) {
     return ValueProxy.#stageOf(
       this,
       ValueProxy<
@@ -487,10 +487,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A > B
    */
-  public gt(
-    this: Is<Date | number | string, T, this>,
-    other: ValueProxyOrValue<T>,
-  ) {
+  public gt(this: Is<Date | number | string, T, this>, other: QueryOperand<T>) {
     return ValueProxy.#stageOf(
       this,
       ValueProxy<boolean>,
@@ -504,10 +501,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A >= B
    */
-  public ge(
-    this: Is<Date | number | string, T, this>,
-    other: ValueProxyOrValue<T>,
-  ) {
+  public ge(this: Is<Date | number | string, T, this>, other: QueryOperand<T>) {
     return ValueProxy.#stageOf(
       this,
       ValueProxy<boolean>,
@@ -521,10 +515,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A < B
    */
-  public lt(
-    this: Is<Date | number | string, T, this>,
-    other: ValueProxyOrValue<T>,
-  ) {
+  public lt(this: Is<Date | number | string, T, this>, other: QueryOperand<T>) {
     return ValueProxy.#stageOf(
       this,
       ValueProxy<boolean>,
@@ -538,10 +529,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns A <= B
    */
-  public le(
-    this: Is<Date | number | string, T, this>,
-    other: ValueProxyOrValue<T>,
-  ) {
+  public le(this: Is<Date | number | string, T, this>, other: QueryOperand<T>) {
     return ValueProxy.#stageOf(
       this,
       ValueProxy<boolean>,
@@ -648,10 +636,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param val Value to search for.
    * @returns True if the value was found.
    */
-  public includes(
-    this: IsArray<unknown, T, this>,
-    val: ValueProxyOrValue<ArrayValue<T>>,
-  ) {
+  public includes(this: IsArray<unknown, T, this>, val: ElementOperand<T>) {
     return this.stage(
       ValueProxy<boolean>,
       QueryStage("arr_includes", undefined, val),
@@ -799,8 +784,8 @@ export class ValueProxy<T> extends StagedObject {
    */
   public key<TO = OnlyObject<T>, K extends keyof TO = keyof TO, U = undefined>(
     this: Is<T, object, this>,
-    key: ValueProxyOrValue<K>,
-    def?: ValueProxyOrValue<U>,
+    key: InferredOperand<K>,
+    def?: InferredOperand<U>,
   ) {
     return this.stage(
       ValueProxy<
@@ -816,7 +801,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Other object
    * @returns `{...A, ...B}`
    */
-  public merge<U, TO = OnlyObject<T>>(
+  public merge<U extends QueryValue, TO = OnlyObject<T>>(
     this: Is<T, object, this>,
     other: ValueProxyOrValue<U>,
   ) {

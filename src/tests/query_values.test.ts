@@ -80,6 +80,16 @@ describe("Query values", () => {
     });
   });
 
+  it("Takes a value of unknown type in the list of a proxy typed any", () => {
+    const listed = new Map<string, unknown>([["k", "a"]]).get("k");
+    const list = ValueProxy.arg<any>(4);
+    expect(list.includes(listed).build().at(-1)).to.deep.equal({
+      stage: "arr_includes",
+      options: undefined,
+      args: ["a"],
+    });
+  });
+
   it("Takes a recursive union of values as a default", () => {
     const fallback: Field | undefined = ["a", { when: new Date(0) }];
     expect(row.key("name").default(fallback).build().at(-1)).to.deep.equal({

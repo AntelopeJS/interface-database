@@ -43,3 +43,11 @@ export type InferredOperand<T> = ValueProxy<T> | (T & QueryValue);
 
 /** The operand of `eq` and `ne`: a constant of the receiver's type, or any expression. */
 export type EqualityOperand<T> = StagedObject | OperandValue<T>;
+
+/**
+ * The operand of `includes`: an element of the receiver's list, or anything
+ * when the receiver is `any`, which stays the caller's opt-out.
+ */
+export type ElementOperand<T> = QueryOperand<
+  0 extends 1 & T ? any : ArrayValue<T>
+>;

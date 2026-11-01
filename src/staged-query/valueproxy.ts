@@ -9,6 +9,7 @@ import { MarkKind } from "./kind";
 import type {
   AddOperand,
   ArrayValue,
+  ElementOperand,
   EqualityOperand,
   InferredOperand,
   Is,
@@ -635,10 +636,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param val Value to search for.
    * @returns True if the value was found.
    */
-  public includes(
-    this: IsArray<unknown, T, this>,
-    val: QueryOperand<ArrayValue<T>>,
-  ) {
+  public includes(this: IsArray<unknown, T, this>, val: ElementOperand<T>) {
     return this.stage(
       ValueProxy<boolean>,
       QueryStage("arr_includes", undefined, val),

@@ -782,14 +782,10 @@ export class ValueProxy<T> extends StagedObject {
    * @param def Default value
    * @returns Value of the field
    */
-  public key<
-    TO = OnlyObject<T>,
-    K extends keyof TO = keyof TO,
-    U extends QueryValue = undefined,
-  >(
+  public key<TO = OnlyObject<T>, K extends keyof TO = keyof TO, U = undefined>(
     this: Is<T, object, this>,
     key: QueryOperand<K>,
-    def?: ValueProxyOrValue<U>,
+    def?: QueryOperand<U>,
   ) {
     return this.stage(
       ValueProxy<

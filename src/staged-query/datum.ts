@@ -39,12 +39,9 @@ export class Datum<T> extends Query<T> {
    * @param def Default value
    * @returns New datum with the value
    */
-  public key<
-    K extends keyof NonNullable<T> & string,
-    U extends QueryValue = undefined,
-  >(
+  public key<K extends keyof NonNullable<T> & string, U = undefined>(
     key: K,
-    def?: U,
+    def?: U & QueryValue,
   ): Datum<
     U extends undefined ? NonNullable<T>[K] : NonNullable<NonNullable<T>[K]> | U
   > {

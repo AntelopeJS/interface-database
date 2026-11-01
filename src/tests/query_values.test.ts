@@ -19,6 +19,10 @@ interface FieldRecord {
 
 const row = ValueProxy.arg<Person>(0);
 
+function lastStageOf(proxy: ValueProxy<object>) {
+  return proxy.build().at(-1);
+}
+
 describe("Query values", () => {
   it("Records a nested record operand as it was given", () => {
     const operand: QueryValue = {
@@ -68,6 +72,16 @@ describe("Query values", () => {
       stage: "default",
       options: undefined,
       args: [fallback],
+    });
+  });
+
+  it("Passes the entry of a record read by a text key to a proxy of an object", () => {
+    const entries = ValueProxy.arg<Record<string, { count: number }>>(1);
+    const id: string = "visits";
+    expect(lastStageOf(entries.key(id))).to.deep.equal({
+      stage: "obj_index",
+      options: undefined,
+      args: [id, undefined],
     });
   });
 

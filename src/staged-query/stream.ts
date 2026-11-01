@@ -39,9 +39,9 @@ export class Stream<T> extends Query<T[]> {
    * @param def Default value
    * @returns New stream
    */
-  public key<K extends keyof T & string, U extends QueryValue = undefined>(
+  public key<K extends keyof T & string, U = undefined>(
     key: ValueProxyOrValue<K>,
-    def?: U,
+    def?: U & QueryValue,
   ): Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U> {
     return this.stage(
       Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U>,

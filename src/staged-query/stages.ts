@@ -1,6 +1,7 @@
 import type { AtomicMutation, AtomicRecord } from "./atomic";
 import type {
   InsertOptions,
+  QueryValue,
   StagedObject,
   Value,
   WriteDocument,
@@ -53,8 +54,8 @@ export interface QueryStageMap {
   table: Recorded<{ id: string }, []>;
 
   arg: Recorded<NoOptions, [id: number]>;
-  func: Recorded<NoOptions, [argIds: number[], body: Value<unknown>]>;
-  constant: Recorded<NoOptions, [value: Value<unknown>]>;
+  func: Recorded<NoOptions, [argIds: number[], body: QueryValue]>;
+  constant: Recorded<NoOptions, [value: QueryValue]>;
 
   atomicMutation: Recorded<
     NoOptions,
@@ -74,9 +75,9 @@ export interface QueryStageMap {
 
   key: Recorded<
     NoOptions,
-    [key: StagedObject | string, defaultValue?: Value<unknown>]
+    [key: StagedObject | string, defaultValue?: QueryValue]
   >;
-  default: Recorded<NoOptions, [value: Value<unknown>]>;
+  default: Recorded<NoOptions, [value: QueryValue]>;
   map: Recorded<NoOptions, [mapper: Func]>;
   filter: Recorded<NoOptions, [predicate: Func]>;
   pluck: Recorded<NoOptions, [fields: string[]]>;
@@ -110,13 +111,13 @@ export interface QueryStageMap {
     [value: ValueProxyOrValue<boolean | null | undefined>]
   >;
   not: Recorded<NoOptions, []>;
-  eq: Recorded<NoOptions, [value: Value<unknown>]>;
-  ne: Recorded<NoOptions, [value: Value<unknown>]>;
+  eq: Recorded<NoOptions, [value: QueryValue]>;
+  ne: Recorded<NoOptions, [value: QueryValue]>;
   add: Recorded<
     NoOptions,
-    [value: StagedObject | number | string | unknown[] | null]
+    [value: StagedObject | number | string | readonly QueryValue[] | null]
   >;
-  sub: Recorded<NoOptions, [value: Value<unknown>]>;
+  sub: Recorded<NoOptions, [value: QueryValue]>;
   mul: Recorded<NoOptions, [value: ValueProxyOrValue<number>]>;
   div: Recorded<NoOptions, [value: ValueProxyOrValue<number>]>;
   mod: Recorded<NoOptions, [value: ValueProxyOrValue<number>]>;
@@ -132,10 +133,10 @@ export interface QueryStageMap {
     { preserveSign: boolean } | undefined,
     [value: ValueProxyOrValue<number>]
   >;
-  cmp_gt: Recorded<NoOptions, [value: Value<unknown>]>;
-  cmp_ge: Recorded<NoOptions, [value: Value<unknown>]>;
-  cmp_lt: Recorded<NoOptions, [value: Value<unknown>]>;
-  cmp_le: Recorded<NoOptions, [value: Value<unknown>]>;
+  cmp_gt: Recorded<NoOptions, [value: QueryValue]>;
+  cmp_ge: Recorded<NoOptions, [value: QueryValue]>;
+  cmp_lt: Recorded<NoOptions, [value: QueryValue]>;
+  cmp_le: Recorded<NoOptions, [value: QueryValue]>;
 
   date_during: Recorded<
     NoOptions,
@@ -164,7 +165,7 @@ export interface QueryStageMap {
   str_match: Recorded<NoOptions, [regex: ValueProxyOrValue<string>]>;
 
   arr_index: Recorded<NoOptions, [index: ValueProxyOrValue<number>]>;
-  arr_includes: Recorded<NoOptions, [value: Value<unknown>]>;
+  arr_includes: Recorded<NoOptions, [value: QueryValue]>;
   arr_slice: Recorded<
     NoOptions,
     [start: ValueProxyOrValue<number>, end?: ValueProxyOrValue<number>]
@@ -178,11 +179,8 @@ export interface QueryStageMap {
   arr_min: Recorded<NoOptions, []>;
   arr_max: Recorded<NoOptions, []>;
 
-  obj_index: Recorded<
-    NoOptions,
-    [key: Value<unknown>, defaultValue?: Value<unknown>]
-  >;
-  obj_merge: Recorded<NoOptions, [value: Value<unknown>]>;
+  obj_index: Recorded<NoOptions, [key: QueryValue, defaultValue?: QueryValue]>;
+  obj_merge: Recorded<NoOptions, [value: QueryValue]>;
   obj_keys: Recorded<NoOptions, []>;
   obj_values: Recorded<NoOptions, []>;
   obj_has: Recorded<NoOptions, [fields: string[]]>;

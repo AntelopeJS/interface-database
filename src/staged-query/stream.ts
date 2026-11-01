@@ -4,9 +4,14 @@ import {
   QueryStage,
   type Changes,
   type ExtractType,
+  type QueryValue,
   type Value,
 } from "./common";
-import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
+import {
+  ValueProxy,
+  type QueryOperand,
+  type ValueProxyOrValue,
+} from "./valueproxy";
 import { isKindHolder, MarkKind } from "./kind";
 
 const STREAM_KIND = Symbol.for("@antelopejs/interface-database/Stream@1");
@@ -40,7 +45,7 @@ export class Stream<T> extends Query<T[]> {
    */
   public key<K extends keyof T & string, U = undefined>(
     key: ValueProxyOrValue<K>,
-    def?: U,
+    def?: U & QueryValue,
   ): Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U> {
     return this.stage(
       Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U>,
@@ -54,7 +59,7 @@ export class Stream<T> extends Query<T[]> {
    * @param value Default value
    * @returns Stream with non-null value
    */
-  public default<U>(val: Value<U>) {
+  public default<U>(val: Datum<U> | QueryOperand<U>) {
     return this.stage(
       Stream<Exclude<T, undefined | null> | U>,
       QueryStage("default", undefined, val),

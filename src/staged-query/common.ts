@@ -36,6 +36,27 @@ export type WriteValue =
   | readonly WriteValue[]
   | WriteDocument;
 
+/**
+ * What a builder records as the operand of a stage: another staged object (a
+ * value proxy, a datum, a stream or a query), a value every adapter reads as
+ * given, a list of operands or a record of operands.
+ */
+export type QueryValue =
+  | StagedObject
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | Date
+  | readonly QueryValue[]
+  | QueryRecord;
+
+/** A record whose fields are operands. */
+export interface QueryRecord {
+  [field: string]: QueryValue;
+}
+
 /** A document as `insert`, `update` and `replace` record it. */
 export interface WriteDocument {
   [field: string]: WriteValue;

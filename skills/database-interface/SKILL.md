@@ -99,6 +99,7 @@ for await (const change of novels.changes()) {
 - Range semantics: `Table.between(index, low, high)` and `ValueProxy.during(left, right)` exclude the upper bound. `during` also takes bounds as milliseconds since the UNIX epoch.
 - `insert` accepts one document or an array, with `{ conflict: "update" | "replace" }` as options; it resolves to the inserted ids.
 - A written document (`insert`, `update`, `replace`) holds `WriteValue`s only: text, numbers, booleans, `null`, `Date`s, lists and nested documents. A field typed `unknown` takes a `WriteValue`, a field typed `any` takes anything; `bigint` and `symbol` do not compile.
+- An operand a stage records (`ValueProxy.constant`, `eq`, `ne`, `default`, `gt/ge/lt/le`, `includes`, `merge`) holds a `QueryValue`: a proxy or query, text, numbers, booleans, `null`, `Date`s, lists and records of those. `bigint`, `symbol`, functions and `interface`-typed records (no index signature) do not compile.
 - A write that would duplicate the key of a unique index (`_id`, or an index declared `unique: true`, unique per instance) throws `DuplicateKeyError` (`index`, `fields`); test it with `IsDuplicateKeyError(error)`, not `instanceof`.
 - `cast<U>()` on `Datum`/`Stream`/`ValueProxy` only changes the TypeScript type — no runtime conversion.
 - `update` overloads: pass a plain `DeepPartial<T>` for static values, or a `(val: ValueProxy<T>) => ...` function for computed updates.

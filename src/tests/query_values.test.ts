@@ -11,6 +11,12 @@ type Person = {
   tags: string[];
 };
 
+type Field = string | number | null | Date | Field[] | FieldRecord;
+
+interface FieldRecord {
+  [field: string]: Field | undefined;
+}
+
 const row = ValueProxy.arg<Person>(0);
 
 describe("Query values", () => {
@@ -53,6 +59,15 @@ describe("Query values", () => {
       stage: "default",
       options: undefined,
       args: [null],
+    });
+  });
+
+  it("Takes a recursive union of values as a default", () => {
+    const fallback: Field | undefined = ["a", { when: new Date(0) }];
+    expect(row.key("name").default(fallback).build().at(-1)).to.deep.equal({
+      stage: "default",
+      options: undefined,
+      args: [fallback],
     });
   });
 

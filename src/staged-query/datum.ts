@@ -1,7 +1,12 @@
 import { Query } from "./query";
-import { ValueProxy, type QueryOperand } from "./valueproxy";
+import { ValueProxy } from "./valueproxy";
 import type { Stream } from "./stream";
-import { QueryStage, type ExtractType, type QueryValue } from "./common";
+import {
+  QueryStage,
+  type ExtractType,
+  type QueryValue,
+  type Value,
+} from "./common";
 import { isKindHolder, MarkKind } from "./kind";
 
 const DATUM_KIND = Symbol.for("@antelopejs/interface-database/Datum@1");
@@ -34,9 +39,12 @@ export class Datum<T> extends Query<T> {
    * @param def Default value
    * @returns New datum with the value
    */
-  public key<K extends keyof NonNullable<T> & string, U = undefined>(
+  public key<
+    K extends keyof NonNullable<T> & string,
+    U extends QueryValue = undefined,
+  >(
     key: K,
-    def?: U & QueryValue,
+    def?: U,
   ): Datum<
     U extends undefined ? NonNullable<T>[K] : NonNullable<NonNullable<T>[K]> | U
   > {
@@ -56,7 +64,7 @@ export class Datum<T> extends Query<T> {
    * @param value Default value
    * @returns Current datum or given value
    */
-  public default<U>(val: Datum<U> | QueryOperand<U>) {
+  public default<U extends QueryValue>(val: Value<U>) {
     return this.stage(
       Datum<Exclude<T, undefined | null> | U>,
       QueryStage("default", undefined, val),

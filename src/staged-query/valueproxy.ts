@@ -13,19 +13,10 @@ import type {
   IsArray,
   OnlyObject,
   QueryOperand,
+  ValueProxyOrValue,
 } from "./valueproxy-conditions";
 import { VALUEPROXY_KIND } from "./valueproxy-kind";
-
-export type ValueProxyOrValue<T> = ValueProxy<T> | T;
-
-export type {
-  AddOperand,
-  ArrayValue,
-  Is,
-  IsArray,
-  OnlyObject,
-  QueryOperand,
-} from "./valueproxy-conditions";
+export type * from "./valueproxy-conditions";
 export { IsValueProxy } from "./valueproxy-kind";
 
 /**
@@ -80,7 +71,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Value to use in case the proxy is null
    * @returns Non-null value.
    */
-  public default<U>(value: QueryOperand<U>) {
+  public default<U extends QueryValue>(value: ValueProxyOrValue<U>) {
     return this.stage(
       ValueProxy<Exclude<T, undefined | null> | U>,
       QueryStage("default", undefined, value),
@@ -162,7 +153,10 @@ export class ValueProxy<T> extends StagedObject {
    * @param other Operand B
    * @returns New value
    */
-  public sub<U>(this: Is<Date | number, T, this>, value: QueryOperand<U>) {
+  public sub<U extends QueryValue>(
+    this: Is<Date | number, T, this>,
+    value: ValueProxyOrValue<U>,
+  ) {
     return ValueProxy.#stageOf(
       this,
       ValueProxy<
@@ -788,10 +782,14 @@ export class ValueProxy<T> extends StagedObject {
    * @param def Default value
    * @returns Value of the field
    */
-  public key<TO = OnlyObject<T>, K extends keyof TO = keyof TO, U = undefined>(
+  public key<
+    TO = OnlyObject<T>,
+    K extends keyof TO = keyof TO,
+    U extends QueryValue = undefined,
+  >(
     this: Is<T, object, this>,
     key: QueryOperand<K>,
-    def?: QueryOperand<U>,
+    def?: ValueProxyOrValue<U>,
   ) {
     return this.stage(
       ValueProxy<
@@ -807,9 +805,9 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Other object
    * @returns `{...A, ...B}`
    */
-  public merge<U, TO = OnlyObject<T>>(
+  public merge<U extends QueryValue, TO = OnlyObject<T>>(
     this: Is<T, object, this>,
-    other: QueryOperand<U>,
+    other: ValueProxyOrValue<U>,
   ) {
     return this.stage(
       ValueProxy<Omit<TO, keyof U> & ExtractType<U>>,

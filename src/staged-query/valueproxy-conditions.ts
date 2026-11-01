@@ -1,6 +1,9 @@
 import type { QueryValue } from "./common";
 import type { ValueProxy } from "./valueproxy";
 
+/** A proxy of `T`, or a plain `T`. */
+export type ValueProxyOrValue<T> = ValueProxy<T> | T;
+
 export type Is<Left, Right, R> = Left extends Right ? R : never;
 
 export type ArrayValue<T> = T extends (infer V)[] ? V : never;

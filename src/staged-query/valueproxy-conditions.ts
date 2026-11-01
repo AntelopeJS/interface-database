@@ -1,4 +1,4 @@
-import type { QueryValue } from "./common";
+import type { OperandValue, QueryValue, StagedObject } from "./common";
 import type { ValueProxy } from "./valueproxy";
 
 /** A proxy of `T`, or a plain `T`. */
@@ -31,7 +31,15 @@ export type AddOperand<T> = T extends Date | number
 
 /**
  * An operand of the same type as a value proxy of `T`: a proxy of `T`, or a
- * plain `T` that a stage can record, as {@link QueryValue} describes it. A type
- * no stage records, such as `bigint` or a function, leaves only the proxy.
+ * plain `T` that a stage can record, as {@link OperandValue} describes it.
  */
-export type QueryOperand<T> = ValueProxy<T> | (T & QueryValue);
+export type QueryOperand<T> = ValueProxy<T> | OperandValue<T>;
+
+/**
+ * An operand whose type is inferred from the argument: a proxy of `T`, or a
+ * `T` that is itself a {@link QueryValue}.
+ */
+export type InferredOperand<T> = ValueProxy<T> | (T & QueryValue);
+
+/** The operand of `eq` and `ne`: a constant of the receiver's type, or any expression. */
+export type EqualityOperand<T> = StagedObject | OperandValue<T>;

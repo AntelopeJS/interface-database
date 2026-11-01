@@ -9,6 +9,8 @@ import { MarkKind } from "./kind";
 import type {
   AddOperand,
   ArrayValue,
+  EqualityOperand,
+  InferredOperand,
   Is,
   IsArray,
   OnlyObject,
@@ -115,7 +117,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Operand B: a constant of this value's type, or any expression
    * @returns A == B
    */
-  public eq(value: StagedObject | (T & QueryValue)) {
+  public eq(value: EqualityOperand<T>) {
     return this.stage(ValueProxy<boolean>, QueryStage("eq", undefined, value));
   }
 
@@ -125,7 +127,7 @@ export class ValueProxy<T> extends StagedObject {
    * @param value Operand B: a constant of this value's type, or any expression
    * @returns A != B
    */
-  public ne(value: StagedObject | (T & QueryValue)) {
+  public ne(value: EqualityOperand<T>) {
     return this.stage(ValueProxy<boolean>, QueryStage("ne", undefined, value));
   }
 
@@ -784,8 +786,8 @@ export class ValueProxy<T> extends StagedObject {
    */
   public key<TO = OnlyObject<T>, K extends keyof TO = keyof TO, U = undefined>(
     this: Is<T, object, this>,
-    key: QueryOperand<K>,
-    def?: QueryOperand<U>,
+    key: InferredOperand<K>,
+    def?: InferredOperand<U>,
   ) {
     return this.stage(
       ValueProxy<

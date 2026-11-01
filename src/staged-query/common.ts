@@ -57,6 +57,28 @@ export interface QueryRecord {
   [field: string]: QueryValue;
 }
 
+/**
+ * The part of `V` that a stage records as given: a scalar or a date, a staged
+ * object, a list, or an object (mapped, so a type declared with `interface`
+ * qualifies) whose members qualify. A `bigint`, a `symbol` and a function map
+ * to `never`, a type `unknown` to {@link QueryValue}, and an `any` stays `any`.
+ */
+export type OperandValue<V> = 0 extends 1 & V
+  ? V & QueryValue
+  : unknown extends V
+    ? QueryValue
+    : V extends DeepPartialLeaf
+      ? V
+      : V extends StagedObject
+        ? V
+        : V extends Function
+          ? never
+          : V extends readonly (infer U)[]
+            ? readonly OperandValue<U>[]
+            : V extends object
+              ? { [K in keyof V]: OperandValue<V[K]> }
+              : never;
+
 /** A document as `insert`, `update` and `replace` record it. */
 export interface WriteDocument {
   [field: string]: WriteValue;

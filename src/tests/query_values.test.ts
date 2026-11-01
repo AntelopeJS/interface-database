@@ -11,6 +11,10 @@ type Person = {
   tags: string[];
 };
 
+interface Address {
+  street: string;
+}
+
 type Field = string | number | null | Date | Field[] | FieldRecord;
 
 interface FieldRecord {
@@ -55,6 +59,16 @@ describe("Query values", () => {
       stage: "eq",
       options: undefined,
       args: [{ street: "Main" }],
+    });
+  });
+
+  it("Records an interface-typed record operand of eq", () => {
+    const address: Address = { street: "Main" };
+    const located = ValueProxy.arg<{ address: Address }>(2);
+    expect(located.key("address").eq(address).build().at(-1)).to.deep.equal({
+      stage: "eq",
+      options: undefined,
+      args: [address],
     });
   });
 

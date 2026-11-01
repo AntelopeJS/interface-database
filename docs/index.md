@@ -59,7 +59,7 @@ export async function tryNotes() {
 
 Import `Schema`, `Query`, `Table`, `Datum`, `Stream`, and `ValueProxy` from `@antelopejs/interface-database` in an AntelopeJS module. This entry point registers schemas with the bound provider and installs query execution (`run()`, `then()`, `cursor()`, and async iteration).
 
-Supporting types have dedicated paths: import `Changes`, `DeepPartial`, `ExtractType`, `QueryValue`, `Value`, `WriteDocument`, and `WriteValue` from `@antelopejs/interface-database/common`, and `FieldType`, `TableDefinition`, and `IndexDefinition` from `@antelopejs/interface-database/schema`. Atomic mutation types are available from the package root and `/atomic`.
+Supporting types have dedicated paths: import `Changes`, `DeepPartial`, `ExtractType`, `OperandValue`, `QueryValue`, `Value`, `WriteDocument`, and `WriteValue` from `@antelopejs/interface-database/common`, and `FieldType`, `TableDefinition`, and `IndexDefinition` from `@antelopejs/interface-database/schema`. Atomic mutation types are available from the package root and `/atomic`.
 
 ### Advanced: build queries without executing them
 

@@ -2,7 +2,6 @@ export * from "./common";
 export * from "./atomic";
 export { Datum, IsDatum } from "./datum";
 export { IsQuery, Query } from "./query";
-export { IsQueryValue } from "./query-value";
 export {
   CROSS_INSTANCE,
   Schema,

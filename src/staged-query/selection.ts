@@ -32,15 +32,21 @@ function isUpdater<T, U>(
  */
 export class SingleSelection<T> extends Datum<T> {
   /**
+   * Update fields of this selection with values computed from each document
+   *
+   * @param document Function building the partial document from the current one
+   * @returns Number of modified documents
+   */
+  public update<U>(
+    document: (val: ValueProxy<T>) => U,
+  ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
+  /**
    * Update fields of this selection with the given values
    *
    * @param document Partial document with new values
    * @returns Number of modified documents
    */
   public update(document: DeepPartial<T> & object): Query<number>;
-  public update<U>(
-    document: (val: ValueProxy<T>) => U,
-  ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
   public update<U>(
     document: (DeepPartial<T> & object) | ((val: ValueProxy<T>) => U),
   ) {
@@ -90,15 +96,21 @@ export class SingleSelection<T> extends Datum<T> {
  */
 export class Selection<T> extends Stream<T> {
   /**
+   * Update fields of this selection with values computed from each document
+   *
+   * @param document Function building the partial document from the current one
+   * @returns Number of modified documents
+   */
+  public update<U>(
+    document: (val: ValueProxy<T>) => U,
+  ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
+  /**
    * Update fields of this selection with the given values
    *
    * @param document Partial document with new values
    * @returns Number of modified documents
    */
   public update(document: DeepPartial<T> & object): Query<number>;
-  public update<U>(
-    document: (val: ValueProxy<T>) => U,
-  ): ExtractType<U> extends DeepPartial<T> ? Query<number> : never;
   public update<U>(
     document: (DeepPartial<T> & object) | ((val: ValueProxy<T>) => U),
   ) {

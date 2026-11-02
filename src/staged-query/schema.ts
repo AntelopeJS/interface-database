@@ -49,7 +49,14 @@ interface IoTsValidation {
   readonly _tag: "Left" | "Right";
 }
 
-interface IoTsCodec<A = unknown, O = unknown, I = unknown> {
+/**
+ * The shape of an io-ts codec that a schema field accepts
+ *
+ * Declared as a type alias so TypeScript gives it an implicit string index
+ * signature: `Object.entries` on a codec lists its own enumerable properties
+ * as `[string, unknown]`, where an interface would make them `any`.
+ */
+type IoTsCodec<A = unknown, O = unknown, I = unknown> = {
   readonly _A: A;
   readonly _O: O;
   readonly _I: I;
@@ -57,7 +64,7 @@ interface IoTsCodec<A = unknown, O = unknown, I = unknown> {
   is(u: A | I): boolean;
   encode(a: A): O;
   decode(i: I): IoTsValidation;
-}
+};
 
 export type FieldType = StringFieldType | IoTsCodec;
 

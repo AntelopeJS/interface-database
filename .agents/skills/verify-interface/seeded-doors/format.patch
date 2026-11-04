@@ -1,0 +1,26 @@
+diff --git a/src/staged-query/stages.ts b/src/staged-query/stages.ts
+index fb8beb1..38d795d 100644
+--- a/src/staged-query/stages.ts
++++ b/src/staged-query/stages.ts
+@@ -70,7 +70,7 @@ export interface QueryStageMap {
+   >;
+   default: Recorded<NoOptions, [value: Value<unknown>]>;
+   map: Recorded<NoOptions, [mapper: Func]>;
+-  filter: Recorded<NoOptions, [predicate: Func]>;
++  where: Recorded<NoOptions, [predicate: Func]>;
+   pluck: Recorded<NoOptions, [fields: string[]]>;
+   without: Recorded<NoOptions, [fields: string[]]>;
+   union: Recorded<NoOptions, [other: Query<unknown[]>]>;
+diff --git a/src/staged-query/stream.ts b/src/staged-query/stream.ts
+index 94fc57e..8a5ac62 100644
+--- a/src/staged-query/stream.ts
++++ b/src/staged-query/stream.ts
+@@ -83,7 +83,7 @@ export class Stream<T> extends Query<T[]> {
+   public filter(predicate: (val: ValueProxy<T>) => ValueProxyOrValue<boolean>) {
+     return this.stage(
+       undefined,
+-      QueryStage("filter", undefined, this.callfunc(predicate, ValueProxy<T>)),
++      QueryStage("where", undefined, this.callfunc(predicate, ValueProxy<T>)),
+     );
+   }
+ 

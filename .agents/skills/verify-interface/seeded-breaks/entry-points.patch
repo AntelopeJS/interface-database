@@ -1,0 +1,15 @@
+diff --git a/package.json b/package.json
+index 982e937..8123842 100644
+--- a/package.json
++++ b/package.json
+@@ -85,10 +85,6 @@
+       "types": "./dist/selection.d.ts",
+       "default": "./dist/selection.js"
+     },
+-    "./stream": {
+-      "types": "./dist/stream.d.ts",
+-      "default": "./dist/stream.js"
+-    },
+     "./staged-query": {
+       "types": "./dist/staged-query/index.d.ts",
+       "default": "./dist/staged-query/index.js"

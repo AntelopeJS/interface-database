@@ -49,7 +49,14 @@ interface IoTsValidation {
   readonly _tag: "Left" | "Right";
 }
 
-interface IoTsCodec<A = unknown, O = unknown, I = unknown> {
+/**
+ * The shape of an io-ts codec that a schema field accepts
+ *
+ * Declared as a type alias so TypeScript gives it an implicit string index
+ * signature: `Object.entries` on a codec lists its own enumerable properties
+ * as `[string, unknown]`, where an interface would make them `any`.
+ */
+type IoTsCodec<A = unknown, O = unknown, I = unknown> = {
   readonly _A: A;
   readonly _O: O;
   readonly _I: I;
@@ -57,7 +64,7 @@ interface IoTsCodec<A = unknown, O = unknown, I = unknown> {
   is(u: A | I): boolean;
   encode(a: A): O;
   decode(i: I): IoTsValidation;
-}
+};
 
 export type FieldType = StringFieldType | IoTsCodec;
 
@@ -151,7 +158,7 @@ export class Schema<
    * @returns Schema instance
    */
   public instance(id?: InstanceId) {
-    return this.stage(SchemaInstance<T>, "instance", { id });
+    return this.stage(SchemaInstance<T>, QueryStage("instance", { id }));
   }
 
   /**
@@ -161,7 +168,7 @@ export class Schema<
    * @returns Created instance ID
    */
   public createInstance(id?: string) {
-    return this.stage(Query<string>, "createInstance", { id });
+    return this.stage(Query<string>, QueryStage("createInstance", { id }));
   }
 
   /**
@@ -170,7 +177,7 @@ export class Schema<
    * @param id Instance ID
    */
   public destroyInstance(id?: string) {
-    return this.stage(Query<void>, "destroyInstance", { id });
+    return this.stage(Query<void>, QueryStage("destroyInstance", { id }));
   }
 
   /**
@@ -181,7 +188,7 @@ export class Schema<
    * @returns IDs of named instances of this schema
    */
   public listInstances() {
-    return this.stage(Query<string[]>, "listInstances");
+    return this.stage(Query<string[]>, QueryStage("listInstances", undefined));
   }
 }
 
@@ -195,7 +202,7 @@ export class SchemaInstance<T> extends StagedObject {
    * @param id Table name
    * @returns Table
    */
-  public table<TK extends keyof T>(id: TK) {
-    return this.stage(Table<T[TK]>, "table", { id });
+  public table<TK extends keyof T & string>(id: TK) {
+    return this.stage(Table<T[TK]>, QueryStage("table", { id }));
   }
 }

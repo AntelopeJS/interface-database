@@ -1,0 +1,15 @@
+diff --git a/package.json b/package.json
+index 982e937..8d4aeab 100644
+--- a/package.json
++++ b/package.json
+@@ -61,10 +61,6 @@
+       "types": "./dist/index.d.ts",
+       "default": "./dist/index.js"
+     },
+-    "./atomic": {
+-      "types": "./dist/atomic.d.ts",
+-      "default": "./dist/atomic.js"
+-    },
+     "./common": {
+       "types": "./dist/common.d.ts",
+       "default": "./dist/common.js"

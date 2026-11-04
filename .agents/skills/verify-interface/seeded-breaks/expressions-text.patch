@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/valueproxy.ts b/src/staged-query/valueproxy.ts
+index cc8f071..310219d 100644
+--- a/src/staged-query/valueproxy.ts
++++ b/src/staged-query/valueproxy.ts
+@@ -589,7 +589,7 @@ export class ValueProxy<T> extends StagedObject {
+    * @returns New string
+    */
+   public upcase(this: Is<string, T, this>) {
+-    return this.stage(ValueProxy<string>, QueryStage("str_upcase", undefined));
++    return this.stage(ValueProxy<string>, QueryStage("str_downcase", undefined));
+   }
+ 
+   /**

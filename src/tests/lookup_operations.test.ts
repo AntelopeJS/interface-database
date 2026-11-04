@@ -67,6 +67,7 @@ describe("Lookup Operations", () => {
   it("Lookup With Filter", LookupWithFilter);
   it("Lookup with Subquery Inside Map", LookupWithSubqueryInsideMap);
   it("Chained Lookup", ChainedLookup);
+  it("Lookup Against A Plucked Stream", LookupAgainstPluckedStream);
   it("Cleanup", CleanupTest);
 });
 
@@ -191,6 +192,17 @@ async function ChainedLookup() {
   expect(antoineOrder?.customerName).to.have.property("name", "Antoine");
   expect(antoineOrder?.productSku).to.be.an("object");
   expect(antoineOrder?.productSku).to.have.property("sku", "LAPTOP-001");
+}
+
+async function LookupAgainstPluckedStream() {
+  const result = await ordersTable
+    .lookup(usersTable.pluck("name", "age"), "customerName", "name")
+    .run();
+
+  const antoineOrder = result.find((doc) => doc.orderId === "ORD-001");
+  expect(antoineOrder?.customerName).to.have.property("name", "Antoine");
+  expect(antoineOrder?.customerName).to.have.property("age", 25);
+  expect(antoineOrder?.customerName).to.not.have.property("email");
 }
 
 async function CleanupTest() {

@@ -1,0 +1,9 @@
+diff --git a/src/staged-query/index.ts b/src/staged-query/index.ts
+index bdbc4fa..f785ef6 100644
+--- a/src/staged-query/index.ts
++++ b/src/staged-query/index.ts
+@@ -1,3 +1,4 @@
++import "@antelopejs/interface-core";
+ export * from "./common";
+ export * from "./atomic";
+ export { Datum, IsDatum } from "./datum";

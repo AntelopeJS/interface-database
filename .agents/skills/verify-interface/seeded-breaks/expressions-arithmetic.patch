@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/valueproxy.ts b/src/staged-query/valueproxy.ts
+index cc8f071..7453861 100644
+--- a/src/staged-query/valueproxy.ts
++++ b/src/staged-query/valueproxy.ts
+@@ -361,7 +361,7 @@ export class ValueProxy<T> extends StagedObject {
+    * @returns A % B
+    */
+   public mod(this: Is<number, T, this>, other: ValueProxyOrValue<number>) {
+-    return this.stage(ValueProxy<number>, QueryStage("mod", undefined, other));
++    return this.stage(ValueProxy<number>, QueryStage("div", undefined, other));
+   }
+ 
+   /**

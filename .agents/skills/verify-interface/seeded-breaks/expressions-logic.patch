@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/valueproxy.ts b/src/staged-query/valueproxy.ts
+index cc8f071..ef4fb2c 100644
+--- a/src/staged-query/valueproxy.ts
++++ b/src/staged-query/valueproxy.ts
+@@ -511,7 +511,7 @@ export class ValueProxy<T> extends StagedObject {
+     return ValueProxy.#stageOf(
+       this,
+       ValueProxy<boolean>,
+-      QueryStage("cmp_ge", undefined, other),
++      QueryStage("cmp_gt", undefined, other),
+     );
+   }
+ 

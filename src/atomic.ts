@@ -6,7 +6,9 @@ import {
   type AtomicMutationOutcome,
 } from "./staged-query/atomic";
 
-const outcomes: readonly unknown[] = ["applied", "not-applied", "unknown"];
+function isOutcome(value: unknown): value is AtomicMutationOutcome {
+  return value === "applied" || value === "not-applied" || value === "unknown";
+}
 
 /** Signals an adapter that does not implement the atomic mutation contract. */
 export class AtomicMutationUnsupportedError extends Error {
@@ -32,8 +34,8 @@ async function run(
     );
   }
   ValidateAtomicMutation(terminal.args[0], terminal.args[1]);
-  const result = await Query.prototype.run.call(this);
-  if (!outcomes.includes(result)) throw new AtomicMutationUnsupportedError();
+  const result: unknown = await Query.prototype.run.call(this);
+  if (!isOutcome(result)) throw new AtomicMutationUnsupportedError();
   return result;
 }
 

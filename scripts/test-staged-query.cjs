@@ -4,19 +4,20 @@ const Module = require("node:module");
 const assert = require("node:assert/strict");
 
 const forbiddenImports = ["@antelopejs/interface-core", "node:async_hooks"];
-const originalLoad = Module._load;
 
-Module._load = function (request, parent, isMain) {
-  assert.equal(
-    forbiddenImports.includes(request),
-    false,
-    `staged query imported ${request}`,
-  );
-  return originalLoad.call(this, request, parent, isMain);
-};
+const loadGuard = Module.registerHooks({
+  resolve(specifier, context, nextResolve) {
+    assert.equal(
+      forbiddenImports.includes(specifier),
+      false,
+      `staged query imported ${specifier}`,
+    );
+    return nextResolve(specifier, context);
+  },
+});
 
 const staged = require("../dist/staged-query");
-Module._load = originalLoad;
+loadGuard.deregister();
 
 const schema = new staged.Schema("parity", {
   posts: { fields: {}, indexes: {} },
@@ -88,7 +89,7 @@ for (const file of fs.readdirSync(distDirectory)) {
   }
 }
 
-const executable = require("../dist");
+const executable = require("../dist/index");
 const executableTable = new executable.Schema("runtime", {
   records: { fields: {}, indexes: {} },
 })

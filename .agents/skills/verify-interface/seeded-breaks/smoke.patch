@@ -1,0 +1,22 @@
+diff --git a/src/query.ts b/src/query.ts
+index 1ec74d0..dab1eb9 100644
+--- a/src/query.ts
++++ b/src/query.ts
+@@ -4,7 +4,7 @@ import { StagedObject } from "./staged-query/common";
+ import { Query as StagedQuery } from "./staged-query/query";
+ 
+ /** @internal */
+-export const RunQuery =
++export const RunQueries =
+   InterfaceFunction<(query: StagedObject["stages"]) => any>();
+ /** @internal */
+ export const ReadCursor =
+@@ -78,7 +78,7 @@ declare module "./staged-query/query" {
+ }
+ 
+ function run<T>(this: StagedQuery<T>): Promise<T> {
+-  return RunQuery(this.build());
++  return RunQueries(this.build());
+ }
+ 
+ function then<T, TResult1 = T, TResult2 = never>(

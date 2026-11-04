@@ -1,0 +1,13 @@
+diff --git a/src/atomic.ts b/src/atomic.ts
+index 7f918d3..7c17805 100644
+--- a/src/atomic.ts
++++ b/src/atomic.ts
+@@ -7,7 +7,7 @@ import {
+ } from "./staged-query/atomic";
+ 
+ function isOutcome(value: unknown): value is AtomicMutationOutcome {
+-  return value === "applied" || value === "not-applied" || value === "unknown";
++  return value === "applied" || value === "not-applied" || value === "unknown" || typeof value === "number";
+ }
+ 
+ /** Signals an adapter that does not implement the atomic mutation contract. */

@@ -24,6 +24,18 @@ export interface AtomicDelete<T> extends AtomicCondition<T> {
 
 export type AtomicEqualityValue = string | number | boolean | Date;
 
+/** The constant data an atomic patch may hold, as `ValidateAtomicMutation` checks it. */
+export type AtomicConstant =
+  | AtomicEqualityValue
+  | null
+  | AtomicConstant[]
+  | AtomicRecord;
+
+/** A record of constant data under literal field names. */
+export interface AtomicRecord {
+  [field: string]: AtomicConstant;
+}
+
 /** Deletes by one observed scalar value; does not provide revision or ABA protection. */
 export interface AtomicDeleteIfEqual<T> {
   type: "deleteIfEqual";
@@ -38,15 +50,12 @@ export type AtomicMutation<T> =
 
 export type AtomicMutationOutcome = "applied" | "not-applied" | "unknown";
 
-const tableStages = ["schema", "instance", "table"];
 const identityFields = ["id", "_id"];
 
 function isRecord<Value>(value: Value): value is Value & object {
-  return (
-    value !== null &&
-    typeof value === "object" &&
-    [Object.prototype, null].includes(Object.getPrototypeOf(value))
-  );
+  if (value === null || typeof value !== "object") return false;
+  const prototype: unknown = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
 }
 
 function isString<Value>(value: Value): value is Value & string {
@@ -71,7 +80,10 @@ function validateField(field: string) {
   }
 }
 
-function validateConstant<Value>(value: Value, ancestors = new Set<unknown>()) {
+function validateConstant(
+  value: unknown,
+  ancestors = new Set<unknown>(),
+): asserts value is AtomicConstant {
   if (value === null || isString(value) || isBoolean(value)) return;
   if (Number.isFinite(value)) return;
   if (value instanceof Date && Number.isFinite(value.getTime())) return;
@@ -94,7 +106,7 @@ export function ValidateAtomicMutation<T>(
   key: string,
   request: AtomicMutation<T>,
   protectedFields: readonly string[] = [],
-): void {
+): asserts request is AtomicMutation<T> & AtomicMutation<AtomicRecord> {
   if (!isToken(key) || !isRecord(request)) {
     throw new TypeError("Atomic mutation requires one literal record identity");
   }
@@ -163,10 +175,13 @@ function validateUpdate<T>(request: AtomicUpdate<T>, forbidden: string[]) {
 
 /** Rejects selections and cross-instance operations before adapter dispatch. */
 export function ValidateAtomicMutationTable(stages: QueryStage[]): void {
+  const [schema, instance, table] = stages;
   if (
-    stages.length !== tableStages.length ||
-    stages.some((stage, index) => stage.stage !== tableStages[index]) ||
-    (stages[1].options?.id !== undefined && !isString(stages[1].options.id))
+    stages.length !== 3 ||
+    schema.stage !== "schema" ||
+    instance.stage !== "instance" ||
+    table.stage !== "table" ||
+    (instance.options?.id !== undefined && !isString(instance.options.id))
   ) {
     throw new TypeError("Atomic mutation requires one instance-scoped table");
   }

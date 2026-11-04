@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/selection.ts b/src/staged-query/selection.ts
+index 12887b7..73a898f 100644
+--- a/src/staged-query/selection.ts
++++ b/src/staged-query/selection.ts
+@@ -200,7 +200,7 @@ export class Table<T> extends Selection<T> {
+   ) {
+     return this.stage(
+       Selection<T>,
+-      QueryStage("between", { index }, low, high),
++      QueryStage("between", { index }, high, low),
+     );
+   }
+ }

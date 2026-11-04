@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/selection.ts b/src/staged-query/selection.ts
+index 12887b7..614c643 100644
+--- a/src/staged-query/selection.ts
++++ b/src/staged-query/selection.ts
+@@ -161,7 +161,7 @@ export class Table<T> extends Selection<T> {
+     obj: (DeepPartial<T> & object) | (DeepPartial<T> & object)[],
+     options?: InsertOptions,
+   ) {
+-    return this.stage(Query<string[]>, QueryStage("insert", options, obj));
++    return this.stage(Query<string[]>, QueryStage("insert", undefined, obj));
+   }
+ 
+   /**

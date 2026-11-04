@@ -17,6 +17,7 @@ describe("Basic Operations", () => {
     await schema.createInstance("default").run();
   });
 
+  it("Schema list", SchemaListTest);
   it("Insert", InsertTest);
   it("Insert conflict update (existing doc)", InsertConflictUpdateTest);
   it("Insert conflict replace (existing doc)", InsertConflictReplaceTest);
@@ -27,6 +28,7 @@ describe("Basic Operations", () => {
   it("Get All by primary keys", GetAllMultiKeyByPrimaryKey);
   it("Get All by 3+ primary keys", GetAllManyPrimaryKeys);
   it("Get All by 3+ index values", GetAllManyIndexValues);
+  it("Get All by compound index keys", GetAllCompoundKeys);
   it("Get All With OrderBy", GetAllWithOrderBy);
   it("Update", UpdateTest);
   it("Replace", ReplaceTest);
@@ -37,6 +39,10 @@ describe("Basic Operations", () => {
     await schema.destroyInstance("default").run();
   });
 });
+
+function SchemaListTest() {
+  expect(Schema.list().get("test-basic-operations")).to.equal(schema);
+}
 
 async function InsertTest() {
   const response = await table.insert(vehicles).run();
@@ -236,6 +242,24 @@ async function GetAllManyIndexValues() {
 
   for (const doc of result) {
     expect(targetPrices).to.include(doc.price);
+  }
+}
+
+async function GetAllCompoundKeys() {
+  const keys = expectedVehicles
+    .slice(0, 2)
+    .map((vehicle) => [vehicle.isElectric, vehicle.price]);
+  const result = await table.getAll(keys, "electricPrice").run();
+
+  const expectedCount = expectedVehicles.filter((vehicle) =>
+    keys.some(
+      ([isElectric, price]) =>
+        vehicle.isElectric === isElectric && vehicle.price === price,
+    ),
+  ).length;
+  expect(result).to.have.lengthOf(expectedCount);
+  for (const doc of result) {
+    expect(keys).to.deep.include([doc.isElectric, doc.price]);
   }
 }
 

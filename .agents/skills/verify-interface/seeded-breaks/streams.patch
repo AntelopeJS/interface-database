@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/stream.ts b/src/staged-query/stream.ts
+index 94fc57e..c4a318c 100644
+--- a/src/staged-query/stream.ts
++++ b/src/staged-query/stream.ts
+@@ -236,7 +236,7 @@ export class Stream<T> extends Query<T[]> {
+    * @returns New (sorted) stream
+    */
+   public orderBy(index: string, direction?: "asc" | "desc") {
+-    return this.stage(undefined, QueryStage("orderBy", { index, direction }));
++    return this.stage(undefined, QueryStage("orderBy", { index, direction: direction ?? "desc" }));
+   }
+ 
+   /**

@@ -1,9 +1,14 @@
 import { Datum } from "./datum";
 import { Query } from "./query";
-import type { Selection } from "./selection";
-import type { Changes, ExtractType, Value } from "./common";
+import {
+  QueryStage,
+  type Changes,
+  type ExtractType,
+  type QueryValue,
+  type Value,
+} from "./common";
 import { ValueProxy, type ValueProxyOrValue } from "./valueproxy";
-import { HasKind, MarkKind } from "./kind";
+import { isKindHolder, MarkKind } from "./kind";
 
 const STREAM_KIND = Symbol.for("@antelopejs/interface-database/Stream@1");
 
@@ -17,10 +22,11 @@ export class Stream<T> extends Query<T[]> {
   public cast<U>() {
     /*
      * SAFETY: A Stream keeps no value of type T. Its only instance state is the
-     * untyped `stages` array inherited from StagedObject, so the same object is
-     * a valid Stream<U> for every U. Whether U matches what the query yields is
-     * the caller's claim, which nothing here checks.
+     * `stages` array inherited from StagedObject, whose type does not depend on
+     * T, so the same object is a valid Stream<U> for every U. Whether U matches
+     * what the query yields is the caller's claim, which nothing here checks.
      */
+    // oxlint-disable-next-line anti-slop/no-chained-type-assertions -- a single `as Stream<U>` fails TS2352 because T and U are unrelated, and widening to StagedObject first is the refused route; the cast only relabels the type argument of the same object.
     return this as unknown as Stream<U>;
   }
 
@@ -29,17 +35,17 @@ export class Stream<T> extends Query<T[]> {
    *
    * TODO: Better name?
    *
-   * @param key Field name
+   * @param key Field name, or an expression yielding it
    * @param def Default value
    * @returns New stream
    */
-  public key<K extends keyof T, U = undefined>(key: K, def?: U) {
+  public key<K extends keyof T & string, U = undefined>(
+    key: ValueProxyOrValue<K>,
+    def?: U & QueryValue,
+  ): Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U> {
     return this.stage(
       Stream<U extends undefined ? T[K] : Exclude<T[K], undefined | null> | U>,
-      "key",
-      undefined,
-      key,
-      def,
+      QueryStage("key", undefined, key, def),
     );
   }
 
@@ -49,12 +55,10 @@ export class Stream<T> extends Query<T[]> {
    * @param value Default value
    * @returns Stream with non-null value
    */
-  public default<U>(val: Value<U>) {
+  public default<U extends QueryValue>(val: Value<U>) {
     return this.stage(
       Stream<Exclude<T, undefined | null> | U>,
-      "default",
-      undefined,
-      val,
+      QueryStage("default", undefined, val),
     );
   }
 
@@ -67,9 +71,7 @@ export class Stream<T> extends Query<T[]> {
   public map<U>(mapper: (val: ValueProxy<T>) => U) {
     return this.stage(
       Stream<ExtractType<U>>,
-      "map",
-      undefined,
-      this.callfunc(mapper, ValueProxy<T>),
+      QueryStage("map", undefined, this.callfunc(mapper, ValueProxy<T>)),
     );
   }
 
@@ -82,9 +84,7 @@ export class Stream<T> extends Query<T[]> {
   public filter(predicate: (val: ValueProxy<T>) => ValueProxyOrValue<boolean>) {
     return this.stage(
       undefined,
-      "filter",
-      undefined,
-      this.callfunc(predicate, ValueProxy<T>),
+      QueryStage("filter", undefined, this.callfunc(predicate, ValueProxy<T>)),
     );
   }
 
@@ -94,8 +94,11 @@ export class Stream<T> extends Query<T[]> {
    * @param fields Selected fields
    * @returns New stream
    */
-  public pluck(...fields: string[]) {
-    return this.stage(Stream<Partial<T>>, "pluck", undefined, fields);
+  public pluck<K extends keyof T & string>(...fields: K[]) {
+    return this.stage(
+      Stream<Pick<T, K>>,
+      QueryStage("pluck", undefined, fields),
+    );
   }
 
   /**
@@ -104,8 +107,11 @@ export class Stream<T> extends Query<T[]> {
    * @param fields Excluded fields
    * @returns New stream
    */
-  public without(...fields: string[]) {
-    return this.stage(Stream<Partial<T>>, "without", undefined, fields);
+  public without<K extends keyof T & string>(...fields: K[]) {
+    return this.stage(
+      Stream<Omit<T, K>>,
+      QueryStage("without", undefined, fields),
+    );
   }
 
   /**
@@ -115,7 +121,7 @@ export class Stream<T> extends Query<T[]> {
    * @returns New stream containing elements from both streams
    */
   public union<U>(other: Stream<U>) {
-    return this.stage(Stream<T | U>, "union", undefined, other);
+    return this.stage(Stream<T | U>, QueryStage("union", undefined, other));
   }
 
   /**
@@ -136,11 +142,13 @@ export class Stream<T> extends Query<T[]> {
   ) {
     return this.stage(
       Stream<ExtractType<V>>,
-      "join",
-      { innerOnly: false },
-      right,
-      this.callfunc(predicate, ValueProxy<T>, ValueProxy<U>),
-      this.callfunc(mapper, ValueProxy<T>, ValueProxy<U | null>),
+      QueryStage(
+        "join",
+        { innerOnly: false },
+        right,
+        this.callfunc(predicate, ValueProxy<T>, ValueProxy<U>),
+        this.callfunc(mapper, ValueProxy<T>, ValueProxy<U | null>),
+      ),
     );
   }
 
@@ -162,11 +170,13 @@ export class Stream<T> extends Query<T[]> {
   ) {
     return this.stage(
       Stream<ExtractType<V>>,
-      "join",
-      { innerOnly: true },
-      right,
-      this.callfunc(predicate, ValueProxy<T>, ValueProxy<U>),
-      this.callfunc(mapper, ValueProxy<T>, ValueProxy<U>),
+      QueryStage(
+        "join",
+        { innerOnly: true },
+        right,
+        this.callfunc(predicate, ValueProxy<T>, ValueProxy<U>),
+        this.callfunc(mapper, ValueProxy<T>, ValueProxy<U>),
+      ),
     );
   }
 
@@ -178,16 +188,14 @@ export class Stream<T> extends Query<T[]> {
    * @param otherKey Key in the other document to match against
    * @returns New stream
    */
-  public lookup<U, TK extends keyof T>(
-    right: Selection<U>,
+  public lookup<U, TK extends keyof T & string>(
+    right: Stream<U>,
     localKey: TK,
-    otherKey: keyof U,
+    otherKey: keyof U & string,
   ) {
     return this.stage(
       Stream<Omit<T, TK> & Record<TK, T[TK] extends any[] ? U[] : U>>,
-      "lookup",
-      { localKey, otherKey },
-      right,
+      QueryStage("lookup", { localKey, otherKey }, right),
     );
   }
 
@@ -204,7 +212,7 @@ export class Stream<T> extends Query<T[]> {
    * @param mapper Mapping function
    * @returns New stream of grouped data
    */
-  public group<U, K extends keyof T | string>(
+  public group<U, K extends (keyof T & string) | string>(
     index: K,
     mapper: (
       stream: Stream<T>,
@@ -213,9 +221,11 @@ export class Stream<T> extends Query<T[]> {
   ) {
     return this.stage(
       Stream<ExtractType<U>>,
-      "group",
-      { index },
-      this.callfunc(mapper, Stream<T>, ValueProxy<unknown>),
+      QueryStage(
+        "group",
+        { index },
+        this.callfunc(mapper, Stream<T>, ValueProxy<unknown>),
+      ),
     );
   }
 
@@ -227,7 +237,7 @@ export class Stream<T> extends Query<T[]> {
    * @returns New (sorted) stream
    */
   public orderBy(index: string, direction?: "asc" | "desc") {
-    return this.stage(undefined, "orderBy", { index, direction });
+    return this.stage(undefined, QueryStage("orderBy", { index, direction }));
   }
 
   /**
@@ -238,7 +248,7 @@ export class Stream<T> extends Query<T[]> {
    * @returns New stream
    */
   public slice(offset: Value<number>, count?: Value<number>) {
-    return this.stage(undefined, "slice", undefined, offset, count);
+    return this.stage(undefined, QueryStage("slice", undefined, offset, count));
   }
 
   /**
@@ -248,7 +258,7 @@ export class Stream<T> extends Query<T[]> {
    * @returns Single document
    */
   public nth(n: Value<number>) {
-    return this.stage(Datum<T | null>, "nth", undefined, n);
+    return this.stage(Datum<T | null>, QueryStage("nth", undefined, n));
   }
 
   /**
@@ -257,8 +267,8 @@ export class Stream<T> extends Query<T[]> {
    * @param field Field to count distinct entries
    * @returns Count
    */
-  public count(field?: keyof T) {
-    return this.stage(Datum<number>, "count", { field });
+  public count(field?: keyof T & string) {
+    return this.stage(Datum<number>, QueryStage("count", { field }));
   }
 
   /**
@@ -267,8 +277,8 @@ export class Stream<T> extends Query<T[]> {
    * @param field Field to use
    * @returns Sum
    */
-  public sum(field?: keyof T) {
-    return this.stage(Datum<number>, "sum", { field });
+  public sum(field?: keyof T & string) {
+    return this.stage(Datum<number>, QueryStage("sum", { field }));
   }
 
   /**
@@ -277,8 +287,8 @@ export class Stream<T> extends Query<T[]> {
    * @param field Field to use
    * @returns Average
    */
-  public avg(field?: keyof T) {
-    return this.stage(Datum<number>, "avg", { field });
+  public avg(field?: keyof T & string) {
+    return this.stage(Datum<number>, QueryStage("avg", { field }));
   }
 
   /**
@@ -287,8 +297,8 @@ export class Stream<T> extends Query<T[]> {
    * @param field Field to use
    * @returns Minimum value
    */
-  public min(field?: keyof T) {
-    return this.stage(Datum<number>, "min", { field });
+  public min(field?: keyof T & string) {
+    return this.stage(Datum<number>, QueryStage("min", { field }));
   }
 
   /**
@@ -297,8 +307,8 @@ export class Stream<T> extends Query<T[]> {
    * @param field Field to use
    * @returns Maximum value
    */
-  public max(field?: keyof T) {
-    return this.stage(Datum<number>, "max", { field });
+  public max(field?: keyof T & string) {
+    return this.stage(Datum<number>, QueryStage("max", { field }));
   }
 
   /**
@@ -315,11 +325,12 @@ export class Stream<T> extends Query<T[]> {
    * @param index Field to use
    * @returns New stream
    */
-  public distinct<TK extends keyof T>(field: TK): Stream<T[TK]>;
-  public distinct(field?: keyof T) {
-    return this.stage<any>(field ? Stream<T> : Datum<T[]>, "distinct", {
-      field,
-    });
+  public distinct<TK extends keyof T & string>(field: TK): Stream<T[TK]>;
+  public distinct(field?: keyof T & string): Datum<T[]> | Stream<T[keyof T]> {
+    if (field) {
+      return this.stage(Stream<T[keyof T]>, QueryStage("distinct", { field }));
+    }
+    return this.stage(Datum<T[]>, QueryStage("distinct", { field }));
   }
 
   /**
@@ -328,7 +339,7 @@ export class Stream<T> extends Query<T[]> {
    * @returns Change feed
    */
   public changes() {
-    return this.stage(Query<Changes<T>[]>, "changes");
+    return this.stage(Query<Changes<T>[]>, QueryStage("changes", undefined));
   }
 }
 
@@ -344,5 +355,5 @@ MarkKind(Stream.prototype, STREAM_KIND);
  * @returns True if the value is a stream
  */
 export function IsStream(value: unknown): value is Stream<unknown> {
-  return HasKind(value, STREAM_KIND);
+  return isKindHolder(value) && value[STREAM_KIND] === true;
 }

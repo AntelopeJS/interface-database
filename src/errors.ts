@@ -1,4 +1,4 @@
-import { HasKind, MarkKind } from "./staged-query/kind";
+import { isKindHolder, MarkKind } from "./staged-query/kind";
 
 const DUPLICATE_KEY_KIND = Symbol.for(
   "@antelopejs/interface-database/DuplicateKeyError@1",
@@ -41,5 +41,5 @@ MarkKind(DuplicateKeyError.prototype, DUPLICATE_KEY_KIND);
 export function IsDuplicateKeyError(
   value: unknown,
 ): value is DuplicateKeyError {
-  return HasKind(value, DUPLICATE_KEY_KIND);
+  return isKindHolder(value) && value[DUPLICATE_KEY_KIND] === true;
 }

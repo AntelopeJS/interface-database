@@ -1,0 +1,13 @@
+diff --git a/src/staged-query/stream.ts b/src/staged-query/stream.ts
+index 94fc57e..27042f0 100644
+--- a/src/staged-query/stream.ts
++++ b/src/staged-query/stream.ts
+@@ -171,7 +171,7 @@ export class Stream<T> extends Query<T[]> {
+       Stream<ExtractType<V>>,
+       QueryStage(
+         "join",
+-        { innerOnly: true },
++        { innerOnly: false },
+         right,
+         this.callfunc(predicate, ValueProxy<T>, ValueProxy<U>),
+         this.callfunc(mapper, ValueProxy<T>, ValueProxy<U>),

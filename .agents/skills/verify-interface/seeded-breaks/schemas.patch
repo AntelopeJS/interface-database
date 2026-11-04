@@ -1,0 +1,12 @@
+diff --git a/src/schema.ts b/src/schema.ts
+index ff34b36..c3f7abd 100644
+--- a/src/schema.ts
++++ b/src/schema.ts
+@@ -26,7 +26,6 @@ export class Schema<T = any> extends StagedSchema<T, SchemaDefinition> {
+   public constructor(id: string, definition: SchemaDefinition) {
+     super(id, definition);
+     Schema.defined.set(id, this);
+-    Schemas.register(id, definition);
+   }
+ }
+ 

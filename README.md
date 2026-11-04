@@ -9,6 +9,8 @@
 
 AQL (Antelope Query Language) is the database-agnostic query builder of AntelopeJS. You write a chainable, typed query once, and any database module that implements the interface runs it.
 
+Part of [AntelopeJS](https://github.com/AntelopeJS/antelopejs). Used by [AntelopeJS DMS](https://github.com/AntelopeJS/dms), the open-source back office for your PostgreSQL, MongoDB or RethinkDB database.
+
 ## What it offers
 
 - `Schema` declares tables, fields and indexes. Each schema can hold several isolated instances.

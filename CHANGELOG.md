@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.3.0
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.2.0...v0.3.0)
+
+### 📖 Documentation
+
+- **readme:** Use one Discord invite ([#57](https://github.com/AntelopeJS/interface-database/pull/57))
+- **github:** Send questions and ideas to Discord ([#64](https://github.com/AntelopeJS/interface-database/pull/64))
+
+### 📦 Build
+
+- **deps:** Test against @antelopejs/mongodb 1.6.0 ([#46](https://github.com/AntelopeJS/interface-database/pull/46))
+- **deps:** Bump @antelopejs/tooling-configs to 0.2.17 ([#48](https://github.com/AntelopeJS/interface-database/pull/48))
+
+### 🏡 Chore
+
+- Land the cleanup campaign on main ([#71](https://github.com/AntelopeJS/interface-database/pull/71))
+- Land the cleanup campaign on main ([#72](https://github.com/AntelopeJS/interface-database/pull/72))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.2.0
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.1.11...v0.2.0)

@@ -54,13 +54,11 @@ const config: VerifyConfig = {
     format: {
       globs: ["src/staged-query/**", "src/errors.ts"],
       funnels: [],
-      containments: ["streams/stream-shape"],
       why: "the stage names, options and arguments the builders record are what every database module decodes, and the kind markers recognise queries and errors across copies of the interface",
     },
     contract: {
       globs: ["src/index.ts", "src/staged-query/index.ts", "package.json"],
       funnels: [],
-      containments: [],
       why: "the export map and the root entry are what every database module and every query-writing module imports",
     },
     outbound: null,
@@ -68,7 +66,6 @@ const config: VerifyConfig = {
     publish: {
       globs: ["package.json", ".release-it.json", "changelogen.config.json", ".github/workflows/release.yml"],
       funnels: [],
-      containments: [],
       why: "the package name and release workflow claim @antelopejs/interface-database on npm",
     },
   },

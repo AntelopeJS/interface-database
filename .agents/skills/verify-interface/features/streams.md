@@ -13,7 +13,7 @@ journeys:
 
 # Streams
 
-A stream is mapped, filtered, plucked, ordered, sliced and aggregated. This feature holds the Format door of the stage list: `stream-shape` is its containment journey.
+A stream is mapped, filtered, plucked, ordered, sliced and aggregated. This feature holds the Format door of the stage list.
 
 ## Sub-features
 

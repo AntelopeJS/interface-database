@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.3.1
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.0...v0.3.1)
+
+### 🩹 Fixes
+
+- **skills:** Route decorator table classes away from database-interface ([#75](https://github.com/AntelopeJS/interface-database/pull/75))
+
+### 📖 Documentation
+
+- **readme:** Link the package to AntelopeJS and AntelopeJS DMS ([afac09f](https://github.com/AntelopeJS/interface-database/commit/afac09f))
+
+### 🏡 Chore
+
+- **verify:** Remove seeded runs from the verification skill ([#74](https://github.com/AntelopeJS/interface-database/pull/74))
+- **ci:** Remove the weekly mutation caller ([#76](https://github.com/AntelopeJS/interface-database/pull/76))
+
+### 🤖 CI
+
+- Call ci-node.yml@v1 ([#77](https://github.com/AntelopeJS/interface-database/pull/77))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.3.0
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.2.0...v0.3.0)

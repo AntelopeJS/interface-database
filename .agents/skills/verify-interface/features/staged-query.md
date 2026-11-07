@@ -2,6 +2,7 @@
 covers:
   - src/staged-query/index.ts
   - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/index.md
 journeys:

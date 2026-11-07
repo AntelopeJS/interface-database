@@ -1,6 +1,8 @@
 ---
 covers:
   - src/query.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/1.query_types/7.query.md
   - docs/1.query_types/1.index.md

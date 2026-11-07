@@ -1,6 +1,8 @@
 ---
 covers:
   - src/staged-query/atomic.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/2.operations/8.atomic_mutations.md
 journeys:

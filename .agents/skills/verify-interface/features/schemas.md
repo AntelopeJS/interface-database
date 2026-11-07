@@ -2,6 +2,8 @@
 covers:
   - src/schema.ts
   - src/staged-query/schema.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/2.operations/2.database_management.md
   - docs/3.results/5.database_changes.md

@@ -3,6 +3,7 @@ covers:
   - package.json
   - src/index.ts
   - src/common.ts
+  - src/staged-query/common.ts
   - src/datum.ts
   - src/selection.ts
   - src/stream.ts

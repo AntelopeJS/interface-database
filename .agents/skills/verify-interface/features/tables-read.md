@@ -1,6 +1,8 @@
 ---
 covers:
   - src/staged-query/selection.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/1.query_types/2.table.md
   - docs/2.operations/3.table_operations.md

@@ -3,6 +3,8 @@ covers:
   - src/staged-query/kind.ts
   - src/staged-query/query.ts
   - src/staged-query/valueproxy-kind.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/1.query_types/1.index.md
 journeys:

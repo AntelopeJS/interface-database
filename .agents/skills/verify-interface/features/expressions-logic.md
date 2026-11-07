@@ -1,6 +1,8 @@
 ---
 covers:
   - src/staged-query/valueproxy.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/1.query_types/9.valueproxy.md
   - docs/2.operations/6.filtering.md

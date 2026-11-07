@@ -1,6 +1,8 @@
 ---
 covers:
   - src/staged-query/stream.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/1.query_types/5.stream.md
   - docs/2.operations/7.lookup.md

@@ -1,6 +1,8 @@
 ---
 covers:
   - src/staged-query/datum.ts
+  - src/staged-query/common.ts
+  - src/staged-query/stages.ts
 docs:
   - docs/1.query_types/8.datum.md
 journeys:

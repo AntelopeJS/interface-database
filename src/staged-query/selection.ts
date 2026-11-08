@@ -10,6 +10,7 @@ import {
   type IndexBound,
   type IndexKeys,
   type InsertOptions,
+  type SelectionKey,
 } from "./common";
 import {
   AtomicMutationQuery,
@@ -193,6 +194,20 @@ export class Table<T> extends Selection<T> {
    * @param index Secondary index, will use the primary key if undefined
    * @returns Multiple document selection
    */
+  public getAll(keys: IndexKeys, index?: string): Selection<T>;
+  /**
+   * Gets multiple documents using a secondary index, keyed by values or
+   * proxies of one key type, such as a row field typed `string`
+   *
+   * @typeParam K Type of a single key
+   * @param keys Key value(s)
+   * @param index Secondary index, will use the primary key if undefined
+   * @returns Multiple document selection
+   */
+  public getAll<K extends SelectionKey>(
+    keys: IndexKeys<K>,
+    index?: string,
+  ): Selection<T>;
   public getAll(keys: IndexKeys, index?: string) {
     return this.stage(Selection<T>, QueryStage("getAll", { index }, keys));
   }

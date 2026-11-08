@@ -24,11 +24,13 @@ export type IndexBound = IndexValue | IndexValue[];
 
 /**
  * The keys `getAll` matches: one key, a list of keys, or a list of compound
- * keys, each holding a compound index's values in its field order.
+ * keys, each holding a compound index's values in its field order. `K` is the
+ * type of a single key, so a proxy of any `SelectionKey` member, such as a row
+ * field typed `string`, is a key.
  */
-export type IndexKeys =
-  | ValueProxyOrValue<SelectionKey>
-  | ValueProxyOrValue<SelectionKey>[]
+export type IndexKeys<K extends SelectionKey = SelectionKey> =
+  | ValueProxyOrValue<K>
+  | ValueProxyOrValue<K>[]
   | SelectionKey[][];
 
 type Func = QueryStage<"func">;

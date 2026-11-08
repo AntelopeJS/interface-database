@@ -33,6 +33,10 @@ describe("Do Operations", () => {
   it("Do with Nested Object Operations", DoWithNestedObjectOperations);
   it("Do with Subquery Field Reference", DoWithSubqueryFieldReference);
   it(
+    "Do with Subquery Keyed on a Typed Field",
+    DoWithSubqueryKeyedOnTypedField,
+  );
+  it(
     "Do with Unresolved Subquery Returns Null",
     DoWithUnresolvedSubqueryReturnsNull,
   );
@@ -262,6 +266,18 @@ async function DoWithSubqueryFieldReference() {
   expect(result.lookedUpUser).to.have.property("name", "Antoine");
   expect(result.lookedUpUser).to.have.property("email", "antoine@example.com");
   expect(result.lookedUpUser).to.have.property("age", 25);
+}
+
+async function DoWithSubqueryKeyedOnTypedField() {
+  const result = await table
+    .get(insertedKeys[0])
+    .do((doc) => {
+      const name = doc.key("name");
+      return { name, namesakes: table.getAll(name, "name").count() };
+    })
+    .run();
+
+  expect(result).to.deep.equal({ name: "Antoine", namesakes: 1 });
 }
 
 async function DoWithUnresolvedSubqueryReturnsNull() {

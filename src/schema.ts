@@ -5,7 +5,16 @@ import {
   type SchemaDefinition,
 } from "./staged-query/schema";
 
-/** @internal */
+/**
+ * Registers each schema a consumer defines with the bound database module.
+ *
+ * The register handler runs when the schema is defined, and on attach for the
+ * schemas defined before it. Its return value is discarded, so it must not
+ * throw or return a promise that rejects. A module that refuses a definition
+ * keeps the refusal and rejects every query on the schema with its message.
+ *
+ * @internal
+ */
 export const Schemas = new RegisteringProxy<
   (name: string, def: SchemaDefinition) => void
 >();
@@ -23,6 +32,17 @@ export class Schema<T = any> extends StagedSchema<T, SchemaDefinition> {
     return Schema.defined;
   }
 
+  /**
+   * Defines a schema with the given ID and registers it with the bound
+   * database module.
+   *
+   * Registration never throws or rejects. When the module refuses the
+   * definition, every query on the schema, `createInstance()` included,
+   * rejects with the module's message.
+   *
+   * @param id ID of this schema, changing this will leave previous data inaccessible
+   * @param definition Schema definition (tables, fields, indexes..)
+   */
   public constructor(id: string, definition: SchemaDefinition) {
     super(id, definition);
     Schema.defined.set(id, this);

@@ -27,4 +27,6 @@ pnpm exec antelopejs-verify journey "$RUN" smoke
 
 ## Gotchas
 
-- The smoke feature covers no glob. The shared `every-function` journey cannot read this package's declarations (a call-stack overflow in the declaration walker), so `through-core` stands in for it.
+- The smoke feature covers no glob. `through-core` stands in for the shared journeys, which run here since tooling-configs 0.5.1 but cannot pass on this package:
+  - `every-function` lists every prototype method of an exported class from the `.d.ts` files, while the consumer walks only top-level exports, so each method reads as declared but not exported.
+  - `minor-bump` compares signatures that embed TypeScript's internal symbol ids (`__@asyncIterator@<n>`), which differ between two builds of the same source, so every class reads as changed.

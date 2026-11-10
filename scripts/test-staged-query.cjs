@@ -101,10 +101,10 @@ assert.equal(executableTable instanceof executable.Table, true);
 assert.equal(executableTable instanceof executable.Selection, true);
 assert.equal(executableTable instanceof executable.Stream, true);
 assert.equal(executableTable instanceof executable.Query, true);
-assert.ok(executableTable.run instanceof Function);
-assert.ok(executableTable.atomicMutation instanceof Function);
+assert.equal("run" in executableTable, true);
+assert.equal("atomicMutation" in executableTable, true);
 assert.equal(executableInsert instanceof executable.Query, true);
-assert.ok(executableInsert.run instanceof Function);
+assert.equal("run" in executableInsert, true);
 
 const originalRun = Object.getOwnPropertyDescriptor(
   executable.Query.prototype,

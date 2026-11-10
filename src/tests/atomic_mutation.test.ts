@@ -274,7 +274,10 @@ async function ValidateTerminal() {
     { args: ["record-a"] },
   ]) {
     const query = table.atomicMutation("record-a", request);
-    Object.assign(query.build().at(-1)!, terminal);
+    const stage: { stage: string; options?: unknown; args: unknown[] } = query
+      .build()
+      .at(-1)!;
+    Object.assign(stage, terminal);
     await rejectionOf(query.run(), TypeError);
   }
 }

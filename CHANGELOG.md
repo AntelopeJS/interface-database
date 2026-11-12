@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.3.2
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.1...v0.3.2)
+
+### 🩹 Fixes
+
+- **verify:** Cover the stage recorder in every feature that records stages ([#79](https://github.com/AntelopeJS/interface-database/pull/79))
+- **selection:** Accept a getAll key proxy of any SelectionKey type ([#80](https://github.com/AntelopeJS/interface-database/pull/80))
+
+### 📖 Documentation
+
+- **schema:** State that a refused registration fails the schema's queries ([#81](https://github.com/AntelopeJS/interface-database/pull/81))
+- **changelog:** Upgrade notes of interface-database 0.3.0 ([#84](https://github.com/AntelopeJS/interface-database/pull/84))
+
+### 📦 Build
+
+- **deps:** Bump @antelopejs packages to the 2026-11-06 releases ([#78](https://github.com/AntelopeJS/interface-database/pull/78))
+- **deps:** Bump @antelopejs/tooling-configs to 0.4.0 ([#82](https://github.com/AntelopeJS/interface-database/pull/82))
+- **deps:** Bump @antelopejs/tooling-configs to 0.5.0 ([#83](https://github.com/AntelopeJS/interface-database/pull/83))
+- **deps:** Bump @antelopejs/tooling-configs to 0.5.1 ([#85](https://github.com/AntelopeJS/interface-database/pull/85))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.3.1
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.0...v0.3.1)

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { expect } from "chai";
 import { Schema } from "..";
 
@@ -100,7 +99,7 @@ async function MergeCustomerWithUserData() {
   const antoineOrder = result.find(
     (doc) => doc.customer?.email === "antoine@example.com",
   );
-  expect(antoineOrder).to.not.be.undefined;
+  expect(antoineOrder).to.not.equal(undefined);
   expect(antoineOrder?.orderSummary.totalAmount).to.equal(1250);
 }
 
@@ -128,7 +127,7 @@ async function MergeOrderItemsWithProductData() {
   const antoineOrder = result.find(
     (order) => order.customer?.email === "antoine@example.com",
   );
-  expect(antoineOrder).to.not.be.undefined;
+  expect(antoineOrder).to.not.equal(undefined);
   expect(antoineOrder?.orderInfo.totalAmount).to.equal(1250);
 }
 
@@ -186,14 +185,14 @@ async function MergeWithConditionalLogic() {
   });
 
   const highValueOrder = result.find((order) => order.totalAmount > 1200);
-  expect(highValueOrder).to.not.be.undefined;
+  expect(highValueOrder).to.not.equal(undefined);
   if (highValueOrder) {
     expect(highValueOrder.isHighValue).to.equal(true);
     expect(highValueOrder.isPremium).to.equal(true);
   }
 
   const lowValueOrder = result.find((order) => order.totalAmount <= 1000);
-  expect(lowValueOrder).to.not.be.undefined;
+  expect(lowValueOrder).to.not.equal(undefined);
   if (lowValueOrder) {
     expect(lowValueOrder.isHighValue).to.equal(false);
     expect(lowValueOrder.isPremium).to.equal(false);

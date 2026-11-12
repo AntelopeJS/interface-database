@@ -123,13 +123,13 @@ async function GetAllOnDottedName() {
 }
 
 async function OrderByIndexWithDottedField() {
-  const result = await articles.orderBy("title_fr", "asc").run();
+  const result = await articles.orderBy("title_fr", "desc").run();
 
   expect(result.map((doc) => doc._id)).to.deep.equal([
-    articleKeys[1],
-    articleKeys[3],
-    articleKeys[2],
     articleKeys[0],
+    articleKeys[2],
+    articleKeys[3],
+    articleKeys[1],
   ]);
 }
 

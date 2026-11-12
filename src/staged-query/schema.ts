@@ -8,6 +8,10 @@ import { QueryStage, StagedObject } from "./common";
 export interface IndexDefinition {
   /**
    * Fields to use for compound indexes
+   *
+   * A dotted field is a nested path: `"title.fr"` indexes `fr` inside `title`,
+   * not a top-level key named `title.fr`. When omitted, the index name is the
+   * field name and follows the same rule.
    */
   fields?: string[];
 

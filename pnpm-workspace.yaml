@@ -1,2 +1,4 @@
 overrides:
   "@antelopejs/mongodb>@antelopejs/interface-database": "link:."
+allowBuilds:
+  lefthook: false

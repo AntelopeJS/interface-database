@@ -165,6 +165,13 @@ function ownConstructor(instance: StagedObject): StagedConstructor {
   return constructor;
 }
 
+function argument<A extends StagedObject>(
+  type: StagedConstructor<A>,
+  id: number,
+) {
+  return { id, value: new type(QueryStage("arg", undefined, id)) };
+}
+
 export class StagedObject {
   protected readonly stages: QueryStage[];
 
@@ -184,15 +191,19 @@ export class StagedObject {
    */
   public constructor(newStage: undefined, previous: StagedObject);
   public constructor(
-    ...[newStage, previous]:
-      | [newStage: QueryStage, previous?: StagedObject]
-      | [newStage: undefined, previous: StagedObject]
+    newStage: QueryStage | undefined,
+    previous?: StagedObject,
   ) {
-    if (newStage === undefined) {
-      this.stages = [...previous.stages];
+    if (newStage !== undefined) {
+      this.stages = previous ? [...previous.stages, newStage] : [newStage];
       return;
     }
-    this.stages = previous ? [...previous.stages, newStage] : [newStage];
+    if (!previous) {
+      throw new TypeError(
+        "A staged object that records no stage copies a previous one",
+      );
+    }
+    this.stages = [...previous.stages];
   }
 
   /** @internal */
@@ -214,11 +225,6 @@ export class StagedObject {
   }
 
   private static nextargid = 0;
-
-  private static argument<A extends StagedObject>(type: StagedConstructor<A>) {
-    const id = StagedObject.nextargid++;
-    return { id, value: new type(QueryStage("arg", undefined, id)) };
-  }
 
   /**
    * Records `func` as a function stage: `func` runs once, on an argument of
@@ -257,12 +263,12 @@ export class StagedObject {
   ): QueryStage<"func"> {
     if (call.length === 2) {
       const [func, a] = call;
-      const first = StagedObject.argument(a);
+      const first = argument(a, StagedObject.nextargid++);
       return { stage: "func", args: [[first.id], func(first.value)] };
     }
     const [func, a, b] = call;
-    const first = StagedObject.argument(a);
-    const second = StagedObject.argument(b);
+    const first = argument(a, StagedObject.nextargid++);
+    const second = argument(b, StagedObject.nextargid++);
     return {
       stage: "func",
       args: [[first.id, second.id], func(first.value, second.value)],

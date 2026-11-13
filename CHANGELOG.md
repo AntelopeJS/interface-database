@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.4.0
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.3...v0.4.0)
+
+### 🚀 Enhancements
+
+- **staged-query:** ⚠️  Drop casts, thenable queries and caller-typed schema lookups ([#91](https://github.com/AntelopeJS/interface-database/pull/91))
+
+### 💅 Refactors
+
+- **tests:** Drop the no-unused-expressions suppression ([#88](https://github.com/AntelopeJS/interface-database/pull/88))
+
+### 📖 Documentation
+
+- **readme:** List the mysql and postgres backends among the implementations ([#89](https://github.com/AntelopeJS/interface-database/pull/89))
+
+### ✅ Tests
+
+- **atomic:** Move off-contract refusal checks into an untyped spec ([#90](https://github.com/AntelopeJS/interface-database/pull/90))
+
+### 🤖 CI
+
+- **release:** Accept an exact release-version on dispatch ([#92](https://github.com/AntelopeJS/interface-database/pull/92))
+
+#### ⚠️ Breaking Changes
+
+- **staged-query:** ⚠️  Drop casts, thenable queries and caller-typed schema lookups ([#91](https://github.com/AntelopeJS/interface-database/pull/91))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.3.3
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.2...v0.3.3)

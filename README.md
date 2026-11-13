@@ -24,10 +24,12 @@ AQL (Antelope Query Language) is the database-agnostic query builder of Antelope
 
 ## Implementations
 
-| Module                                                             | Notes                                                         |
-| ------------------------------------------------------------------ | ------------------------------------------------------------- |
-| [`@antelopejs/mongodb`](https://github.com/AntelopeJS/mongodb)     | MongoDB. Also implements `@antelopejs/interface-mongodb`.     |
-| [`@antelopejs/rethinkdb`](https://github.com/AntelopeJS/rethinkdb) | RethinkDB. Also implements `@antelopejs/interface-rethinkdb`. |
+| Module                                                             | Notes                                                                        |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| [`@antelopejs/mongodb`](https://github.com/AntelopeJS/mongodb)     | MongoDB. Also implements `@antelopejs/interface-mongodb`.                    |
+| [`@antelopejs/mysql`](https://github.com/AntelopeJS/mysql)         | MySQL and MariaDB. Also implements `@antelopejs/interface-database-catalog`. |
+| [`@antelopejs/postgres`](https://github.com/AntelopeJS/postgres)   | PostgreSQL. Also implements `@antelopejs/interface-database-catalog`.        |
+| [`@antelopejs/rethinkdb`](https://github.com/AntelopeJS/rethinkdb) | RethinkDB. Also implements `@antelopejs/interface-rethinkdb`.                |
 
 ## Install
 

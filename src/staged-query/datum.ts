@@ -17,16 +17,10 @@ export class Datum<T> extends Query<T> {
    * Changes the type of this datum.
    * This does not actually perform any conversion, it only changes the typescript type.
    *
-   * @returns Same datum with a different type
+   * @returns A new datum with the same stages, typed `Datum<U>`
    */
   public cast<U>() {
-    /*
-     * SAFETY: A Datum keeps no value of type T. Its only instance state is the
-     * `stages` array inherited from StagedObject, whose type does not depend on
-     * T, so the same object is a valid Datum<U> for every U. Whether U matches
-     * what the query yields is the caller's claim, which nothing here checks.
-     */
-    return this as unknown as Datum<U>;
+    return new Datum<U>(undefined, this);
   }
 
   /**

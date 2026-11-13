@@ -1,7 +1,7 @@
 import { InterfaceFunction } from "@antelopejs/interface-core";
 
 import { StagedObject } from "./staged-query/common";
-import { Query as StagedQuery } from "./staged-query/query";
+import { Query as StagedQuery, type QueryYield } from "./staged-query/query";
 
 /** @internal */
 export const RunQuery =
@@ -63,11 +63,11 @@ class IterableCursor implements AsyncGenerator<any, void, unknown> {
   }
 }
 
-export interface QueryExecution<T> extends PromiseLike<T> {
+export interface QueryExecution<T> {
   run(): Promise<T>;
-  cursor(): AsyncGenerator<T extends Array<infer U> ? U : T, void, unknown>;
+  cursor(): AsyncGenerator<QueryYield<T>["item"], void, unknown>;
   [Symbol.asyncIterator](): AsyncGenerator<
-    T extends Array<infer U> ? U : T,
+    QueryYield<T>["item"],
     void,
     unknown
   >;
@@ -81,30 +81,20 @@ function run<T>(this: StagedQuery<T>): Promise<T> {
   return RunQuery(this.build());
 }
 
-function then<T, TResult1 = T, TResult2 = never>(
-  this: StagedQuery<T>,
-  onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
-  onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
-): PromiseLike<TResult1 | TResult2> {
-  return this.run().then(onfulfilled, onrejected);
-}
-
 function cursor<T>(
   this: StagedQuery<T>,
-): AsyncGenerator<T extends Array<infer U> ? U : T, void, unknown> {
+): AsyncGenerator<QueryYield<T>["item"], void, unknown> {
   return new IterableCursor(this.build());
 }
 
 function iterate<T>(
   this: StagedQuery<T>,
-): AsyncGenerator<T extends Array<infer U> ? U : T, void, unknown> {
+): AsyncGenerator<QueryYield<T>["item"], void, unknown> {
   return this.cursor();
 }
 
 Object.defineProperties(StagedQuery.prototype, {
   run: { configurable: true, value: run, writable: true },
-  // oxlint-disable-next-line unicorn/no-thenable -- Query is deliberately PromiseLike so `await query` executes it.
-  then: { configurable: true, value: then, writable: true },
   cursor: { configurable: true, value: cursor, writable: true },
   [Symbol.asyncIterator]: {
     configurable: true,

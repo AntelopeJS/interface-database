@@ -14,7 +14,7 @@ Start in an AntelopeJS module with a configured database provider. The interface
 
 1. [Define a schema and create an instance](./2.operations/2.database_management.md). The schema describes tables, and the instance selects where their data lives.
 2. [Open a table](./2.operations/3.table_operations.md) and compose a read with [filtering](./2.operations/6.filtering.md). Building the query does not execute it.
-3. [Execute the query with `await` or `run()`](./1.query_types/7.query.md), or consume a cursor for incremental results.
+3. [Execute the query with `run()`](./1.query_types/7.query.md), or consume a cursor for incremental results.
 4. [Inspect write results](./3.results/2.write_results.md) when you add mutations. Inserts return IDs. Updates and deletes return counts.
 
 ### Insert and read one record
@@ -38,16 +38,16 @@ const notesSchema = new Schema<{ notes: Note }>("notes-demo", {
 });
 
 export async function tryNotes() {
-  await notesSchema.createInstance("tutorial");
+  await notesSchema.createInstance("tutorial").run();
   const notes = notesSchema.instance("tutorial").table("notes");
-  const [id] = await notes.insert({ title: "Learn AQL", done: false });
-  const saved = await notes.get(id);
+  const [id] = await notes.insert({ title: "Learn AQL", done: false }).run();
+  const saved = await notes.get(id).run();
   if (!saved) throw new Error("The inserted note was not found");
   return saved.title; // "Learn AQL"
 }
 ```
 
-`notes` is a query builder, and `saved` is a fetched record. Each call of the function inserts another record. To delete the instance and its data when you no longer need them, run `await notesSchema.destroyInstance("tutorial")`.
+`notes` is a query builder, and `saved` is a fetched record. Each call of the function inserts another record. To delete the instance and its data when you no longer need them, run `await notesSchema.destroyInstance("tutorial").run()`.
 
 ## Find the right reference
 
@@ -61,7 +61,7 @@ export async function tryNotes() {
 
 ## Import paths
 
-Import `Schema`, `Query`, `Table`, `Datum`, `Stream`, and `ValueProxy` from `@antelopejs/interface-database` in an AntelopeJS module. This entry point registers schemas with the bound provider and installs query execution: `run()`, `then()`, `cursor()`, and async iteration.
+Import `Schema`, `Query`, `Table`, `Datum`, `Stream`, and `ValueProxy` from `@antelopejs/interface-database` in an AntelopeJS module. This entry point registers schemas with the bound provider and installs query execution: `run()`, `cursor()`, and async iteration.
 
 Supporting types have their own paths:
 
@@ -71,7 +71,7 @@ Supporting types have their own paths:
 
 ### Build queries without executing them
 
-`@antelopejs/interface-database/staged-query` is the build-only entry point for tools that construct and inspect query stages without the AntelopeJS runtime. Its schema does not register with a provider. Loaded on their own, its queries expose `build()` and no execution methods, so awaiting a build-only query does not return database results. The runtime entry point adds execution to the same staged classes. If a build-only consumer must stay isolated from execution, keep it apart from code that imports the runtime entry point.
+`@antelopejs/interface-database/staged-query` is the build-only entry point for tools that construct and inspect query stages without the AntelopeJS runtime. Its schema does not register with a provider. Loaded on their own, its queries expose `build()` and no execution methods. The runtime entry point adds execution to the same staged classes. If a build-only consumer must stay isolated from execution, keep it apart from code that imports the runtime entry point.
 
 ## Documentation structure
 

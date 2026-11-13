@@ -20,7 +20,7 @@ A table is read whole, by primary key (`get`), by secondary index (`getAll`) or 
 
 ## How to get to it (user POV)
 
-- `await users.getAll("admin", "role")` and `await users.between("createdAt", from, to)`.
+- `await users.getAll("admin", "role").run()` and `await users.between("createdAt", from, to).run()`.
 
 ## Driving it with antelopejs-verify
 

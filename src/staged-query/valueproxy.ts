@@ -55,17 +55,10 @@ export class ValueProxy<T> extends StagedObject {
    * Changes the type of this proxy.
    * This does not actually perform any conversion, it only changes the typescript type.
    *
-   * @returns Same proxy with a different type
+   * @returns A new proxy with the same stages, typed `ValueProxy<U>`
    */
   public cast<U>() {
-    /*
-     * SAFETY: A ValueProxy keeps no value of type T. Its only state is the
-     * `stages` array, whose type does not depend on T, so the same object is
-     * a valid ValueProxy<U> for every U. U matching the query is the caller's
-     * claim.
-     */
-    // oxlint-disable-next-line anti-slop/no-chained-type-assertions -- a single `as` fails TS2352 (T and U unrelated); widening to StagedObject first is refused.
-    return this as unknown as ValueProxy<U>;
+    return new ValueProxy<U>(undefined, this);
   }
 
   /**

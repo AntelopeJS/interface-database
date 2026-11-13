@@ -80,12 +80,12 @@ export const ATOMIC_BODIES = {
     const outcomes = {};
     for (const reply of ["applied", "not-applied", "unknown"]) {
       answer = reply;
-      outcomes[reply] = await table.atomicMutation("n-1", drop);
+      outcomes[reply] = await table.atomicMutation("n-1", drop).run();
     }
     const bad = {};
     for (const [label, reply] of [["undefined", undefined], ["zero", 0], ["count", 1], ["null", null], ["text", "done"], ["object", { applied: true }]]) {
       answer = reply;
-      bad[label] = await fails(() => table.atomicMutation("n-1", drop));
+      bad[label] = await fails(() => table.atomicMutation("n-1", drop).run());
     }
     answer = "applied";
     const viaRun = await table.atomicMutation("n-1", drop).run();
@@ -93,11 +93,11 @@ export const ATOMIC_BODIES = {
     const iterate = await fails(async () => { for await (const item of table.atomicMutation("n-1", drop)) return item; });
     seen.runs.length = 0;
     answer = new Error("link lost");
-    const lost = await fails(() => table.atomicMutation("n-1", drop));
+    const lost = await fails(() => table.atomicMutation("n-1", drop).run());
     const callsAfterLoss = seen.runs.length;
     answer = "applied";
     seen.runs.length = 0;
-    await table.atomicMutation("n-1", drop);
+    await table.atomicMutation("n-1", drop).run();
     const terminal = seen.runs[0];
     return {
       outcomes, bad, viaRun, cursor, iterate, lost, callsAfterLoss,
@@ -107,22 +107,20 @@ export const ATOMIC_BODIES = {
   `,
 } satisfies { [id: string]: string };
 
-/** Query execution: await, run, then, cursor and async iteration reach the provider as documented. */
+/** Query execution: run, cursor and async iteration reach the provider as documented; awaiting a query runs nothing. */
 export const EXECUTION_BODIES = {
   "query-execution": `${NOTES}
     answer = [{ title: "A" }];
     const built = table.filter((n) => n.key("title").eq("A"));
     const lazy = seen.runs.length;
-    const viaAwait = await built;
+    const awaited = await built;
+    const awaitRuns = seen.runs.length;
     const viaRun = await built.run();
-    const viaThen = await new Promise((resolve) => built.then(resolve));
-    const viaThenChain = await built.then((rows) => rows.length);
     const sameStages = seen.runs.every((stages) => JSON.stringify(show(stages)) === JSON.stringify(show(built)));
     answer = new Error("provider refused");
-    const rejected = await fails(() => built);
-    const caught = await built.then(undefined, (error) => "handled:" + error.message);
+    const rejected = await fails(() => built.run());
     const onRejected = await built.run().catch((error) => "caught:" + error.message);
-    return { lazy, viaAwait, viaRun, viaThen, viaThenChain, runs: seen.runs.length, sameStages, rejected, caught, onRejected, methods: ["run", "then", "cursor"].map((name) => typeof built[name]), iterator: typeof built[Symbol.asyncIterator] };
+    return { lazy, awaitedIsQuery: awaited === built, awaitRuns, viaRun, runs: seen.runs.length, sameStages, rejected, onRejected, methods: ["run", "then", "cursor"].map((name) => typeof built[name]), iterator: typeof built[Symbol.asyncIterator] };
   `,
   "query-cursor": `${NOTES}
     readAnswers = [{ done: false, value: { n: 1 } }, { done: false, value: { n: 2 } }, { done: true, value: undefined }];

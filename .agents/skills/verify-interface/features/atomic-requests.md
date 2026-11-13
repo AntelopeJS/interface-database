@@ -19,7 +19,7 @@ A module asks for one conditional change of one record: update or delete under a
 
 ## How to get to it (user POV)
 
-- `await table.atomicMutation(id, { type: "delete", revisionField: "revision", expectedRevision: observed })`.
+- `await table.atomicMutation(id, { type: "delete", revisionField: "revision", expectedRevision: observed }).run()`.
 
 ## Driving it with antelopejs-verify
 

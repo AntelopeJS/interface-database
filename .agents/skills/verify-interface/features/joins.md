@@ -22,7 +22,7 @@ A stream is joined to another (left or inner), looked up through a foreign key, 
 
 ## How to get to it (user POV)
 
-- `await users.joinInner(orders, (u, o) => o.key("userId").eq(u.key("_id")), (u, o) => ({ amount: o.key("amount") }))`.
+- `await users.joinInner(orders, (u, o) => o.key("userId").eq(u.key("_id")), (u, o) => ({ amount: o.key("amount") })).run()`.
 
 ## Driving it with antelopejs-verify
 

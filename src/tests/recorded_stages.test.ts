@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Schema, ValueProxy } from "..";
+import { IsDatum, IsStream, IsValueProxy, Schema, ValueProxy } from "..";
 
 type Person = {
   _id?: string;
@@ -74,6 +74,29 @@ describe("Recorded stages", () => {
       options: undefined,
       args: [field, undefined],
     });
+  });
+
+  it("Casts a stream to a new stream with the same stages", () => {
+    const cast = table.cast<{ name: string }>();
+    expect(cast).to.not.equal(table);
+    expect(IsStream(cast)).to.equal(true);
+    expect(cast.build()).to.deep.equal(table.build());
+  });
+
+  it("Casts a datum to a new datum with the same stages", () => {
+    const one = table.get("p-1");
+    const cast = one.cast<{ name: string }>();
+    expect(cast).to.not.equal(one);
+    expect(IsDatum(cast)).to.equal(true);
+    expect(cast.build()).to.deep.equal(one.build());
+  });
+
+  it("Casts a proxy to a new proxy with the same stages", () => {
+    const age = row.key("age");
+    const cast = age.cast<string>();
+    expect(cast).to.not.equal(age);
+    expect(IsValueProxy(cast)).to.equal(true);
+    expect(cast.build()).to.deep.equal(age.build());
   });
 
   it("Records the bounds of between", () => {

@@ -18,16 +18,10 @@ export class Stream<T> extends Query<T[]> {
    * Changes the type of the value in this stream.
    * This does not actually perform any conversion, it only changes the typescript type.
    *
-   * @returns Same stream with a different type
+   * @returns A new stream with the same stages, typed `Stream<U>`
    */
   public cast<U>() {
-    /*
-     * SAFETY: A Stream keeps no value of type T. Its only instance state is the
-     * `stages` array inherited from StagedObject, whose type does not depend on
-     * T, so the same object is a valid Stream<U> for every U. Whether U matches
-     * what the query yields is the caller's claim, which nothing here checks.
-     */
-    return this as unknown as Stream<U>;
+    return new Stream<U>(undefined, this);
   }
 
   /**
@@ -225,7 +219,11 @@ export class Stream<T> extends Query<T[]> {
       QueryStage(
         "group",
         { index },
-        this.callfunc(mapper, Stream<T>, ValueProxy<unknown>),
+        this.callfunc(
+          mapper,
+          Stream<T>,
+          ValueProxy<K extends keyof T ? T[K] : unknown>,
+        ),
       ),
     );
   }

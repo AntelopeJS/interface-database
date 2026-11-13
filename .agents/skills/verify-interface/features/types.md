@@ -20,7 +20,7 @@ A TypeScript module sees the documented result type of each call, the table name
 
 ## How to get to it (user POV)
 
-- `const ids: string[] = await users.insert({ name: "A" })`.
+- `const ids: string[] = await users.insert({ name: "A" }).run()`.
 
 ## Driving it with antelopejs-verify
 

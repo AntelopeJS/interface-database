@@ -75,7 +75,7 @@ async function InsertEventTest() {
   };
 
   const results = await ReadChanges(table.changes(), async () => {
-    inserted = await table.insert(newDocument);
+    inserted = await table.insert(newDocument).run();
   });
 
   expect(results).to.be.an("array").of.length(1);
@@ -91,7 +91,8 @@ async function UpdateEventTest() {
     async () => {
       await table
         .filter((doc) => doc.key("car").eq("Renault"))
-        .update({ price: 0 });
+        .update({ price: 0 })
+        .run();
     },
   );
 
@@ -104,7 +105,7 @@ async function UpdateEventTest() {
 
 async function DeleteEventTest() {
   const results = await ReadChanges(table.changes(), async () => {
-    await table.get(inserted[0]).delete();
+    await table.get(inserted[0]).delete().run();
   });
 
   expect(results).to.be.an("array").of.length(1);
@@ -133,7 +134,7 @@ async function BulkInsertEventTest() {
   ];
 
   const results = await ReadChanges(table.changes(), async () => {
-    await table.insert(newDocs);
+    await table.insert(newDocs).run();
   });
 
   expect(results).to.be.an("array").of.length(newDocs.length);

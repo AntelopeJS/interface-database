@@ -165,11 +165,45 @@ function ownConstructor(instance: StagedObject): StagedConstructor {
   return constructor;
 }
 
+function argument<A extends StagedObject>(
+  type: StagedConstructor<A>,
+  id: number,
+) {
+  return { id, value: new type(QueryStage("arg", undefined, id)) };
+}
+
 export class StagedObject {
   protected readonly stages: QueryStage[];
 
-  public constructor(newStage: QueryStage, previous?: StagedObject) {
-    this.stages = previous ? [...previous.stages, newStage] : [newStage];
+  /**
+   * Records `newStage` after the stages of `previous`, or as the first stage.
+   *
+   * @param newStage Stage to record
+   * @param previous Object whose stages come first
+   */
+  public constructor(newStage: QueryStage, previous?: StagedObject);
+  /**
+   * Records no stage: the new object holds the stages of `previous`, so the
+   * same query reads as another class or type.
+   *
+   * @param newStage `undefined`, as no stage is recorded
+   * @param previous Object whose stages are copied
+   */
+  public constructor(newStage: undefined, previous: StagedObject);
+  public constructor(
+    newStage: QueryStage | undefined,
+    previous?: StagedObject,
+  ) {
+    if (newStage !== undefined) {
+      this.stages = previous ? [...previous.stages, newStage] : [newStage];
+      return;
+    }
+    if (!previous) {
+      throw new TypeError(
+        "A staged object that records no stage copies a previous one",
+      );
+    }
+    this.stages = [...previous.stages];
   }
 
   /** @internal */
@@ -191,28 +225,53 @@ export class StagedObject {
   }
 
   private static nextargid = 0;
-  protected callfunc<T extends StagedObject[]>(
-    func: (...args: T) => any,
-    ...args: (typeof StagedObject)[]
+
+  /**
+   * Records `func` as a function stage: `func` runs once, on an argument of
+   * class `a`, and the stage records what it returns.
+   *
+   * @param func Function to record
+   * @param a Class of its argument
+   * @returns The function stage
+   */
+  protected callfunc<A extends StagedObject>(
+    func: (a: A) => any,
+    a: StagedConstructor<A>,
+  ): QueryStage<"func">;
+  /**
+   * Records `func` as a function stage: `func` runs once, on arguments of
+   * classes `a` and `b`, and the stage records what it returns.
+   *
+   * @param func Function to record
+   * @param a Class of its first argument
+   * @param b Class of its second argument
+   * @returns The function stage
+   */
+  protected callfunc<A extends StagedObject, B extends StagedObject>(
+    func: (a: A, b: B) => any,
+    a: StagedConstructor<A>,
+    b: StagedConstructor<B>,
+  ): QueryStage<"func">;
+  protected callfunc<A extends StagedObject, B extends StagedObject>(
+    ...call:
+      | [func: (a: A) => any, a: StagedConstructor<A>]
+      | [
+          func: (a: A, b: B) => any,
+          a: StagedConstructor<A>,
+          b: StagedConstructor<B>,
+        ]
   ): QueryStage<"func"> {
-    const argNumbers: number[] = [];
-    const argValues: StagedObject[] = [];
-    for (let i = 0; i < args.length; ++i) {
-      const id = StagedObject.nextargid++;
-      argNumbers[i] = id;
-      argValues[i] = new args[i](QueryStage("arg", undefined, id));
+    if (call.length === 2) {
+      const [func, a] = call;
+      const first = argument(a, StagedObject.nextargid++);
+      return { stage: "func", args: [[first.id], func(first.value)] };
     }
-    /*
-     * SAFETY: argValues[i] is built by `new args[i]`, so it is an instance of
-     * the i-th class passed. T is inferred from func alone, so the cast holds
-     * when func's i-th parameter is an instance of that class; every caller in
-     * staged-query passes ValueProxy or Stream for the parameter typed
-     * ValueProxy or Stream, and only a type argument, which has no runtime
-     * form, may differ.
-     */
+    const [func, a, b] = call;
+    const first = argument(a, StagedObject.nextargid++);
+    const second = argument(b, StagedObject.nextargid++);
     return {
       stage: "func",
-      args: [argNumbers, func(...(argValues as T))],
+      args: [[first.id, second.id], func(first.value, second.value)],
     };
   }
 }

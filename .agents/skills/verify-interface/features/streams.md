@@ -22,11 +22,11 @@ A stream is mapped, filtered, plucked, ordered, sliced and aggregated. This feat
 - `stream-shape`: key, default, map, filter, pluck, without and union record their stages in order.
 - `stream-order`: orderBy, slice and nth record index, direction and bounds, and never change the stream they extend.
 - `stream-aggregates`: count, sum, avg, min, max, distinct and changes record the field they work on.
-- `stream-run`: awaiting a stream hands the provider the stages and returns its answer.
+- `stream-run`: running a stream hands the provider the stages and returns its answer.
 
 ## How to get to it (user POV)
 
-- `await users.filter((u) => u.key("age").ge(18)).orderBy("name").slice(0, 10)`.
+- `await users.filter((u) => u.key("age").ge(18)).orderBy("name").slice(0, 10).run()`.
 
 ## Driving it with antelopejs-verify
 

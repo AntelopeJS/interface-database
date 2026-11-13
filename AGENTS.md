@@ -1,6 +1,6 @@
 # interface-database
 
-AQL, the AntelopeJS database query builder, published as `@antelopejs/interface-database`. It declares the contract; database modules such as `@antelopejs/mongodb`, `@antelopejs/postgres` and `@antelopejs/rethinkdb` implement it.
+AQL, the AntelopeJS database query builder, published as `@antelopejs/interface-database`. It declares the contract; database modules such as `@antelopejs/mongodb`, `@antelopejs/mysql`, `@antelopejs/postgres` and `@antelopejs/rethinkdb` implement it.
 
 ## Layout
 

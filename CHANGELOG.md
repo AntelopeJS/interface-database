@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.3.3
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.2...v0.3.3)
+
+### 🚀 Enhancements
+
+- **staged-query:** Read dotted index fields, orderBy names and lookup keys as nested paths ([#87](https://github.com/AntelopeJS/interface-database/pull/87))
+
+### 📖 Documentation
+
+- **readme:** Adopt the AntelopeJS framework README style ([#86](https://github.com/AntelopeJS/interface-database/pull/86))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.3.2
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.1...v0.3.2)

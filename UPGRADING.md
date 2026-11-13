@@ -4,7 +4,7 @@ Each section is the upgrade-notes block of one release. Paste it into the GitHub
 
 ## v0.4.0
 
-- **A query is no longer a promise.** `Query` has no `then()`, and `QueryExecution` no longer extends `PromiseLike`. `await query` gives back the query object and sends nothing to the provider. Run a query with `run()`, or read it with `cursor()` or `for await`. A query in `Promise.all([...])`, or returned from an `async` function, is no longer run either. TypeScript rejects a query passed where a `PromiseLike` is expected, and the `typescript/await-thenable` lint rule reports `await` on a query. The conformance suite in `dist/tests` runs every query with `run()`. A database module implements nothing new.
+- **A query is no longer a promise.** `Query` has no `then()`, and `QueryExecution` no longer extends `PromiseLike`. `await query` gives back the query object and sends nothing to the provider. Run a query with `run()`, or read it with `cursor()` or `for await`. A query in `Promise.all([...])`, or returned from an `async` function, is no longer run either. TypeScript rejects a query passed where a `PromiseLike` is expected, and the `typescript/await-thenable` lint rule reports `await` on a query and a query passed to `Promise.all`, `Promise.race` or another promise aggregator. The conformance suite in `dist/tests` runs every query with `run()`. A database module implements nothing new.
 
   ```ts
   // Before
@@ -13,7 +13,7 @@ Each section is the upgrade-notes block of one release. Paste it into the GitHub
   const adults = await users.filter((u) => u.key("age").ge(18)).run();
   ```
 
-- **`cast()` returns a new object.** `Datum#cast`, `Stream#cast` and `ValueProxy#cast` return a new object with the same stages, built by the new `StagedObject` constructor form `new X(undefined, previous)`, which records no stage. `cast()` on a `Table`, a `Selection` or a `SingleSelection` returns a plain `Stream` or `Datum`, the class its type already declared. Code that compared the result with its receiver, or relied on it keeping the subclass methods, keeps the receiver instead.
+- **`cast()` returns a new object.** `Datum#cast`, `Stream#cast` and `ValueProxy#cast` return a new object with the same stages, built by the new `StagedObject` constructor form `new X(undefined, previous)`, which records no stage. `cast()` on a `Table`, a `Selection` or a `SingleSelection` returns a plain `Stream` or `Datum`, the class its type already declared. Code that compared the result with its receiver, or relied on it keeping the subclass methods at runtime, such as a table's `insert` or `getAll`, keeps the receiver instead.
 
   ```ts
   // Before: the same object, still a Table at runtime

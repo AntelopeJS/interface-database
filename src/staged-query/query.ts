@@ -3,6 +3,8 @@ import { isKindHolder, MarkKind } from "./kind";
 
 const QUERY_KIND = Symbol.for("@antelopejs/interface-database/Query@1");
 
+declare const YIELDS: unique symbol;
+
 /**
  * What running a query whose result is `T` yields: `result` is what `run()`
  * resolves to, and `item` is what its cursor reads at a time, each element of
@@ -22,9 +24,10 @@ export class Query<T> extends StagedObject {
    * What the query yields when it runs. A query holds stages, never a result,
    * so no instance has this property: it is declared for the type checker,
    * which tells a `Query<string>` from a `Query<number>` by it and reads `T`
-   * back from any query type.
+   * back from any query type. Its key is a symbol no other module can name,
+   * so no subclass property collides with it.
    */
-  declare protected readonly yields?: QueryYield<T>;
+  declare protected readonly [YIELDS]?: QueryYield<T>;
 }
 
 MarkKind(Query.prototype, QUERY_KIND);

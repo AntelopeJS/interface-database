@@ -11,7 +11,7 @@ journeys:
 
 # Staged query
 
-A build tool imports `@antelopejs/interface-database/staged-query`, builds queries and reads `build()`; the entry point never loads `interface-core` or `node:async_hooks`, its queries cannot run, and the root entry later gives the same classes `run`, `then` and `cursor`.
+A build tool imports `@antelopejs/interface-database/staged-query`, builds queries and reads `build()`; the entry point never loads `interface-core` or `node:async_hooks`, its queries cannot run, and the root entry later gives the same classes `run` and `cursor`.
 
 ## Sub-features
 

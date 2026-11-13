@@ -35,11 +35,11 @@ export const SCHEMA_BODIES = {
   "schema-run": `
     const s = new db.Schema("tutorial", { notes: { fields: {}, indexes: {} } });
     answer = "acme";
-    const created = await s.createInstance("acme");
+    const created = await s.createInstance("acme").run();
     answer = [];
-    const listed = await s.listInstances();
+    const listed = await s.listInstances().run();
     answer = undefined;
-    await s.destroyInstance("acme");
+    await s.destroyInstance("acme").run();
     return { created, listed, runs: seen.runs.map(show), lazy: await (async () => { const before = seen.runs.length; s.createInstance("later"); await sleepTick(); return seen.runs.length - before; })() };
   `,
 } satisfies { [id: string]: string };
@@ -80,13 +80,13 @@ export const TABLE_BODIES = {
   `,
   "table-results": `${SHOP}
     answer = ["id-1", "id-2"];
-    const ids = await products.insert([{ name: "A" }, { name: "B" }], { conflict: "update" });
+    const ids = await products.insert([{ name: "A" }, { name: "B" }], { conflict: "update" }).run();
     answer = 3;
-    const updated = await products.getAll("shoes", "tags").update({ price: 1 });
+    const updated = await products.getAll("shoes", "tags").update({ price: 1 }).run();
     answer = null;
-    const missing = await products.get("nope");
+    const missing = await products.get("nope").run();
     answer = new Error("provider refused");
-    const refused = await fails(() => products.get("p-1").delete());
+    const refused = await fails(() => products.get("p-1").delete().run());
     return { ids, updated, missing, refused, runs: seen.runs.map(show) };
   `,
 } satisfies { [id: string]: string };

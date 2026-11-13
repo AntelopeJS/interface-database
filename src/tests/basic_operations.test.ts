@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { Schema } from "..";
 
 import { Vehicle, vehicles } from "./datasets/vehicles";
+import type { Same } from "./helpers/same-type";
 
 const tableName = "test-table";
 const schema = new Schema<{ [tableName]: Vehicle }>("test-basic-operations", {
@@ -18,6 +19,7 @@ describe("Basic Operations", () => {
   });
 
   it("Schema list", SchemaListTest);
+  it("Schema get claims no definition type", SchemaGetTest);
   it("Insert", InsertTest);
   it("Insert conflict update (existing doc)", InsertConflictUpdateTest);
   it("Insert conflict replace (existing doc)", InsertConflictReplaceTest);
@@ -42,6 +44,16 @@ describe("Basic Operations", () => {
 
 function SchemaListTest() {
   expect(Schema.list().get("test-basic-operations")).to.equal(schema);
+}
+
+function SchemaGetTest() {
+  const found = Schema.get("test-basic-operations");
+  const definitionUnchecked: Same<
+    NonNullable<typeof found>["definition"],
+    unknown
+  > = true;
+  expect(found).to.equal(schema);
+  expect(definitionUnchecked).to.equal(true);
 }
 
 async function InsertTest() {

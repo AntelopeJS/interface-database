@@ -217,7 +217,9 @@ async function PreserveOutcomes() {
   ];
   for (const result of outcomes) {
     await WithResult(result, async () => {
-      expect(await table.atomicMutation("record-a", request)).to.equal(result);
+      expect(await table.atomicMutation("record-a", request).run()).to.equal(
+        result,
+      );
     });
   }
 }

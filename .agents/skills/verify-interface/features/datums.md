@@ -17,11 +17,11 @@ A single document or value is read, a field is picked, defaulted, transformed wi
 ## Sub-features
 
 - `datum-stages`: key, default, do, lookup, pluck and cast on one document record docs/1.query_types/8.datum.md.
-- `datum-run`: awaiting a document or one of its fields returns the provider's answer, null included.
+- `datum-run`: running a document or one of its fields returns the provider's answer, null included.
 
 ## How to get to it (user POV)
 
-- `await users.get("u").key("address").key("city")`.
+- `await users.get("u").key("address").key("city").run()`.
 
 ## Driving it with antelopejs-verify
 

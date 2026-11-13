@@ -20,7 +20,7 @@ AQL (Antelope Query Language) is the database-agnostic query builder of Antelope
 - `Table`, `Selection` and `SingleSelection` insert, read, update and delete documents.
 - `Stream` filters, maps, joins, groups and aggregates. `ValueProxy` builds the expressions inside them.
 - `changes()` streams inserts, updates and deletions as they happen.
-- Queries are lazy. Nothing runs until you `await` a query, call `.run()` or iterate it.
+- Queries are lazy. Nothing runs until you call `.run()` or iterate a query.
 
 ## Implementations
 
@@ -66,13 +66,14 @@ const schema = new Schema<{ novels: Novel }>("library", {
 const novels = schema.instance().table("novels");
 
 export async function addNovel(title: string, pageCount: number) {
-  return await novels.insert({ title, pageCount });
+  return await novels.insert({ title, pageCount }).run();
 }
 
 export async function listLongNovels() {
   return await novels
     .filter((novel) => novel.key("pageCount").ge(300))
-    .orderBy("pageCount", "desc");
+    .orderBy("pageCount", "desc")
+    .run();
 }
 ```
 

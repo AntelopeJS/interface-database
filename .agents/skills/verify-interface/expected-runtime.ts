@@ -113,30 +113,20 @@ export const EXPECTED = {
   },
   "query-execution": {
     "lazy": 0,
-    "viaAwait": [
-      {
-        "title": "A"
-      }
-    ],
+    "awaitedIsQuery": true,
+    "awaitRuns": 0,
     "viaRun": [
       {
         "title": "A"
       }
     ],
-    "viaThen": [
-      {
-        "title": "A"
-      }
-    ],
-    "viaThenChain": 1,
-    "runs": 7,
+    "runs": 3,
     "sameStages": true,
     "rejected": "Error: provider refused",
-    "caught": "handled:provider refused",
     "onRejected": "caught:provider refused",
     "methods": [
       "function",
-      "function",
+      "undefined",
       "function"
     ],
     "iterator": "function"

@@ -125,20 +125,15 @@ export class Schema<
   /**
    * Retrieves a previously defined schema by its ID
    *
+   * The registry keeps no type arguments, so the schema's document mapping is
+   * `any` and its definition `unknown`. To query typed tables, use the schema
+   * object the constructor returned.
+   *
    * @param id Schema ID
    * @returns The schema instance, or undefined if not found
    */
-  public static get<T = any, Definition = SchemaDefinition>(
-    id: string,
-  ): Schema<T, Definition> | undefined {
-    /*
-     * SAFETY: The registry only holds instances stored by the Schema
-     * constructor, so a hit is a Schema. T and Definition are chosen by the
-     * caller and hold only when they are the type arguments of the constructor
-     * call that registered this id; the registry keeps them nowhere, so
-     * nothing here checks them.
-     */
-    return Schema.registry.get(id) as Schema<T, Definition> | undefined;
+  public static get(id: string): Schema<any, unknown> | undefined {
+    return Schema.registry.get(id);
   }
 
   /**

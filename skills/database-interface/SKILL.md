@@ -7,7 +7,7 @@ tags: [antelopejs, database, query, schema, aql]
 
 # Database interface (AQL)
 
-AQL is a lazy, chainable query builder. Every class here (`Schema`, `Table`, `Selection`, `Stream`, `Datum`, `ValueProxy`) is a consumer-side staged object: chaining records stages, nothing touches the database. Apart from schema registration (done once by the `Schema` constructor), the only proxy crossings are execution (`.run()` / `await` / `for await`), which ships the staged query to whatever loaded module implements this interface (e.g. `@antelopejs/mongodb`). Consumers never call `ImplementInterface` for this interface — providing it is the job of database driver modules.
+AQL is a lazy, chainable query builder. Every class here (`Schema`, `Table`, `Selection`, `Stream`, `Datum`, `ValueProxy`) is a consumer-side staged object: chaining records stages, nothing touches the database. Apart from schema registration (done once by the `Schema` constructor), the only proxy crossings are execution (`.run()` / `.cursor()` / `for await`), which ships the staged query to whatever loaded module implements this interface (e.g. `@antelopejs/mongodb`). Consumers never call `ImplementInterface` for this interface — providing it is the job of database driver modules.
 
 ## Imports
 
@@ -72,15 +72,18 @@ const schema = new Schema<{ novels: Novel }>("library", {
 
 const novels = schema.instance().table("novels"); // default instance
 
-const ids = await novels.insert({
-  title: "The Glass Meridian",
-  pageCount: 412,
-  available: true,
-}); // string[] of inserted ids
+const ids = await novels
+  .insert({
+    title: "The Glass Meridian",
+    pageCount: 412,
+    available: true,
+  })
+  .run(); // string[] of inserted ids
 const longNovels = await novels
   .filter((n) => n.key("pageCount").ge(300).and(n.key("available")))
-  .orderBy("pageCount", "desc"); // await executes: Novel[]
-await novels.get(ids[0]).update({ available: false }); // number of modified docs
+  .orderBy("pageCount", "desc")
+  .run(); // run() executes: Novel[]
+await novels.get(ids[0]).update({ available: false }).run(); // number of modified docs
 for await (const change of novels.changes()) {
   // change feed via async iteration
   console.log(change.changeType, change.newValue); // "added" | "removed" | "modified"
@@ -89,11 +92,11 @@ for await (const change of novels.changes()) {
 
 ## Gotchas
 
-- **Lazy everywhere.** No chain call executes anything. Execution happens only via `.run()`, `await` (every `Query` is `PromiseLike`), or async iteration (`for await` / `.cursor()`). This includes `Schema.createInstance()` / `destroyInstance()` / `listInstances()` — they return `Query` objects and do nothing until awaited.
+- **Lazy everywhere.** No chain call executes anything. Execution happens only via `.run()` or async iteration (`for await` / `.cursor()`). A `Query` is not a promise: `await query` without `.run()` returns the query and executes nothing. This includes `Schema.createInstance()` / `destroyInstance()` / `listInstances()` — they return `Query` objects and do nothing until run.
 - **Callbacks receive `ValueProxy`, not values.** Functions passed to `filter`, `map`, `do`, `update(fn)`, `join`, `group` are recorded, then replayed by the backend. Only `ValueProxy` methods (`key`, `eq`, `ne`, `gt/ge/lt/le`, `and/or/not`, `add/sub/mul/div`, string/date/array/object helpers, `ValueProxy.constant`) become part of the query — plain JS (`if`, `===`, `Math.*`, template strings) does not travel. Exception: `group`'s mapper receives a staged `Stream` (the group's documents) as its first parameter and a `ValueProxy` (the index value) second — staged `Stream` methods also travel.
 - **Staged objects are immutable.** Each chained call returns a new object; a prefix like `novels.getAll(true, "available")` can be safely reused for several derived queries.
 - A provider module must be loaded in the project or startup fails with unresolved interface dependencies; queries themselves need no defensive "is the DB ready" checks (calls queue until the provider attaches).
-- `Schema` ids are persistent: changing an id leaves previous data inaccessible. `Schema.get(id)` retrieves a previously constructed schema. `instance()` with no argument is the default instance; pass `CROSS_INSTANCE` to query across all instances. Indexes are optimized for per-instance queries; set `crossInstance: true` on the indexes that `CROSS_INSTANCE` queries use (performance only, results are unchanged).
+- `Schema` ids are persistent: changing an id leaves previous data inaccessible. `Schema.get(id)` retrieves a previously constructed schema, untyped: it takes no type arguments, and its tables hold `any` documents. Query typed tables through the schema object you constructed. `instance()` with no argument is the default instance; pass `CROSS_INSTANCE` to query across all instances. Indexes are optimized for per-instance queries; set `crossInstance: true` on the indexes that `CROSS_INSTANCE` queries use (performance only, results are unchanged).
 - Field types are string tokens (`"string"`, `"number"`, `"boolean"`, `"date"`, `"string[]"`, nested object literals) or a single io-ts codec at the field root — codecs are not mixed inside string-tree records.
 - **Recognize query kinds with `IsStream`/`IsDatum`/`IsQuery`/`IsValueProxy`, not `instanceof`,** when the object may come from another module. Each provider binding has its own copy of the classes, so `instanceof` is false for a query built by a module bound to another database; the predicates are not. `CROSS_INSTANCE` is the same value in every copy.
 - Range semantics: `Table.between(index, low, high)` and `ValueProxy.during(left, right)` exclude the upper bound. `during` also takes bounds as milliseconds since the UNIX epoch.
@@ -101,7 +104,7 @@ for await (const change of novels.changes()) {
 - A written document (`insert`, `update`, `replace`) holds `WriteValue`s only: text, numbers, booleans, `null`, `Date`s, lists and nested documents. A field typed `unknown` takes a `WriteValue`, a field typed `any` takes anything; `bigint` and `symbol` do not compile.
 - An operand a stage records (`ValueProxy.constant`, `eq`, `ne`, `default`, `gt/ge/lt/le`, `includes`, `merge`) holds a `QueryValue`: a proxy or query, text, numbers, booleans, `null`, `Date`s, lists and records of those. `bigint`, `symbol` and functions do not compile; `constant`, `default`, `sub`, `merge` and the default of `key` also refuse a record declared with `interface` (no implicit index signature), so declare it with `type`.
 - A write that would duplicate the key of a unique index (`_id`, or an index declared `unique: true`, unique per instance) throws `DuplicateKeyError` (`index`, `fields`); test it with `IsDuplicateKeyError(error)`, not `instanceof`.
-- `cast<U>()` on `Datum`/`Stream`/`ValueProxy` only changes the TypeScript type — no runtime conversion.
+- `cast<U>()` on `Datum`/`Stream`/`ValueProxy` returns a new object with the same stages and another TypeScript type — no runtime conversion, no stage recorded.
 - `update` overloads: pass a plain `DeepPartial<T>` for static values, or a `(val: ValueProxy<T>) => ...` function for computed updates.
 
 ## Deeper reference

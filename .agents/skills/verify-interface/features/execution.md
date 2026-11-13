@@ -13,11 +13,11 @@ journeys:
 
 # Execution
 
-A query is lazy; `await`, `run()` and `then()` run it once, `cursor()` and `for await` read it one result at a time and close the cursor when the consumer stops.
+A query is lazy; `run()` runs it once and `await` alone runs nothing, `cursor()` and `for await` read it one result at a time and close the cursor when the consumer stops.
 
 ## Sub-features
 
-- `query-execution`: await, run and then run a query once each, lazily, and pass the provider's failure on.
+- `query-execution`: run runs a query once, lazily, and passes the provider's failure on; awaiting a query runs nothing.
 - `query-cursor`: cursor and for await read the provider one result at a time and close the cursor when the consumer stops.
 
 ## How to get to it (user POV)

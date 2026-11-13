@@ -47,7 +47,7 @@ export const STAGED = {
   "after": {
     "query": [
       true,
-      true,
+      false,
       true
     ],
     "iterator": true,

@@ -53,9 +53,9 @@ export const STREAM_BODIES = {
   `,
   "stream-run": `${STORE}
     answer = [{ _id: "u1" }, { _id: "u2" }];
-    const direct = await users.orderBy("name");
+    const direct = await users.orderBy("name").run();
     answer = 7;
-    const counted = await users.count();
+    const counted = await users.count().run();
     return { direct, counted, runs: seen.runs.map((stages) => show(stages).slice(3)) };
   `,
 } satisfies { [id: string]: string };
@@ -98,11 +98,11 @@ export const DATUM_BODIES = {
   `,
   "datum-run": `${STORE}
     answer = { _id: "user-123", name: "Ada" };
-    const doc = await users.get("user-123");
+    const doc = await users.get("user-123").run();
     answer = "Ada";
-    const name = await users.get("user-123").key("name");
+    const name = await users.get("user-123").key("name").run();
     answer = null;
-    const missing = await users.get("nobody");
+    const missing = await users.get("nobody").run();
     return { doc, name, missing, runs: seen.runs.map((stages) => show(stages).slice(3)) };
   `,
 } satisfies { [id: string]: string };

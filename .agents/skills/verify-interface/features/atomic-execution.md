@@ -11,7 +11,7 @@ journeys:
 
 # Atomic execution
 
-Awaiting an atomic mutation resolves to `applied`, `not-applied` or `unknown`; any other provider answer is an `AtomicMutationUnsupportedError`; cursors are refused; nothing is retried.
+Running an atomic mutation resolves to `applied`, `not-applied` or `unknown`; any other provider answer is an `AtomicMutationUnsupportedError`; cursors are refused; nothing is retried.
 
 ## Sub-features
 
@@ -19,7 +19,7 @@ Awaiting an atomic mutation resolves to `applied`, `not-applied` or `unknown`; a
 
 ## How to get to it (user POV)
 
-- `const outcome = await table.atomicMutation(id, request)`.
+- `const outcome = await table.atomicMutation(id, request).run()`.
 
 ## Driving it with antelopejs-verify
 

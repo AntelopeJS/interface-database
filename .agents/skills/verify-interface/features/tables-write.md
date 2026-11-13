@@ -23,7 +23,7 @@ A module inserts (with `conflict: "update"` or `"replace"`), updates with a part
 
 ## How to get to it (user POV)
 
-- `await users.insert({ _id: "u" }, { conflict: "update" })` and `await users.get("u").delete()`.
+- `await users.insert({ _id: "u" }, { conflict: "update" }).run()` and `await users.get("u").delete().run()`.
 
 ## Driving it with antelopejs-verify
 

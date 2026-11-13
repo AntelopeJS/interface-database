@@ -1,6 +1,6 @@
 {
   "rules": {
-    "@typescript-eslint/no-unused-expressions": 1,
+    "@typescript-eslint/no-unused-expressions": 0,
     "anti-slop/no-chained-type-assertions": 1,
     "typescript/no-unnecessary-type-parameters": 1,
     "typescript/no-unused-vars": 1,

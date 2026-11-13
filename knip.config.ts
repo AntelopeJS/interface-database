@@ -3,9 +3,15 @@ import { antelopeKnipConfig } from "@antelopejs/tooling-configs/knip";
 /**
  * `ajs module test` runs these compiled suites and builds its test project from
  * `src/antelope.test.ts`. The whole compiled tree ships in the package, and the
- * modules implementing this interface run it as their conformance suite.
+ * modules implementing this interface run it as their conformance suite. The
+ * `*.untyped.spec.js` suites feed values the types forbid, so they stay
+ * untyped JavaScript.
  */
-const conformanceSuites = ["src/tests/**/*.test.ts", "src/antelope.test.ts"];
+const conformanceSuites = [
+  "src/tests/**/*.test.ts",
+  "src/tests/**/*.untyped.spec.js",
+  "src/antelope.test.ts",
+];
 
 /**
  * No import Knip can follow reaches these files: `datasets/index.ts` is the

@@ -6,7 +6,7 @@
     "typescript/no-unused-vars": 1,
     "unicorn/no-thenable": 1
   },
-  "tsExpectError": 2,
+  "tsExpectError": 0,
   "tsIgnore": 0,
   "safety": 5,
   "config": {},

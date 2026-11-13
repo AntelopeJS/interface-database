@@ -99,20 +99,6 @@ function ValidateRevision() {
       expectedRevision: { kind: "missing" },
     }),
   ).not.to.throw();
-  for (const expectedRevision of [
-    null,
-    undefined,
-    "",
-    { kind: "missing", extra: true },
-  ]) {
-    expect(() =>
-      ValidateAtomicMutation("record-a", {
-        ...request,
-        // @ts-expect-error expectedRevision is null, undefined, "" or a tag with an extra key, off-contract values that ValidateAtomicMutation must refuse with a TypeError
-        expectedRevision,
-      }),
-    ).to.throw(TypeError);
-  }
   expect(() =>
     table.atomicMutation("record-a", {
       ...request,
@@ -197,16 +183,6 @@ function ValidateEquality() {
         expectedValue,
       }),
     ).not.to.throw();
-  }
-  for (const expectedValue of [null, undefined, {}, [], NaN, new Date(NaN)]) {
-    expect(() =>
-      ValidateAtomicMutation("record-a", {
-        type: "deleteIfEqual",
-        field: "title",
-        // @ts-expect-error expectedValue is null, undefined, {}, [], NaN or an invalid Date, off-contract values that ValidateAtomicMutation must refuse with a TypeError
-        expectedValue,
-      }),
-    ).to.throw(TypeError);
   }
 }
 

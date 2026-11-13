@@ -4,6 +4,7 @@ import type { Stream } from "./stream";
 import {
   QueryStage,
   type ExtractType,
+  type FieldPath,
   type QueryValue,
   type Value,
 } from "./common";
@@ -25,7 +26,6 @@ export class Datum<T> extends Query<T> {
      * T, so the same object is a valid Datum<U> for every U. Whether U matches
      * what the query yields is the caller's claim, which nothing here checks.
      */
-    // oxlint-disable-next-line anti-slop/no-chained-type-assertions -- a single `as Datum<U>` fails TS2352 because T and U are unrelated, and widening to StagedObject first is the refused route; the cast only relabels the type argument of the same object.
     return this as unknown as Datum<U>;
   }
 
@@ -86,12 +86,13 @@ export class Datum<T> extends Query<T> {
    *
    * @param other Other table
    * @param localKey Key in local object
-   * @param otherKey Key in other table
+   * @param otherKey Key in other table. A dotted key is a nested path in the
+   * other document
    */
   public lookup<U = any, TK extends keyof T & string = keyof T & string>(
     other: Stream<U>,
     localKey: TK,
-    otherKey: keyof U & string,
+    otherKey: FieldPath<U>,
   ) {
     return this.stage(
       Datum<Omit<T, TK> & Record<TK, T[TK] extends any[] ? U[] : U>>,

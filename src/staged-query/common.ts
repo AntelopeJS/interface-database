@@ -79,6 +79,17 @@ export type OperandValue<V> = 0 extends 1 & V
               ? { [K in keyof V]: OperandValue<V[K]> }
               : never;
 
+/**
+ * A field of `T`, or a dot-separated path that starts at one of its fields.
+ * Each dot steps into a nested object, so `"title.fr"` reads `fr` inside
+ * `title`, never a top-level key named `title.fr`.
+ *
+ * The path after the first field is not checked against the field's type: a
+ * localized field is typed `string` while it stores a locale record, and a
+ * strict path type would reject `"title.fr"`.
+ */
+export type FieldPath<T> = (keyof T & string) | `${keyof T & string}.${string}`;
+
 /** A document as `insert`, `update` and `replace` record it. */
 export interface WriteDocument {
   [field: string]: WriteValue;

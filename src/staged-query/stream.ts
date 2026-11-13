@@ -4,6 +4,7 @@ import {
   QueryStage,
   type Changes,
   type ExtractType,
+  type FieldPath,
   type QueryValue,
   type Value,
 } from "./common";
@@ -26,7 +27,6 @@ export class Stream<T> extends Query<T[]> {
      * T, so the same object is a valid Stream<U> for every U. Whether U matches
      * what the query yields is the caller's claim, which nothing here checks.
      */
-    // oxlint-disable-next-line anti-slop/no-chained-type-assertions -- a single `as Stream<U>` fails TS2352 because T and U are unrelated, and widening to StagedObject first is the refused route; the cast only relabels the type argument of the same object.
     return this as unknown as Stream<U>;
   }
 
@@ -185,13 +185,14 @@ export class Stream<T> extends Query<T[]> {
    *
    * @param right Stream containing the other documents
    * @param localKey Key in the local document to search with and replace
-   * @param otherKey Key in the other document to match against
+   * @param otherKey Key in the other document to match against. A dotted key is
+   * a nested path in the other document
    * @returns New stream
    */
   public lookup<U, TK extends keyof T & string>(
     right: Stream<U>,
     localKey: TK,
-    otherKey: keyof U & string,
+    otherKey: FieldPath<U>,
   ) {
     return this.stage(
       Stream<Omit<T, TK> & Record<TK, T[TK] extends any[] ? U[] : U>>,
@@ -232,7 +233,8 @@ export class Stream<T> extends Query<T[]> {
   /**
    * Sort the stream using the given index and direction
    *
-   * @param index Index to sort
+   * @param index Name of an index of the table, or else a field. A dotted name
+   * is a nested path
    * @param direction Sort direction
    * @returns New (sorted) stream
    */

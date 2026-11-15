@@ -126,7 +126,7 @@
   "devDependencies": {
     "@antelopejs/core": "~1.23.3",
     "@antelopejs/interface-core": ">=0.5.1 <0.6.0",
-    "@antelopejs/mongodb": "file:.tgz-deps/antelopejs-mongodb-5bcc909.tgz",
+    "@antelopejs/mongodb": "file:.tgz-deps/antelopejs-mongodb-ad09789.tgz",
     "@antelopejs/tooling-configs": ">=0.7.1 <0.8.0",
     "@types/chai": "^4.3.20",
     "@types/mocha": "^10.0.10",
@@ -153,7 +153,7 @@
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
     "overrides": {
-      "@antelopejs/mongodb": "file:.tgz-deps/antelopejs-mongodb-5bcc909.tgz",
+      "@antelopejs/mongodb": "file:.tgz-deps/antelopejs-mongodb-ad09789.tgz",
       "@antelopejs/mongodb>@antelopejs/interface-core": "0.5.1",
       "@antelopejs/mongodb>@antelopejs/interface-database": "link:."
     }

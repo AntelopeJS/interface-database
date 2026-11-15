@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.4.1
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.0...v0.4.1)
+
+### 🚀 Enhancements
+
+- **query:** ReadCursor hands over rows in batches ([#97](https://github.com/AntelopeJS/interface-database/pull/97))
+
+### 📖 Documentation
+
+- **changelog:** Upgrade notes of interface-database 0.4.0 ([#93](https://github.com/AntelopeJS/interface-database/pull/93))
+
+### 📦 Build
+
+- **deps:** Move to tooling-configs 0.7.1 and cap @antelopejs ranges below the next minor ([#95](https://github.com/AntelopeJS/interface-database/pull/95))
+
+### ✅ Tests
+
+- **change-feeds:** Wait for the feed to open instead of sleeping ([#96](https://github.com/AntelopeJS/interface-database/pull/96))
+
+### 🤖 CI
+
+- Run the checks on Windows beside Linux ([#94](https://github.com/AntelopeJS/interface-database/pull/94))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.4.0
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.3.3...v0.4.0)

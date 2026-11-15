@@ -73,7 +73,9 @@ class IterableCursor implements AsyncGenerator<any, void, unknown> {
     return { done: true, value: undefined };
   }
 
-  public async throw(e: unknown): Promise<IteratorResult<any, void>> {
+  public async throw(
+    e: Parameters<AsyncGenerator["throw"]>[0],
+  ): Promise<IteratorResult<any, void>> {
     this.release()?.reject(e);
     await CloseCursor(this.reqId);
     return { done: true, value: undefined };

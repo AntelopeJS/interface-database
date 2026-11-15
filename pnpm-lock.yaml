@@ -12,14 +12,14 @@ importers:
   .:
     devDependencies:
       '@antelopejs/core':
-        specifier: ~1.23.3
-        version: 1.23.3
+        specifier: ~1.24.0
+        version: 1.24.0
       '@antelopejs/interface-core':
         specifier: '>=0.5.1 <0.6.0'
         version: 0.5.1
       '@antelopejs/mongodb':
-        specifier: ~1.8.2
-        version: 1.8.2(socks@2.8.7)
+        specifier: ~1.8.4
+        version: 1.8.4(socks@2.8.7)
       '@antelopejs/tooling-configs':
         specifier: '>=0.7.1 <0.8.0'
         version: 0.7.1(eslint-plugin-perfectionist@5.11.0(eslint@10.10.0(jiti@2.7.0))(typescript@5.9.3))(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
@@ -80,24 +80,24 @@ importers:
 
 packages:
 
-  '@antelopejs/core@1.23.3':
-    resolution: {integrity: sha512-W9ekdNXaZCuK4lsKn5bBF3F+LoQhvwlmLoprw4m0W6jdS0DA6Bb7B2+2ttgla0oggAJwyFUxHcpBVloFnlv91w==}
+  '@antelopejs/core@1.24.0':
+    resolution: {integrity: sha512-lYw0iwu8pMohkWvU+aRTHRsZvRi2YXph+ALF3lwCyjilxeXlMxoCDwHroGP3iWXrAhqK8G/8iTloOz/b0WGUKw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
   '@antelopejs/interface-core@0.5.1':
     resolution: {integrity: sha512-ON/7TYA1yyT8UznzKi6vnwyjRU3byNE0OcFXBmf8dE/dqp8hKjeWHVyA2EUPOngmEimCLw4idZqOS5DJqMJx3g==}
 
-  '@antelopejs/interface-database-catalog@0.0.3':
-    resolution: {integrity: sha512-ZT7bZ0ycEs8VvEgNGQTGMAzKiFQC1BOYOM2f2e+vFuCN/1VPBZZFxg3XOmHClTzdW/RzX2k7lasfMyaVOUzOCA==}
+  '@antelopejs/interface-database-catalog@0.1.0':
+    resolution: {integrity: sha512-R5SL72JKD7u63UwBumWt18YsGXVnnWfKbBVwc323CgKvDcLS7Qfz+Eo/ko2ybr8wHq7Izi7maSTPhJn3fp91ug==}
     peerDependencies:
-      '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
+      '@antelopejs/interface-core': '>=0.5.0 <0.6.0'
 
   '@antelopejs/interface-mongodb@0.0.8':
     resolution: {integrity: sha512-sAJDFv29Zz2RFZaSvN/qIPW57/zpYFVHaOTaBi2dgDn650Z0hpD9gJx9LVp5NiCC3EmD+DeQggmA5ada+4zatA==}
 
-  '@antelopejs/mongodb@1.8.2':
-    resolution: {integrity: sha512-fhIUmMqG6H798KJPry75rGuSDt0uSWYKME9mmz/FUdoGY0xvLcnlA4EroG1d8zqCC8vJmTU+F31gMrsBBcxeXw==}
+  '@antelopejs/mongodb@1.8.4':
+    resolution: {integrity: sha512-qRSc6ufTZCY/v02oJEJNahKnYH76xerH5pfMlqvMtHWdRg4+aubPox6ow1BfguWLSs6fshd6jVDzwt3IrnnK2g==}
 
   '@antelopejs/tooling-configs@0.7.1':
     resolution: {integrity: sha512-X/mr/nQEgmFI2dMr3ThMS7HcPaU1amsTU/RNfEnQv46+l7au8cv7unpypCZ0BggnfJHjpk2QG2CTOOllpwj3cw==}
@@ -2784,7 +2784,7 @@ packages:
 
 snapshots:
 
-  '@antelopejs/core@1.23.3':
+  '@antelopejs/core@1.24.0':
     dependencies:
       '@antelopejs/interface-core': 0.5.1
       '@clack/prompts': 1.8.1
@@ -2796,14 +2796,14 @@ snapshots:
       picocolors: 1.1.1
       proper-lockfile: 4.1.2
       reflect-metadata: 0.2.2
-      semver: 7.7.4
+      semver: 7.8.6
       typescript: 5.9.3
 
   '@antelopejs/interface-core@0.5.1':
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@antelopejs/interface-database-catalog@0.0.3(@antelopejs/interface-core@0.5.1)':
+  '@antelopejs/interface-database-catalog@0.1.0(@antelopejs/interface-core@0.5.1)':
     dependencies:
       '@antelopejs/interface-core': 0.5.1
 
@@ -2820,13 +2820,14 @@ snapshots:
       - socks
     optional: true
 
-  '@antelopejs/mongodb@1.8.2(socks@2.8.7)':
+  '@antelopejs/mongodb@1.8.4(socks@2.8.7)':
     dependencies:
       '@antelopejs/interface-core': 0.5.1
       '@antelopejs/interface-database': 'link:'
-      '@antelopejs/interface-database-catalog': 0.0.3(@antelopejs/interface-core@0.5.1)
+      '@antelopejs/interface-database-catalog': 0.1.0(@antelopejs/interface-core@0.5.1)
       chai: 4.5.0
       mongodb: 6.21.0(socks@2.8.7)
+      mongodb-connection-string-url: 3.0.2
       randomstring: 1.3.2
       reflect-metadata: 0.2.2
       uuid: 11.1.1

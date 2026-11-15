@@ -123,14 +123,14 @@ export const EXECUTION_BODIES = {
     return { lazy, awaitedIsQuery: awaited === built, awaitRuns, viaRun, runs: seen.runs.length, sameStages, rejected, onRejected, methods: ["run", "then", "cursor"].map((name) => typeof built[name]), iterator: typeof built[Symbol.asyncIterator] };
   `,
   "query-cursor": `${NOTES}
-    readAnswers = [{ done: false, value: { n: 1 } }, { done: false, value: { n: 2 } }, { done: true, value: undefined }];
+    readAnswers = [[{ n: 1 }, { n: 2 }], []];
     const items = [];
     for await (const item of table) items.push(item);
     const firstLoop = { items, reads: seen.reads.map(([id, stages]) => [id, show(stages).slice(3)]) };
-    readAnswers = [{ done: false, value: "x" }, { done: false, value: "y" }];
+    readAnswers = [["x", "y"]];
     for await (const item of table) { break; }
     const afterBreak = { reads: seen.reads.length, closes: [...seen.closes] };
-    readAnswers = [{ done: false, value: "m" }];
+    readAnswers = [["m", "n"]];
     const manual = table.cursor();
     const first = await manual.next();
     const returned = await manual.return();

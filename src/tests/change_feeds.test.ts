@@ -69,6 +69,15 @@ function SettlesWithin(pending: Promise<unknown>, ms: number) {
 }
 
 /**
+ * Answers `pending` with a handler attached, so a rejection while no read awaits it still reaches
+ * the next read instead of being reported as unhandled.
+ */
+function Handled<T>(pending: Promise<T>) {
+  pending.catch(() => undefined);
+  return pending;
+}
+
+/**
  * Reads a change feed of {@link table} under one deadline, and tells the probe rows it writes
  * apart from the rows a test writes. The contract gives no signal that a feed is open, so a probe
  * row is inserted until the feed delivers one.
@@ -79,7 +88,7 @@ class FeedReader<T extends VehicleChange> {
   private pending: Promise<IteratorResult<T, void>>;
 
   public constructor(private readonly feed: AsyncGenerator<T, void, unknown>) {
-    this.pending = feed.next();
+    this.pending = Handled(feed.next());
   }
 
   /** Resolves once the feed is known open, with nothing left to deliver. */
@@ -135,7 +144,7 @@ class FeedReader<T extends VehicleChange> {
 
   private async next(waitingFor: string): Promise<T> {
     const remaining = this.deadline - Date.now();
-    if (remaining <= 0 || !(await SettlesWithin(this.pending, remaining))) {
+    if (!(await SettlesWithin(this.pending, Math.max(remaining, 0)))) {
       expect.fail(
         `no change event within ${FEED_TIMEOUT_MS} ms while waiting for ${waitingFor}`,
       );
@@ -144,7 +153,7 @@ class FeedReader<T extends VehicleChange> {
     if (step.done) {
       expect.fail(`the feed ended while waiting for ${waitingFor}`);
     }
-    this.pending = this.feed.next();
+    this.pending = Handled(this.feed.next());
     return step.value;
   }
 

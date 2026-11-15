@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.4.2
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.1...v0.4.2)
+
+### 📦 Build
+
+- **deps:** Move @antelopejs/mongodb to 1.8.4 and @antelopejs/core to 1.24 ([#98](https://github.com/AntelopeJS/interface-database/pull/98))
+
+### ✅ Tests
+
+- **change-feeds:** Read a feed on the default instance and across instances ([#99](https://github.com/AntelopeJS/interface-database/pull/99))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.4.1
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.0...v0.4.1)

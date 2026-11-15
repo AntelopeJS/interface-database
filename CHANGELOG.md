@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.3
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.2...v0.4.3)
+
+### 📦 Build
+
+- **deps:** Move to @antelopejs/tooling-configs 0.8 and the next branch model ([#100](https://github.com/AntelopeJS/interface-database/pull/100))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli
+
 ## v0.4.2
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.1...v0.4.2)

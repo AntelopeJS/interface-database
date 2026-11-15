@@ -1,6 +1,4 @@
 overrides:
   "@antelopejs/mongodb>@antelopejs/interface-database": "link:."
-  "@antelopejs/mongodb": "file:.tgz-deps/antelopejs-mongodb-ad09789.tgz"
-  "@antelopejs/mongodb>@antelopejs/interface-core": "0.5.1"
 allowBuilds:
   lefthook: false

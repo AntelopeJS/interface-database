@@ -6,6 +6,8 @@ const ROW_COUNT = 1000;
 const UNREACHED_REQ_ID = Number.MAX_SAFE_INTEGER;
 const MAX_READS = ROW_COUNT / 10;
 const RETURN_TIMEOUT_MS = 2000;
+const FEED_TIMEOUT_MS = 5000;
+const PROBE_INTERVAL_MS = 200;
 
 type Row = { _id?: string; n: number };
 
@@ -17,7 +19,7 @@ const table = schema.instance("default").table(tableName);
 const expected = Array.from({ length: ROW_COUNT }, (_, n) => n);
 
 describe("Cursor batches", function () {
-  this.timeout(2 * RETURN_TIMEOUT_MS);
+  this.timeout(FEED_TIMEOUT_MS + 2 * RETURN_TIMEOUT_MS);
 
   before(async () => {
     await schema.createInstance("default").run();
@@ -50,8 +52,66 @@ describe("Cursor batches", function () {
       "Resolves a next() blocked on a feed as done when return() is called",
       ReturnReleasesBlockedFeedRead,
     );
+    it(
+      "Settles a ReadCursor blocked on an open feed when CloseCursor is called",
+      CloseSettlesBlockedFeedRead,
+    );
   });
 });
+
+function SettlesWithin(pending: Promise<unknown>, ms: number) {
+  return new Promise<boolean>((resolve) => {
+    const timer = setTimeout(() => resolve(false), ms);
+    const settle = () => {
+      clearTimeout(timer);
+      resolve(true);
+    };
+    pending.then(settle, settle);
+  });
+}
+
+/**
+ * Reads a feed directly until one read stays pending on the open feed, inserting probe rows
+ * (negative `n`) until the feed delivers, then closes it: the pending read must settle.
+ */
+async function CloseSettlesBlockedFeedRead() {
+  const stages = table.changes().build();
+  const deadline = Date.now() + FEED_TIMEOUT_MS;
+  try {
+    let read = ReadCursor(UNREACHED_REQ_ID, stages);
+    let opened = false;
+    for (;;) {
+      expect(
+        Date.now(),
+        `the feed did not open within ${FEED_TIMEOUT_MS} ms`,
+      ).to.be.below(deadline);
+      if (await SettlesWithin(read, PROBE_INTERVAL_MS)) {
+        const events = await read;
+        expect(
+          events.length,
+          "a feed read that settles before close hands over events",
+        ).to.be.above(0);
+        opened = true;
+        read = ReadCursor(UNREACHED_REQ_ID, stages);
+      } else if (opened) {
+        break;
+      } else {
+        await table.insert({ n: -1 }).run();
+      }
+    }
+    await CloseCursor(UNREACHED_REQ_ID);
+    expect(
+      await SettlesWithin(read, RETURN_TIMEOUT_MS),
+      "a driver whose CloseCursor leaves a read in flight pending",
+    ).to.equal(true);
+  } finally {
+    await CloseCursor(UNREACHED_REQ_ID);
+    await table
+      .filter((row) => row.key("n").lt(0))
+      .delete()
+      .run();
+  }
+}
 
 function ExpectRowsInOrder(rows: readonly unknown[], why: string) {
   expect(rows, why).to.have.lengthOf(ROW_COUNT);

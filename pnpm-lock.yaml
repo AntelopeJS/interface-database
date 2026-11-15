@@ -18,8 +18,8 @@ importers:
         specifier: '>=0.5.1 <0.6.0'
         version: 0.5.1
       '@antelopejs/mongodb':
-        specifier: ~1.8.1
-        version: 1.8.1(socks@2.8.7)
+        specifier: ~1.8.2
+        version: 1.8.2(socks@2.8.7)
       '@antelopejs/tooling-configs':
         specifier: '>=0.7.1 <0.8.0'
         version: 0.7.1(eslint-plugin-perfectionist@5.11.0(eslint@10.10.0(jiti@2.7.0))(typescript@5.9.3))(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
@@ -96,8 +96,8 @@ packages:
   '@antelopejs/interface-mongodb@0.0.8':
     resolution: {integrity: sha512-sAJDFv29Zz2RFZaSvN/qIPW57/zpYFVHaOTaBi2dgDn650Z0hpD9gJx9LVp5NiCC3EmD+DeQggmA5ada+4zatA==}
 
-  '@antelopejs/mongodb@1.8.1':
-    resolution: {integrity: sha512-t+ycKbo+ApDw05+sPZzKel20JLY+dcxiZjOZmr2irJnC9oQXizIBhoXrePtej4de1qPmWWZ74OHPZKNTjbnd3w==}
+  '@antelopejs/mongodb@1.8.2':
+    resolution: {integrity: sha512-fhIUmMqG6H798KJPry75rGuSDt0uSWYKME9mmz/FUdoGY0xvLcnlA4EroG1d8zqCC8vJmTU+F31gMrsBBcxeXw==}
 
   '@antelopejs/tooling-configs@0.7.1':
     resolution: {integrity: sha512-X/mr/nQEgmFI2dMr3ThMS7HcPaU1amsTU/RNfEnQv46+l7au8cv7unpypCZ0BggnfJHjpk2QG2CTOOllpwj3cw==}
@@ -2820,7 +2820,7 @@ snapshots:
       - socks
     optional: true
 
-  '@antelopejs/mongodb@1.8.1(socks@2.8.7)':
+  '@antelopejs/mongodb@1.8.2(socks@2.8.7)':
     dependencies:
       '@antelopejs/interface-core': 0.5.1
       '@antelopejs/interface-database': 'link:'

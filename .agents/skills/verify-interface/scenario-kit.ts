@@ -20,7 +20,7 @@ let answer = [];
 let readAnswers = [];
 core.ImplementInterface(queryModule, {
   RunQuery: (stages) => { seen.runs.push(stages); return answer instanceof Error ? Promise.reject(answer) : Promise.resolve(answer); },
-  ReadCursor: (id, stages) => { seen.reads.push([id, stages]); const next = readAnswers.shift(); return Promise.resolve(next ?? { done: true, value: undefined }); },
+  ReadCursor: (id, stages) => { seen.reads.push([id, stages]); const next = readAnswers.shift(); return Promise.resolve(next ?? []); },
   CloseCursor: (id) => { seen.closes.push(id); },
 });
 core.ImplementInterface(schemaModule, {

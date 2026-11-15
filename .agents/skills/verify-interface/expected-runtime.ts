@@ -149,15 +149,11 @@ export const EXPECTED = {
         [
           0,
           []
-        ],
-        [
-          0,
-          []
         ]
       ]
     },
     "afterBreak": {
-      "reads": 4,
+      "reads": 3,
       "closes": [
         1
       ]

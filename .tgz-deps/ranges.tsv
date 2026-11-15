@@ -1,0 +1,3 @@
+@antelopejs/mongodb	package.json	devDependencies	~1.8.4
+@antelopejs/mongodb	pnpm-workspace.yaml	overrides	
+@antelopejs/mongodb>@antelopejs/interface-core	pnpm-workspace.yaml	overrides	

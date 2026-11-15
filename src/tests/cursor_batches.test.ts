@@ -3,7 +3,9 @@ import { Schema } from "..";
 import { CloseCursor, ReadCursor } from "../query";
 
 const ROW_COUNT = 1000;
-const UNREACHED_REQ_ID = Number.MAX_SAFE_INTEGER;
+const BATCHES_REQ_ID = Number.MAX_SAFE_INTEGER;
+const EMPTY_REQ_ID = Number.MAX_SAFE_INTEGER - 1;
+const FEED_REQ_ID = Number.MAX_SAFE_INTEGER - 2;
 const MAX_READS = ROW_COUNT / 10;
 const RETURN_TIMEOUT_MS = 2000;
 const FEED_TIMEOUT_MS = 5000;
@@ -78,7 +80,7 @@ async function CloseSettlesBlockedFeedRead() {
   const stages = table.changes().build();
   const deadline = Date.now() + FEED_TIMEOUT_MS;
   try {
-    let read = ReadCursor(UNREACHED_REQ_ID, stages);
+    let read = ReadCursor(FEED_REQ_ID, stages);
     let opened = false;
     for (;;) {
       expect(
@@ -92,20 +94,20 @@ async function CloseSettlesBlockedFeedRead() {
           "a feed read that settles before close hands over events",
         ).to.be.above(0);
         opened = true;
-        read = ReadCursor(UNREACHED_REQ_ID, stages);
+        read = ReadCursor(FEED_REQ_ID, stages);
       } else if (opened) {
         break;
       } else {
         await table.insert({ n: -1 }).run();
       }
     }
-    await CloseCursor(UNREACHED_REQ_ID);
+    await CloseCursor(FEED_REQ_ID);
     expect(
       await SettlesWithin(read, RETURN_TIMEOUT_MS),
       "a driver whose CloseCursor leaves a read in flight pending",
     ).to.equal(true);
   } finally {
-    await CloseCursor(UNREACHED_REQ_ID);
+    await CloseCursor(FEED_REQ_ID);
     await table
       .filter((row) => row.key("n").lt(0))
       .delete()
@@ -130,7 +132,7 @@ async function BatchesCoverTheSelection() {
   const batches: unknown[][] = [];
   try {
     for (;;) {
-      const batch = await ReadCursor(UNREACHED_REQ_ID, stages);
+      const batch = await ReadCursor(BATCHES_REQ_ID, stages);
       expect(
         batch,
         "a driver that still hands over one IteratorResult",
@@ -145,7 +147,7 @@ async function BatchesCoverTheSelection() {
       ).to.be.at.most(ROW_COUNT + 1);
     }
   } finally {
-    await CloseCursor(UNREACHED_REQ_ID);
+    await CloseCursor(BATCHES_REQ_ID);
   }
 
   ExpectRowsInOrder(
@@ -163,11 +165,11 @@ async function EmptySelection() {
   const stages = table.filter((row) => row.key("n").lt(0)).build();
   try {
     expect(
-      await ReadCursor(UNREACHED_REQ_ID, stages),
+      await ReadCursor(EMPTY_REQ_ID, stages),
       "a driver that waits for a row or ends an empty cursor with a non-empty batch",
     ).to.deep.equal([]);
   } finally {
-    await CloseCursor(UNREACHED_REQ_ID);
+    await CloseCursor(EMPTY_REQ_ID);
   }
 }
 

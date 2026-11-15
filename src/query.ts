@@ -26,31 +26,30 @@ export const ReadCursor =
     (reqId: number, stages: StagedObject["stages"]) => unknown[]
   >();
 /**
- * Releases the cursor `reqId` and resolves a read in flight. It is a no-op for a cursor already
- * released or never opened.
+ * Releases the cursor `reqId`. A read of it in flight settles, with `[]` or a rejection, and the
+ * consumer ignores either. It is a no-op for a cursor already released or never opened.
  * @internal
  */
 export const CloseCursor = InterfaceFunction<(reqId: number) => void>();
 
 let nextReqId = 0;
 
-function closeSignal() {
+/** A batch read in flight: it settles once its batch is stored, or earlier on `return()` or `throw()`. */
+function pendingRead() {
   let resolve: () => void = () => undefined;
   let reject: (error: unknown) => void = () => undefined;
-  const promise = new Promise<void>((res, rej) => {
+  const settled = new Promise<void>((res, rej) => {
     resolve = res;
     reject = rej;
   });
-  promise.catch(() => undefined);
-  return { promise, resolve, reject };
+  return { settled, resolve, reject };
 }
 
 class IterableCursor implements AsyncGenerator<any, void, unknown> {
   private readonly reqId = nextReqId++;
   private rows: Iterator<unknown> = [].values();
   private ended = false;
-  private read?: Promise<void>;
-  private readonly closing = closeSignal();
+  private read?: ReturnType<typeof pendingRead>;
 
   public constructor(private readonly stages: StagedObject["stages"]) {}
 
@@ -64,20 +63,18 @@ class IterableCursor implements AsyncGenerator<any, void, unknown> {
         return { done: true, value: undefined };
       }
       this.read ??= this.readBatch();
-      await Promise.race([this.read, this.closing.promise]);
+      await this.read.settled;
     }
   }
 
   public async return(): Promise<IteratorResult<any, void>> {
-    this.release();
-    this.closing.resolve();
+    this.release()?.resolve();
     await CloseCursor(this.reqId);
     return { done: true, value: undefined };
   }
 
   public async throw(e: unknown): Promise<IteratorResult<any, void>> {
-    this.release();
-    this.closing.reject(e);
+    this.release()?.reject(e);
     await CloseCursor(this.reqId);
     return { done: true, value: undefined };
   }
@@ -87,30 +84,38 @@ class IterableCursor implements AsyncGenerator<any, void, unknown> {
   }
 
   private release() {
+    const read = this.read;
     this.ended = true;
     this.rows = [].values();
+    this.read = undefined;
+    return read;
   }
 
-  private async readBatch() {
-    try {
-      const batch = await ReadCursor(this.reqId, this.stages);
-      if (this.ended) {
-        return;
-      }
-      if (batch.length === 0) {
+  private readBatch() {
+    const read = pendingRead();
+    void ReadCursor(this.reqId, this.stages).then(
+      (batch) => {
+        if (this.read !== read) {
+          return;
+        }
+        this.read = undefined;
+        if (batch.length === 0) {
+          this.ended = true;
+        } else {
+          this.rows = batch.values();
+        }
+        read.resolve();
+      },
+      (error: unknown) => {
+        if (this.read !== read) {
+          return;
+        }
+        this.read = undefined;
         this.ended = true;
-      } else {
-        this.rows = batch.values();
-      }
-    } catch (error) {
-      const released = this.ended;
-      this.ended = true;
-      if (!released) {
-        throw error;
-      }
-    } finally {
-      this.read = undefined;
-    }
+        read.reject(error);
+      },
+    );
+    return read;
   }
 }
 

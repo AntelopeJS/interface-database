@@ -597,8 +597,12 @@ export class ValueProxy<T> extends StagedObject {
   /**
    * Checks if the string matches a regex.
    *
+   * A value that is not a string, such as a number, a boolean, `null`, an
+   * array or an object, answers false: it is not matched against the regex
+   * through a text rendering, and it raises no error.
+   *
    * @param regex Regex
-   * @returns True if the string matched
+   * @returns True if the value is a string that matched, false otherwise
    */
   public match(this: Is<string, T, this>, regex: ValueProxyOrValue<string>) {
     return this.stage(

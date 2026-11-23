@@ -22,9 +22,10 @@ async function run(
   this: StagedAtomicMutationQuery,
 ): Promise<AtomicMutationOutcome> {
   const stages = this.build();
-  const terminal = stages.at(-1)!;
+  const terminal = stages.at(-1);
   ValidateAtomicMutationTable(stages.slice(0, -1));
   if (
+    terminal === undefined ||
     terminal.stage !== "atomicMutation" ||
     terminal.options !== undefined ||
     terminal.args.length !== 2

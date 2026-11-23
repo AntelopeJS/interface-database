@@ -195,7 +195,9 @@ type StubbedResult =
   | Promise<never>;
 
 async function WithResult(result: StubbedResult, check: () => Promise<void>) {
-  const original = Object.getOwnPropertyDescriptor(Query.prototype, "run")!;
+  const original = Object.getOwnPropertyDescriptor(Query.prototype, "run");
+  if (original === undefined)
+    throw new TypeError("Query.prototype.run is missing");
   let calls = 0;
   Query.prototype.run = () => {
     calls++;
@@ -254,7 +256,7 @@ async function ValidateTerminal() {
     const query = table.atomicMutation("record-a", request);
     const stage: { stage: string; options?: unknown; args: unknown[] } = query
       .build()
-      .at(-1)!;
+      .at(-1) ?? { stage: "", args: [] };
     Object.assign(stage, terminal);
     await rejectionOf(query.run(), TypeError);
   }

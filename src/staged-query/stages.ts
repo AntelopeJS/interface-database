@@ -67,7 +67,9 @@ export interface QueryStageMap {
     InsertOptions | undefined,
     [documents: WriteDocument | WriteDocument[]]
   >;
-  update: Recorded<NoOptions, [document: WriteDocument | Func]>;
+  update:
+    | Recorded<{ by: "function" }, [updater: Func]>
+    | Recorded<{ by: "document" }, [document: WriteDocument]>;
   replace: Recorded<NoOptions, [document: WriteDocument]>;
   delete: Recorded<NoOptions, []>;
   changes: Recorded<NoOptions, []>;
@@ -190,31 +192,33 @@ export interface QueryStageMap {
 
 export type QueryStageName = keyof QueryStageMap;
 
-type StageOptions<Stage extends QueryStageName> =
-  undefined extends QueryStageMap[Stage]["options"]
-    ? { options?: QueryStageMap[Stage]["options"] }
-    : { options: QueryStageMap[Stage]["options"] };
+type RecordedStage<Stage extends QueryStageName, Entry> =
+  Entry extends Recorded<infer Options, infer Args>
+    ? { stage: Stage; args: Args } & (undefined extends Options
+        ? { options?: Options }
+        : { options: Options })
+    : never;
 
 /**
  * A recorded stage. `QueryStage` alone is the union of every stage, which an
- * adapter narrows on `stage`; `QueryStage<"get">` is one stage.
+ * adapter narrows on `stage`; `QueryStage<"get">` is one stage. A stage with
+ * several recorded shapes, such as `update`, is their union, which an adapter
+ * narrows on its options.
  */
 export type QueryStage<Name extends QueryStageName = QueryStageName> = {
-  [Stage in Name]: {
-    stage: Stage;
-    args: QueryStageMap[Stage]["args"];
-  } & StageOptions<Stage>;
+  [Stage in Name]: RecordedStage<Stage, QueryStageMap[Stage]>;
 }[Name];
 
-type StageCall<Name extends QueryStageName> =
-  QueryStageMap[Name]["args"] extends []
-    ? undefined extends QueryStageMap[Name]["options"]
-      ? [options?: QueryStageMap[Name]["options"]]
-      : [options: QueryStageMap[Name]["options"]]
-    : [
-        options: QueryStageMap[Name]["options"],
-        ...args: QueryStageMap[Name]["args"],
-      ];
+type RecordedCall<Entry> =
+  Entry extends Recorded<infer Options, infer Args>
+    ? Args extends []
+      ? undefined extends Options
+        ? [options?: Options]
+        : [options: Options]
+      : [options: Options, ...args: Args]
+    : never;
+
+type StageCall<Name extends QueryStageName> = RecordedCall<QueryStageMap[Name]>;
 
 /**
  * Records one stage, typed by its name. A stage that takes no arguments may
@@ -222,8 +226,12 @@ type StageCall<Name extends QueryStageName> =
  */
 export function QueryStage<Name extends QueryStageName>(
   stage: Name,
+  ...call: StageCall<Name>
+): QueryStage<Name>;
+export function QueryStage<Name extends QueryStageName>(
+  stage: Name,
   ...[options, ...args]: StageCall<Name>
-): QueryStage<Name> {
+) {
   return { stage, options, args };
 }
 

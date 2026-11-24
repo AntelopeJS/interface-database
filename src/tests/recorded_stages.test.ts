@@ -108,4 +108,23 @@ describe("Recorded stages", () => {
       args: [low, high],
     });
   });
+
+  it("Records whether update takes a document or a function", () => {
+    const document = { name: "Ada" };
+    const byDocument = table.get("a").update(document).build().at(-1);
+    const byFunction = table
+      .update((person) => ({ age: person.key("age").add(1) }))
+      .build()
+      .at(-1);
+    expect(byDocument).to.deep.equal({
+      stage: "update",
+      options: { by: "document" },
+      args: [document],
+    });
+    expect(byFunction).to.deep.include({
+      stage: "update",
+      options: { by: "function" },
+    });
+    expect(byFunction?.args[0]).to.deep.include({ stage: "func" });
+  });
 });

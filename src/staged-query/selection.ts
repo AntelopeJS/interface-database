@@ -54,10 +54,17 @@ export class SingleSelection<T> extends Datum<T> {
     if (isUpdater(document)) {
       return this.stage(
         Query<number>,
-        QueryStage("update", undefined, this.callfunc(document, ValueProxy<T>)),
+        QueryStage(
+          "update",
+          { by: "function" },
+          this.callfunc(document, ValueProxy<T>),
+        ),
       );
     }
-    return this.stage(Query<number>, QueryStage("update", undefined, document));
+    return this.stage(
+      Query<number>,
+      QueryStage("update", { by: "document" }, document),
+    );
   }
 
   /**
@@ -118,10 +125,17 @@ export class Selection<T> extends Stream<T> {
     if (isUpdater(document)) {
       return this.stage(
         Query<number>,
-        QueryStage("update", undefined, this.callfunc(document, ValueProxy<T>)),
+        QueryStage(
+          "update",
+          { by: "function" },
+          this.callfunc(document, ValueProxy<T>),
+        ),
       );
     }
-    return this.stage(Query<number>, QueryStage("update", undefined, document));
+    return this.stage(
+      Query<number>,
+      QueryStage("update", { by: "document" }, document),
+    );
   }
 
   /**

@@ -125,7 +125,7 @@
   "devDependencies": {
     "@antelopejs/core": "~1.24.0",
     "@antelopejs/interface-core": ">=0.5.1 <0.6.0",
-    "@antelopejs/mongodb": "1.8.14-next.232.g34d937c",
+    "@antelopejs/mongodb": "~1.8.14",
     "@antelopejs/tooling-configs": ">=0.10.0 <0.11.0",
     "@types/chai": "^4.3.20",
     "@types/mocha": "^10.0.10",

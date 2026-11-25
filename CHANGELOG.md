@@ -32,6 +32,10 @@
 - Re-sync the AntelopeJS pack for the release app ([#109](https://github.com/AntelopeJS/interface-database/pull/109))
 - Stop forwarding the retired RELEASE_GITHUB_TOKEN ([#110](https://github.com/AntelopeJS/interface-database/pull/110))
 
+### Upgrade notes
+
+- **An update records how it was given.** `update` now records `options.by`: `UpdatesByFunction` when the update is a function of the row, otherwise a document. A database module must branch on it: a document shaped like a func stage is written as a document, and a function of the row is evaluated. The conformance suite in `dist/tests` covers both. Modules that honour it: `@antelopejs/mongodb` 1.8.14, `@antelopejs/postgres` 0.4.5, `@antelopejs/mysql` 0.2.9, `@antelopejs/rethinkdb` 1.10.8.
+
 ### ❤️ Contributors
 
 - Antony Rizzitelli

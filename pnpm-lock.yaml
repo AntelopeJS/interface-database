@@ -18,8 +18,8 @@ importers:
         specifier: '>=0.5.1 <0.6.0'
         version: 0.5.1
       '@antelopejs/mongodb':
-        specifier: ~1.8.10
-        version: 1.8.10(socks@2.8.7)
+        specifier: 1.8.14-next.232.g34d937c
+        version: 1.8.14-next.232.g34d937c(socks@2.8.7)
       '@antelopejs/tooling-configs':
         specifier: '>=0.10.0 <0.11.0'
         version: 0.10.0(eslint-plugin-perfectionist@5.11.0(eslint@10.10.0(jiti@2.7.0))(typescript@5.9.3))(knip@6.34.0)(oxfmt@0.66.0)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
@@ -91,16 +91,16 @@ packages:
   '@antelopejs/interface-core@0.5.2':
     resolution: {integrity: sha512-5rmFLzHH8x8SCMK3KEm7L4DdRaLXjKKMWS/5ektDz5C2P/mAmaG++JAe1+09RBFNWWe0LER56vz9AVIeqVQoMA==}
 
-  '@antelopejs/interface-database-catalog@0.1.0':
-    resolution: {integrity: sha512-R5SL72JKD7u63UwBumWt18YsGXVnnWfKbBVwc323CgKvDcLS7Qfz+Eo/ko2ybr8wHq7Izi7maSTPhJn3fp91ug==}
+  '@antelopejs/interface-database-catalog@0.1.1':
+    resolution: {integrity: sha512-XLzAa26IP7sJKXkspOfMwytk1NcYdY1PEvL2ffvKwCkH+iYrdOr2CHQtuXnmemSzHihsJ3OSRxanIZYzvqQgew==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.5.0 <0.6.0'
 
   '@antelopejs/interface-mongodb@0.0.8':
     resolution: {integrity: sha512-sAJDFv29Zz2RFZaSvN/qIPW57/zpYFVHaOTaBi2dgDn650Z0hpD9gJx9LVp5NiCC3EmD+DeQggmA5ada+4zatA==}
 
-  '@antelopejs/mongodb@1.8.10':
-    resolution: {integrity: sha512-oafRmx+9uOztWOYegN381Qiwsbce8fMudxc69vbhYMABM4OanwlaWnf65UqlJ1sUoJQt9mfocTAtjz9SrHDFyg==}
+  '@antelopejs/mongodb@1.8.14-next.232.g34d937c':
+    resolution: {integrity: sha512-lpD7bHy06QVA44thFm1UB/0vDtB0nhgp1A3kDfTOtLt7o83NNWwjHPyY0+bmG7IDoL1d0vZyenUyBz0EFVnhug==}
 
   '@antelopejs/tooling-configs@0.10.0':
     resolution: {integrity: sha512-5UwQirzbFvd6Elzab7B8sssS2zVp5m2zIc0sAr7hpAMvHq7Cy0JIqY0XEZlwFJ3NwJZez5fBPbTU/6/lYJt+0Q==}
@@ -2944,9 +2944,9 @@ snapshots:
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@antelopejs/interface-database-catalog@0.1.0(@antelopejs/interface-core@0.5.1)':
+  '@antelopejs/interface-database-catalog@0.1.1(@antelopejs/interface-core@0.5.2)':
     dependencies:
-      '@antelopejs/interface-core': 0.5.1
+      '@antelopejs/interface-core': 0.5.2
 
   '@antelopejs/interface-mongodb@0.0.8(socks@2.8.7)':
     dependencies:
@@ -2961,11 +2961,11 @@ snapshots:
       - socks
     optional: true
 
-  '@antelopejs/mongodb@1.8.10(socks@2.8.7)':
+  '@antelopejs/mongodb@1.8.14-next.232.g34d937c(socks@2.8.7)':
     dependencies:
-      '@antelopejs/interface-core': 0.5.1
+      '@antelopejs/interface-core': 0.5.2
       '@antelopejs/interface-database': 'link:'
-      '@antelopejs/interface-database-catalog': 0.1.0(@antelopejs/interface-core@0.5.1)
+      '@antelopejs/interface-database-catalog': 0.1.1(@antelopejs/interface-core@0.5.2)
       chai: 4.5.0
       mongodb: 6.21.0(socks@2.8.7)
       mongodb-connection-string-url: 3.0.2

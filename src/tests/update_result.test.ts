@@ -8,6 +8,21 @@ const schema = new Schema<{ vehicles: Vehicle }>("test-update-result", {
 });
 const vehicles = schema.instance("default").table("vehicles");
 
+interface Note {
+  _id?: string;
+  body?: string;
+  stage?: string;
+  args?: unknown[];
+}
+
+const noteSchema = new Schema<{ notes: Note }>("test-update-document", {
+  notes: {
+    fields: { body: "string", stage: "string", args: "any" },
+    indexes: {},
+  },
+});
+const notes = noteSchema.instance("default").table("notes");
+
 describe("Update result", () => {
   it("Resolves an update call to a query of the modified count", () => {
     const viaDocument = vehicles.get("a").update({ price: 1 });
@@ -29,5 +44,27 @@ describe("Update result", () => {
       number
     > = true;
     expect(table && single).to.equal(true);
+  });
+
+  describe("against a database", () => {
+    before(async () => {
+      await noteSchema.createInstance("default").run();
+      await notes.delete().run();
+    });
+
+    after(async () => {
+      await notes.delete().run();
+      await noteSchema.destroyInstance("default").run();
+    });
+
+    it("writes a document holding stage func and an args pair as a document", async () => {
+      const document = { stage: "func", args: [[1, 2], "x"] };
+      const [key] = await notes.insert([{ body: "before" }]).run();
+
+      const modified = await notes.get(key).update(document).run();
+
+      expect(modified).to.equal(1);
+      expect(await notes.get(key).run()).to.deep.include(document);
+    });
   });
 });

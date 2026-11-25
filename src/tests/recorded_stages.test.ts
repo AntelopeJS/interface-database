@@ -1,5 +1,12 @@
 import { expect } from "chai";
 import { IsDatum, IsStream, IsValueProxy, Schema, ValueProxy } from "..";
+import {
+  IsQueryStage,
+  UpdatesByFunction,
+  type QueryStage,
+  type Func,
+  type WriteDocument,
+} from "../staged-query";
 
 type Person = {
   _id?: string;
@@ -126,5 +133,26 @@ describe("Recorded stages", () => {
       options: { by: "function" },
     });
     expect(byFunction?.args[0]).to.deep.include({ stage: "func" });
+  });
+
+  it("Narrows update args through UpdatesByFunction", () => {
+    const byFunction = table
+      .update((person) => ({ age: person.key("age").add(1) }))
+      .build()
+      .at(-1);
+    const byDocument = table.get("a").update({ name: "Ada" }).build().at(-1);
+    const narrowed = (stage: QueryStage | undefined) => {
+      if (!IsQueryStage(stage, "update")) {
+        return "not an update";
+      }
+      if (UpdatesByFunction(stage)) {
+        const updater: Func = stage.args[0];
+        return updater.stage;
+      }
+      const document: WriteDocument = stage.args[0];
+      return document;
+    };
+    expect(narrowed(byFunction)).to.equal("func");
+    expect(narrowed(byDocument)).to.deep.equal({ name: "Ada" });
   });
 });

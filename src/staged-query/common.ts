@@ -5,6 +5,8 @@ import { QueryStage } from "./stages";
 
 export {
   IsQueryStage,
+  UpdatesByFunction,
+  type Func,
   QueryStage,
   type QueryStageMap,
   type IndexBound,

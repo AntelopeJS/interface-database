@@ -33,7 +33,8 @@ export type IndexKeys<K extends SelectionKey = SelectionKey> =
   | ValueProxyOrValue<K>[]
   | SelectionKey[][];
 
-type Func = QueryStage<"func">;
+/** A recorded `func` stage: a callback body an adapter translates. */
+export type Func = QueryStage<"func">;
 type NoOptions = undefined;
 
 interface Recorded<Options, Args extends readonly unknown[]> {
@@ -202,8 +203,9 @@ type RecordedStage<Stage extends QueryStageName, Entry> =
 /**
  * A recorded stage. `QueryStage` alone is the union of every stage, which an
  * adapter narrows on `stage`; `QueryStage<"get">` is one stage. A stage with
- * several recorded shapes, such as `update`, is their union, which an adapter
- * narrows on its options.
+ * several recorded shapes, such as `update`, is their union. Checking
+ * `options` does not narrow `args`, so an adapter narrows through the guard
+ * for it, such as `UpdatesByFunction`.
  */
 export type QueryStage<Name extends QueryStageName = QueryStageName> = {
   [Stage in Name]: RecordedStage<Stage, QueryStageMap[Stage]>;
@@ -241,4 +243,14 @@ export function IsQueryStage<Name extends QueryStageName>(
   name: Name,
 ): stage is Extract<QueryStage, { stage: Name }> {
   return stage?.stage === name;
+}
+
+/**
+ * Tells whether an `update` stage takes a function, narrowing `args[0]` to
+ * `Func`. In the `false` branch `args[0]` is a `WriteDocument`.
+ */
+export function UpdatesByFunction(
+  stage: QueryStage<"update">,
+): stage is Extract<QueryStage<"update">, { options: { by: "function" } }> {
+  return stage.options.by === "function";
 }

@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.4.4
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.3...v0.4.4)
+
+### 🚀 Enhancements
+
+- **staged-query:** Record whether update takes a function or a document ([#112](https://github.com/AntelopeJS/interface-database/pull/112))
+- **staged-query:** Export UpdatesByFunction and Func to narrow update args ([#118](https://github.com/AntelopeJS/interface-database/pull/118))
+
+### 📦 Build
+
+- Roll out the trunk CI with tooling-configs 0.8.9 ([#107](https://github.com/AntelopeJS/interface-database/pull/107))
+
+### 🏡 Chore
+
+- Promote next to main ([#103](https://github.com/AntelopeJS/interface-database/pull/103))
+- Promote next to main ([#106](https://github.com/AntelopeJS/interface-database/pull/106))
+- Adopt tooling-configs 0.10 ([#111](https://github.com/AntelopeJS/interface-database/pull/111))
+- **deps:** Update dependency @antelopejs/core to v1.24.7 ([#114](https://github.com/AntelopeJS/interface-database/pull/114))
+- **deps:** Update dependency oxlint-tsgolint to v7.0.2008 ([#117](https://github.com/AntelopeJS/interface-database/pull/117))
+- **deps:** Update dependency rimraf to v6.1.4 ([#119](https://github.com/AntelopeJS/interface-database/pull/119))
+
+### ✅ Tests
+
+- **update:** Write a document shaped like a func stage as a document ([#115](https://github.com/AntelopeJS/interface-database/pull/115))
+- **update:** Cover an update by a function of the row ([#121](https://github.com/AntelopeJS/interface-database/pull/121))
+
+### 🤖 CI
+
+- Re-sync the AntelopeJS pack for the release app ([#109](https://github.com/AntelopeJS/interface-database/pull/109))
+- Stop forwarding the retired RELEASE_GITHUB_TOKEN ([#110](https://github.com/AntelopeJS/interface-database/pull/110))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli
+
 ## v0.4.3
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.2...v0.4.3)

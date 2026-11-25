@@ -66,5 +66,19 @@ describe("Update result", () => {
       expect(modified).to.equal(1);
       expect(await notes.get(key).run()).to.deep.include(document);
     });
+
+    it("writes the value a function of the row computes", async () => {
+      const [key] = await notes.insert([{ body: "draft" }]).run();
+
+      const modified = await notes
+        .get(key)
+        .update((note) => ({ body: note.key("body").add("-done") }))
+        .run();
+
+      expect(modified).to.equal(1);
+      expect(await notes.get(key).run()).to.deep.include({
+        body: "draft-done",
+      });
+    });
   });
 });

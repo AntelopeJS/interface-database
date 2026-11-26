@@ -24,6 +24,7 @@ jobs:
       renovate-sync: false
       test-job: true
       affected-tests: true
+      windows-merge-queue: true
     permissions:
       contents: read
   renovate-sync:

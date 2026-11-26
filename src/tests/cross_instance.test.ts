@@ -12,7 +12,7 @@ const otherInstance = CreateOtherInstance([buildFolder]);
 function isDatabaseModule(
   candidate: Partial<DatabaseModule>,
 ): candidate is DatabaseModule {
-  return Object.keys(Database).every((name) => name in candidate);
+  return Object.keys(Database).every((name) => Object.hasOwn(candidate, name));
 }
 
 function loadOtherInstance(): DatabaseModule {

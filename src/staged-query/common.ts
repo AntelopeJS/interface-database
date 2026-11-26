@@ -2,6 +2,11 @@ import type { Datum } from "./datum";
 import type { Query } from "./query";
 import type { ValueProxy, ValueProxyOrValue } from "./valueproxy";
 import { QueryStage } from "./stages";
+import { isKindHolder, MarkKind } from "./kind";
+
+const STAGED_OBJECT_KIND = Symbol.for(
+  "@antelopejs/interface-database/StagedObject@1",
+);
 
 export {
   IsQueryStage,
@@ -153,7 +158,8 @@ function isStagedConstructor(
   candidate: Function,
 ): candidate is StagedConstructor {
   return (
-    candidate === StagedObject || candidate.prototype instanceof StagedObject
+    isKindHolder(candidate.prototype) &&
+    candidate.prototype[STAGED_OBJECT_KIND] === true
   );
 }
 
@@ -277,6 +283,8 @@ export class StagedObject {
     };
   }
 }
+
+MarkKind(StagedObject.prototype, STAGED_OBJECT_KIND);
 
 export type Value<T> = Datum<T> | ValueProxyOrValue<T>;
 

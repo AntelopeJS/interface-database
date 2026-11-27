@@ -157,9 +157,8 @@ export class ValueProxy<T> extends StagedObject {
       this,
       ValueProxy<
         Date extends U
-          ?
-              | (Date extends T ? number : never)
-              | (number extends U ? (T extends number ? number : Date) : never)
+          ? | (Date extends T ? number : never)
+            | (number extends U ? (T extends number ? number : Date) : never)
           : Extract<Date | number, T>
       >,
       QueryStage("sub", undefined, value),

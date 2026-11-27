@@ -286,6 +286,15 @@ export class StagedObject {
 
 MarkKind(StagedObject.prototype, STAGED_OBJECT_KIND);
 
+/**
+ * Tests whether a value is a staged object (a query, datum, stream, value proxy or schema instance).
+ * @param value Value to test
+ * @returns True if the value is a staged object
+ */
+export function IsStagedObject(value: unknown): value is StagedObject {
+  return isKindHolder(value) && value[STAGED_OBJECT_KIND] === true;
+}
+
 export type Value<T> = Datum<T> | ValueProxyOrValue<T>;
 
 type ExtractTypeObject<T> = T extends infer O

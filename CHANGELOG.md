@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.4.5
+
+[compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.4...v0.4.5)
+
+### 🚀 Enhancements
+
+- Export IsStagedObject brand guard ([#128](https://github.com/AntelopeJS/interface-database/pull/128))
+
+### 🩹 Fixes
+
+- **test:** Give suite hooks 10s so the cold Windows first connection passes ([#125](https://github.com/AntelopeJS/interface-database/pull/125))
+
+### 🏡 Chore
+
+- **deps:** Pin @antelopejs/mongodb ~1.8.14 and add 0.4.4 upgrade notes ([#122](https://github.com/AntelopeJS/interface-database/pull/122))
+- **deps:** Update dependency @antelopejs/core to v1.24.8 ([#123](https://github.com/AntelopeJS/interface-database/pull/123))
+- **deps:** Update dependency @types/node to v22.20.5 ([#124](https://github.com/AntelopeJS/interface-database/pull/124))
+- **deps:** Update dependency @types/semver to v7.8.0 ([#126](https://github.com/AntelopeJS/interface-database/pull/126))
+- **deps:** Update dependency @antelopejs/mongodb to v1.8.15 ([#116](https://github.com/AntelopeJS/interface-database/pull/116))
+- **deps:** Update antelopejs tooling configs ([#129](https://github.com/AntelopeJS/interface-database/pull/129))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli
+
 ## v0.4.4
 
 [compare changes](https://github.com/AntelopeJS/interface-database/compare/v0.4.3...v0.4.4)

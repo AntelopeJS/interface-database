@@ -1,4 +1,5 @@
 export * from "./atomic";
+export { IsStagedObject } from "./common";
 export { Datum, IsDatum } from "./datum";
 export * from "./errors";
 export { IsQuery, Query } from "./query";
